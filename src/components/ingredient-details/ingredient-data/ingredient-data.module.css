@@ -1,0 +1,4 @@
+.ingredient_data {
+  display: flex;
+  flex-direction: column;
+}
