@@ -1,0 +1,30 @@
+.burger_constructor {
+  display: flex;
+  flex-direction: column;
+  width: max-content;
+}
+
+.burger_constructor  > *{
+  flex-grow: 0;
+}
+
+.sum_element {
+  width: max-content;
+  display: flex;
+  flex-direction: row;
+  gap: .5rem;
+  align-items: center;
+  align-self: flex-end;
+  justify-self: flex-end;
+}
+
+.sum_element > svg {
+  height: 2em;
+  width: auto;
+}
+
+.item_list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}

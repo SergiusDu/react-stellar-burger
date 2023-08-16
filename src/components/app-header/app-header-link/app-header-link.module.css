@@ -1,0 +1,8 @@
+.link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+.link_position_right {
+  justify-self: end;
+}
