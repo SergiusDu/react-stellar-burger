@@ -2,6 +2,8 @@ import PropTypes from "prop-types";
 export const BUN_TYPE = 'bun';
 export const MAIN_TYPE = 'main';
 export const SAUCE_TYPE = 'sauce';
+
+export const BASE_URL = 'https://norma.nomoreparties.space/api';
 export const ingredientShape = PropTypes.shape({
   _id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,

@@ -1,18 +1,18 @@
-import React, { useMemo } from "react";
+import React, {useMemo} from "react";
 import styles from "./ingredient-list.module.css"
-import { CategorySection } from "../category-section/category-section";
-import PropTypes from 'prop-types';
-import { ingredientShape } from "../../../utils/types";
+import {CategorySection} from "../category-section/category-section";
+import {selectIngredients} from "../../../services/slices/ingredient-slice";
+import {useSelector} from "react-redux";
 
 const IngredientList = React.forwardRef((props, ref) => {
-
+    const ingredients = useSelector(selectIngredients);
     const uniqueCategories = useMemo(() => {
         const uniqueTypes = new Set();
-        Object.values(props.ingredients).forEach(ingredient => {
+        Object.values(ingredients).forEach(ingredient => {
             uniqueTypes.add(ingredient.type);
         });
         return Array.from(uniqueTypes);
-    }, [props.ingredients]);
+    }, [ingredients]);
 
     return (
         <section className={`mt-10 ${styles.category_ingredient_list}`} ref={ref}>
@@ -20,7 +20,7 @@ const IngredientList = React.forwardRef((props, ref) => {
                 <CategorySection
                     key={category}
                     category={category}
-                    ingredients={props.ingredients}
+                    ingredients={ingredients}
                     ref={props.refs ? props.refs[category] : null}
                 />
             ))}
@@ -30,6 +30,3 @@ const IngredientList = React.forwardRef((props, ref) => {
 
 export default IngredientList;
 
-IngredientList.propTypes = {
-    ingredients: PropTypes.arrayOf(ingredientShape).isRequired,
-};

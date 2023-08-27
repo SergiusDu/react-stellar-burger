@@ -7,11 +7,16 @@ import {useDispatch, useSelector} from "react-redux";
 import {
     addIngredient,
     moveItem,
-    removeIngredient,
+    removeIngredient, resetIngredients,
     selectIngredients,
     setBun
 } from "../../services/slices/burger-constructor-slice";
-import {decreaseIngredientAmount, increaseIngredientAmount, setBunCount} from "../../services/slices/ingredient-slice";
+import {
+    decreaseIngredientAmount,
+    increaseIngredientAmount,
+    resetAllIngredientAmount,
+    setBunCount
+} from "../../services/slices/ingredient-slice";
 import {useDrop} from 'react-dnd';
 import {fetchOrder} from "../../services/slices/order-details";
 import {BUN_TYPE, MAIN_TYPE, SAUCE_TYPE} from "../../utils/types";
@@ -30,6 +35,10 @@ export default function BurgerConstructor() {
     const [, ref] = useDrop({
         accept: ['ingredient', 'bun'],
         drop: (item) => {
+            if (!bun && item.type !== BUN_TYPE) {
+                console.warn("Перетаскивание запрещено: булка отсутствует");
+                return;
+            }
             if (!item.type) {
                 console.error(`Ошибка в перемещении ингредиента: недействительный тип ${item}`);
                 return;
@@ -53,7 +62,14 @@ export default function BurgerConstructor() {
     const handleOrderClick =  () => {
         try {
             const itemsToOrder = [...ingredients.map(item => item._id), bun._id, bun._id];
-            dispatch(fetchOrder(itemsToOrder));
+            dispatch(fetchOrder(itemsToOrder)).then(
+                () => {
+                    dispatch(resetIngredients());
+                    dispatch(resetAllIngredientAmount());
+                    dispatch(setBun(null));
+                }
+            )
+
         } catch (error) {
             console.error("Не удалось оформить заказ: ", error);
         }
@@ -71,41 +87,50 @@ export default function BurgerConstructor() {
     return (
         <section ref={ref}
                  className={`ml-5 mt-25 ${styles.burger_constructor}`}>
-            <ConstructorElement
-                extraClass={'ml-8 pl-6 pr-8'}
-                type="top"
-                isLocked={true}
-                text={`${bun.name} (верх)`}
-                price={bun.price}
-                thumbnail={bun.image}
-            />
-            <ScrollableContainer extraClass={'mt-4'}>
-                <ul className={styles.item_list}>
-                    {ingredients.map((ingredient, index) => (
-                        <DraggableItem key={ingredient.uniqueId}
-                                       index={index}
-                                       moveItem={moveItemInRedux}
-                        >
-                            <ConstructorElement
-                                text={ingredient.name}
-                                thumbnail={ingredient.image}
-                                price={ingredient.price}
-                                handleClose={() => handleDeleteIngredient(ingredient)
+            {
+                bun ?
+                    <>
+                        <ConstructorElement
+                            extraClass={'ml-8 pl-6 pr-8'}
+                            type="top"
+                            isLocked={true}
+                            text={`${bun.name} (верх)`}
+                            price={bun.price}
+                            thumbnail={bun.image}
+                        />
+                        <ScrollableContainer extraClass={'mt-4'}>
+                            <ul className={styles.item_list}>
+                                {ingredients.map((ingredient, index) => (
+                                    <DraggableItem key={ingredient.uniqueId}
+                                                   index={index}
+                                                   moveItem={moveItemInRedux}
+                                    >
+                                        <ConstructorElement
+                                            text={ingredient.name}
+                                            thumbnail={ingredient.image}
+                                            price={ingredient.price}
+                                            handleClose={() => handleDeleteIngredient(ingredient)
 
-                            }
-                            />
-                        </DraggableItem>
-                    ))}
-                </ul>
-            </ScrollableContainer>
-            <ConstructorElement
-                extraClass={`ml-8 pl-6 pr-8 ${styles.bottom_bun}`}
-                type="bottom"
-                isLocked={true}
-                text={`${bun.name} (низ)`}
-                price={bun.price}
-                thumbnail={bun.image}
-            />
+                                            }
+                                        />
+                                    </DraggableItem>
+                                ))}
+                            </ul>
+                        </ScrollableContainer>
+                        <ConstructorElement
+                            extraClass={`ml-8 pl-6 pr-8 ${styles.bottom_bun}`}
+                            type="bottom"
+                            isLocked={true}
+                            text={`${bun.name} (низ)`}
+                            price={bun.price}
+                            thumbnail={bun.image}
+                        />
+                    </> :
+                    <div className={styles.add_bun_container}>
+                        <p className="text text_color_inactive text_type_main-default">Пожалуйста, перенесите сюда булку и ингредиенты для создания заказа</p>
+                    </div>
+            }
+
             <div className={`mt-10 ${styles.sum_element}`}>
                 {!isNaN(memorizedSum) && (
                     <>
@@ -119,6 +144,7 @@ export default function BurgerConstructor() {
                     size={"large"}
                     extraClass={"ml-10"}
                     onClick={handleOrderClick}
+                    disabled={!bun}
                 >
                     Оформить заказ
                 </Button>

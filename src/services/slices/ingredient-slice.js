@@ -1,14 +1,16 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import {BASE_URL} from "../../utils/types";
+import fetchAPI from "../../utils/api";
 
-const DATA_URL = 'https://norma.nomoreparties.space/api/ingredients';
+const DATA_URL = `${BASE_URL}/ingredients`;
 export const fetchIngredients = createAsyncThunk('ingredient/fetchIngredients', async (_, {rejectWithValue}) => {
-  const response = await fetch(DATA_URL);
-  if (response.ok) {
-    const data = await response.json();
-    return data.data;
+  try {
+    return await fetchAPI(DATA_URL); // предполагается, что fetchAPI возвращает нужные данные
+  } catch (error) {
+    return rejectWithValue(`Ошибка, ${error}`);
   }
-  return rejectWithValue(`Ошибка, ${response.status}`)
-})
+});
+
 export const ingredientSlice = createSlice({
   name: 'ingredient', initialState: {
     ingredients: [],
@@ -54,6 +56,13 @@ export const ingredientSlice = createSlice({
         delete state.ingredients[index].count;
       }
     },
+    resetAllIngredientAmount: (state) => {
+      state.ingredients.forEach((ingredient, index) => {
+        if ('count' in ingredient) {
+          delete state.ingredients[index].count;
+        }
+      });
+    },
     setBunCount: (state, action) => {
       const index = state.ingredients.findIndex(ingredient => ingredient._id === action.payload);
       if (index === -1) {
@@ -86,4 +95,5 @@ export const ingredientSlice = createSlice({
   }
 })
 
-export const {increaseIngredientAmount, decreaseIngredientAmount, setBunCount, setSelectedIngredient, resetSelectedIngredient} = ingredientSlice.actions;
+export const selectIngredients = (state) => state.ingredient.ingredients;
+export const {increaseIngredientAmount, decreaseIngredientAmount, resetAllIngredientAmount, setBunCount, setSelectedIngredient, resetSelectedIngredient} = ingredientSlice.actions;

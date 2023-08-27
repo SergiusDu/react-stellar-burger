@@ -1,26 +1,23 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {BASE_URL} from "../../utils/types";
+import fetchAPI from "../../utils/api";
 
-const ORDER_URL = 'https://norma.nomoreparties.space/api/orders'
+const ORDER_URL = `${BASE_URL}/orders`
 
 export const fetchOrder = createAsyncThunk('orderDetails/sendOrder', async (orderData, {rejectWithValue}) => {
     try {
-        const response = await fetch(ORDER_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            }, body: JSON.stringify({
-                ingredients: orderData
-            })
-        });
-        if (response.ok) {
-            return response.json();
+        const response = await fetchAPI(ORDER_URL, 'POST', {ingredients: orderData});
+
+        if (response && response.order && response.order.number) {
+            return response;
+        } else {
+            return rejectWithValue("Invalid response format");
         }
     } catch (error) {
         return rejectWithValue(error.message);
     }
+});
 
-
-})
 export const orderDetails = createSlice({
     name: 'burgerDetails', initialState: {
         isLoading: false,

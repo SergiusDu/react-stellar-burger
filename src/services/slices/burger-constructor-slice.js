@@ -4,8 +4,7 @@ export const burgerConstructorSlice = createSlice({
     name: 'burgerConstructor',
     initialState: {
         ingredients: [],
-        bun: {},
-        defaultBunSet: false,
+        bun: null,
     },
     reducers: {
         addIngredient: (state, action) => {
@@ -23,20 +22,17 @@ export const burgerConstructorSlice = createSlice({
         setBun: (state, action) => {
             state.bun = action.payload;
         },
-        setDefaultBun: (state, action) => {
-            if (!state.defaultBunSet) {
-                state.bun = action.payload;
-                state.defaultBunSet = true;
-            }
-        },
         moveItem: (state, action) => {
             const { fromIndex, toIndex } = action.payload;
             const [moved] = state.ingredients.splice(fromIndex, 1);
             state.ingredients.splice(toIndex, 0, moved);
+        },
+        resetIngredients: (state) => {
+            state.ingredients = [];
         }
     }
 });
 
 export const selectIngredients = (state) => state.burgerConstructor.ingredients;
 export const selectSum = (state) => state.burgerConstructor.sum;
-export const { addIngredient, moveItem, removeIngredient, setBun, setDefaultBun } = burgerConstructorSlice.actions;
+export const { addIngredient, moveItem, removeIngredient, setBun , resetIngredients} = burgerConstructorSlice.actions;
