@@ -28,3 +28,7 @@
   padding: 0;
   margin: 0;
 }
+
+.bottom_bun > span > img {
+  transform: rotate(180deg);
+}

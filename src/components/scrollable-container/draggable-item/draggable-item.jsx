@@ -1,17 +1,38 @@
-import React from "react";
+import React, {useRef} from "react";
 import styles from "./draggable-item.module.css";
 import {DragIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import PropTypes from "prop-types";
+import {useDrag, useDrop} from "react-dnd";
 
-export default function DraggableItem(props) {
+export default function DraggableItem({ children, index, moveItem }) {
+    const ref = useRef(null);
+
+    const [, drop] = useDrop({
+        accept: "ITEM",
+        hover: (draggedItem) => {
+            if (draggedItem.index !== index) {
+                moveItem(draggedItem.index, index);
+                draggedItem.index = index;
+            }
+        },
+    });
+
+    const [, drag] = useDrag({
+        type: "ITEM",
+        item: { index },
+    });
+
+    drag(drop(ref));
     return (
-        <li className={`mb-4 ${styles.draggableItem}`}>
+        <li ref={ref} className={`mb-4 ${styles.draggableItem}`}>
             <DragIcon type={"primary"} />
-            {props.children}
+            {children}
         </li>
-    )
+    );
 }
 
 DraggableItem.propTypes = {
-  children: PropTypes.node.isRequired
+    children: PropTypes.node.isRequired,
+    index: PropTypes.number.isRequired,
+    moveItem: PropTypes.func.isRequired,
 };

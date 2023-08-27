@@ -1,39 +1,35 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styles from "./ingredient-list.module.css"
-import CategorySection from "../category-section/category-section";
+import { CategorySection } from "../category-section/category-section";
 import PropTypes from 'prop-types';
+import { ingredientShape } from "../../../utils/types";
 
 const IngredientList = React.forwardRef((props, ref) => {
-  function getUniqueCategories() {
-    return [...new Set(props.ingredients.map((ingredient) => ingredient.type))];
-  }
 
-  return (
-    <section className={`mt-10 ${styles.category_ingredient_list}`} ref={ref}>
-    {getUniqueCategories().map(category => {
-      return <CategorySection key={category} category={category} ingredients={props.ingredients} />
-    })}
-  </section>
-  )
+    const uniqueCategories = useMemo(() => {
+        const uniqueTypes = new Set();
+        Object.values(props.ingredients).forEach(ingredient => {
+            uniqueTypes.add(ingredient.type);
+        });
+        return Array.from(uniqueTypes);
+    }, [props.ingredients]);
+
+    return (
+        <section className={`mt-10 ${styles.category_ingredient_list}`} ref={ref}>
+            {uniqueCategories.map(category => (
+                <CategorySection
+                    key={category}
+                    category={category}
+                    ingredients={props.ingredients}
+                    ref={props.refs ? props.refs[category] : null}
+                />
+            ))}
+        </section>
+    );
 });
 
 export default IngredientList;
 
-
-
-
 IngredientList.propTypes = {
-  ingredients: PropTypes.arrayOf(PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    proteins: PropTypes.number.isRequired,
-    fat: PropTypes.number.isRequired,
-    carbohydrates: PropTypes.number.isRequired,
-    calories: PropTypes.number.isRequired,
-    price: PropTypes.number.isRequired,
-    image: PropTypes.string.isRequired,
-    image_mobile: PropTypes.string.isRequired,
-    image_large: PropTypes.string.isRequired
-  })).isRequired
+    ingredients: PropTypes.arrayOf(ingredientShape).isRequired,
 };

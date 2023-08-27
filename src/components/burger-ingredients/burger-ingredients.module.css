@@ -3,3 +3,6 @@
   max-height: 100%;
   overflow: hidden;
 }
+.flex_container {
+  display: flex;
+}

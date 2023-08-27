@@ -1,7 +1,7 @@
 .ingredient {
   list-style: none;
   text-align: center;
-
+  cursor: pointer;
 }
 
 .ingredient__figure {
