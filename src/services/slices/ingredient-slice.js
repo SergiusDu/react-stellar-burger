@@ -5,7 +5,7 @@ import fetchAPI from "../../utils/api";
 const DATA_URL = `${BASE_URL}/ingredients`;
 export const fetchIngredients = createAsyncThunk('ingredient/fetchIngredients', async (_, {rejectWithValue}) => {
   try {
-    return await fetchAPI(DATA_URL); // предполагается, что fetchAPI возвращает нужные данные
+    return await fetchAPI(DATA_URL);
   } catch (error) {
     return rejectWithValue(`Ошибка, ${error}`);
   }
