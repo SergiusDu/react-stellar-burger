@@ -1,22 +1,64 @@
-import React from 'react'
+import React, {useEffect} from 'react';
 import styles from "./app.module.css";
-import { data } from "../../utils/data";
-import { Button } from "@ya.praktikum/react-developer-burger-ui-components";
+import AppHeader from "../app-header/app-header";
+import BurgerIngredients from "../burger-ingredients/burger-ingredients";
+import BurgerConstructor from "../burger-constructor/burger-constructor";
+import IngredientDetails from "../ingredient-details/ingredient-details";
+import OrderDetails from "../order-details/order-details";
+import {useDispatch, useSelector} from "react-redux";
+import {fetchIngredients, resetSelectedIngredient} from "../../services/slices/ingredient-slice";
+import {DndProvider} from "react-dnd";
+import {HTML5Backend} from "react-dnd-html5-backend";
+import Modal from "../modal/modal";
+import {resetOrderNumber, selectOrderNumber} from "../../services/slices/order-details";
+
 
 function App() {
-  return (
-    <div className={styles.app}>
-      <pre style={{
-      	margin: "auto",
-      	fontSize: "1.5rem"
-      }}>
-      	Измените src/components/app/app.jsx и сохраните для обновления.
-      </pre>
-        <Button htmlType="button" type="primary" size="small" extraClass="ml-2">
-            Нажми на меня
-        </Button>
-    </div>
-  );
+    const isLoading = useSelector((state) => state.ingredient.isLoading);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(fetchIngredients());
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dispatch]);
+    const selectedIngredient = useSelector(state => state.ingredient.selectedIngredient);
+    const orderNumber = useSelector(selectOrderNumber)
+    const handleCloseIngredientDetails = () => {
+        dispatch(resetSelectedIngredient());
+    };
+    const handleCloseOrderDetails = () => {
+        dispatch(resetOrderNumber());
+    };
+
+    return (
+        <div className={styles.app}>
+            <AppHeader />
+            <main className={styles.main_layout}>
+                <DndProvider backend={HTML5Backend}>
+                            {isLoading ? <div>Loading</div> : (
+                                <>
+                                    <BurgerIngredients />
+                                    <BurgerConstructor />
+                                </>
+                            )}
+                            {
+                                selectedIngredient &&
+                                <Modal onClose={handleCloseIngredientDetails}
+                                       title={`Детали ингредиента`}>
+                                    <IngredientDetails />
+                                </Modal>
+                            }
+                            {
+                                orderNumber &&
+                                <Modal onClose={handleCloseOrderDetails}
+                                       title={`Детали ингредиента`}>
+                                    <OrderDetails />
+                                </Modal>
+                            }
+                </DndProvider>
+            </main>
+        </div>
+    );
 }
 
 export default App;
