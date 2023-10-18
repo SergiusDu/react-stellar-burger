@@ -18,7 +18,7 @@ import {
     setBunCount
 } from "../../services/slices/ingredient-slice";
 import {useDrop} from 'react-dnd';
-import {fetchOrder} from "../../services/slices/order-details";
+import {fetchOrder} from "../../services/slices/order-details-slice";
 import {BUN_TYPE, MAIN_TYPE, SAUCE_TYPE} from "../../utils/types";
 
 export default function BurgerConstructor() {

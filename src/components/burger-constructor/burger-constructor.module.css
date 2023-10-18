@@ -37,6 +37,7 @@
   width: 536px;
   min-height: 200px;
   border: 5px dashed rgba(76, 76, 255, 1);
+  border-radius: 30px;
   display: flex;
   flex-direction: column;
   justify-content: center;

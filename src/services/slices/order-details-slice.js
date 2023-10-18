@@ -18,7 +18,7 @@ export const fetchOrder = createAsyncThunk('orderDetails/sendOrder', async (orde
     }
 });
 
-export const orderDetails = createSlice({
+export const orderDetailsSlice = createSlice({
     name: 'burgerDetails', initialState: {
         isLoading: false,
         error: null,
@@ -56,5 +56,5 @@ export const orderDetails = createSlice({
     }
 })
 
-export const {resetOrderNumber} = orderDetails.actions;
+export const {resetOrderNumber} = orderDetailsSlice.actions;
 export const selectOrderNumber = state => state.orderDetails.orderNumber;

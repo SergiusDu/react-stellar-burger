@@ -1,29 +1,17 @@
-async function fetchAPI(url, method = 'GET', bodyData = null, headers = {}) {
-    try {
-        const options = {
-            method,
-            headers: {
-                'Content-Type': 'application/json',
-                ...headers,
-            },
-        };
-
-        if (bodyData) {
-            options.body = JSON.stringify(bodyData);
-        }
-
-        const response = await fetch(url, options);
-
-        if (response.ok) {
-            const data = await response.json();
-            return data.data || data;
-        } else {
-            console.error(`Ошибка, ${response.status}`);
-        }
-    } catch (error) {
-        console.error(error);
-        throw error;
+async function fetchAPI(url, method, bodyData = null, headers = {}) {
+    const options = {
+        method, headers: {
+            'Content-Type': 'application/json', ...headers,
+        },
+    };
+    if (bodyData) {
+        options.body = JSON.stringify(bodyData);
     }
+    const response = await fetch(url, options);
+    const data = await response.json();
+    return data.data || data;
 }
-
+export function setCookie(cname, cvalue, maxAge, domain = '') {
+    document.cookie = `${cname}=${cvalue}; max-age=${maxAge}; ${domain ? `domain=${domain}`:''}}`
+}
 export default fetchAPI;
