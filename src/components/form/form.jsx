@@ -6,7 +6,7 @@ export function Form(props) {
         {props.header ? <h1 className="text text_type_main-medium mb-6">{props.header}</h1> : null}
         <form name={props.header}
               action={props.action}
-              className={styles.form}
+              className={`${styles.form} + ${props.extraClass}`}
               onSubmit={props.onSubmit}
         >
             {props.children}
