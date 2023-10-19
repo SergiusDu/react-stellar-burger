@@ -11,7 +11,9 @@ async function fetchAPI(url, method, bodyData = null, headers = {}) {
     const data = await response.json();
     return data.data || data;
 }
-export function setCookie(cname, cvalue, maxAge, domain = '') {
-    document.cookie = `${cname}=${cvalue}; max-age=${maxAge}; ${domain ? `domain=${domain}`:''}}`
+
+export function setCookie(cname, cvalue, maxAge) {
+    document.cookie = `${cname}=${cvalue}; max-age=${maxAge};`
 }
+
 export default fetchAPI;

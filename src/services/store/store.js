@@ -4,6 +4,7 @@ import {burgerConstructorSlice} from "../slices/burger-constructor-slice";
 import {orderDetailsSlice} from "../slices/order-details-slice";
 import {loginSlice} from "../slices/login-form-slice";
 import {registrationSlice} from "../slices/registration-form-slice";
+import {forgotPasswordFormSlice} from "../slices/forgot-password-slice";
 
 
 export const store = configureStore({
@@ -12,7 +13,8 @@ export const store = configureStore({
     burgerConstructor: burgerConstructorSlice.reducer,
     orderDetails: orderDetailsSlice.reducer,
     loginData: loginSlice.reducer,
-    registrationFormData: registrationSlice.reducer
+    registrationFormData: registrationSlice.reducer,
+    forgotPasswordForm: forgotPasswordFormSlice.reducer
   }
 })
 

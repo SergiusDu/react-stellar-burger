@@ -28,8 +28,8 @@ export const loginSlice = createSlice({
             .addCase(authorizeUser.pending, (state) => {
             })
             .addCase(authorizeUser.fulfilled, (state, action) => {
-                setCookie('accessToken', action.payload.accessToken, 20*60*1000, 'nomoreparties.space');
-                setCookie('refreshToken', action.payload.refreshTocken, 20*60*1000, 'nomoreparties.space');
+                setCookie('accessToken', action.payload.accessToken, 20*60);
+                setCookie('refreshToken', action.payload.refreshToken, 20*60);
                 state.email = '';
                 state.password = '';
             })

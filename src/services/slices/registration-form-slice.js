@@ -36,8 +36,8 @@ export const registrationSlice = createSlice({
                 state.isFormBlocked = true;
             })
             .addCase(registerUser.fulfilled, (state, action) => {
-                setCookie('accessToken', action.payload.accessToken, 20*60*1000, 'nomoreparties.space');
-                setCookie('refreshToken', action.payload.refreshTocken, 20*60*1000, 'nomoreparties.space');
+                setCookie('accessToken', action.payload.accessToken, 20*60, 'nomoreparties.space');
+                setCookie('refreshToken', action.payload.refreshTocken, 20*60, 'nomoreparties.space');
                 state.password = '';
                 state.email = '';
                 state.name = '';
