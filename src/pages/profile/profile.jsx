@@ -1,8 +1,7 @@
 import AppHeader from "../../components/app-header/app-header";
-import {EditIcon, EmailInput, Input, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
+import {EmailInput, Input, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
 import {Form} from "../../components/form/form";
 import Fieldset from "../../components/fieldset/fieldset";
-import {Link} from "react-router-dom";
 import {ProfileLayout} from "../../components/profile-layout/profile-layout";
 import {ProfileNavigation} from "../../components/profile-navigation/profile-navigation";
 

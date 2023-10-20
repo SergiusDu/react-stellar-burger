@@ -9,11 +9,10 @@ export function ProfileNavigation() {
             <ProfileNavigationLink to={'/profile/orders'} linkName="История заказов" />
             <ProfileNavigationLink to={'/'} linkName="Выход" />
         </ul>
-        <p>
-            В этом разделе вы можете
-        </p>
-        <p>
+        <p className="text text_type_main-small text_color_inactive mt-20">
+            В этом разделе вы можете <br/>
             изменить свои персональные данные
         </p>
+
     </nav>)
 }

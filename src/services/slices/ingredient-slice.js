@@ -96,4 +96,5 @@ export const ingredientSlice = createSlice({
 })
 
 export const selectIngredients = (state) => state.ingredient.ingredients;
+export const selectedIngredient = state => state.ingredient.selectedIngredient;
 export const {increaseIngredientAmount, decreaseIngredientAmount, resetAllIngredientAmount, setBunCount, setSelectedIngredient, resetSelectedIngredient} = ingredientSlice.actions;
