@@ -8,25 +8,28 @@ export default function AppHeader() {
       <nav className={styles.navbar}>
         <ul className={styles.header_list}>
           <AppHeaderLink
-            isActive={true}
             icon='burger'
             header={'Конструктор'}
             key={'constructor-link'}
+            to={'/'}
           />
           <AppHeaderLink
             icon='list'
             header={'Лента заказов'}
             key={'order-link'}
+            to={'/order-list'}
           />
           <AppHeaderLink
             icon='logo'
             key={'logo-link'}
+            to={'/'}
           />
           <AppHeaderLink
             icon='profile'
             position="right"
             header={'Личный кабинет'}
             key={'profile-link'}
+            to={'/profile'}
           />
         </ul>
       </nav>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {BrowserRouter as Router, Routes, Route, Link, Switch} from "react-router-dom";
 import Home from "../../pages/home/home";
 import styles from "../app/app.module.css";
@@ -8,37 +8,37 @@ import {ForgotPassword} from "../../pages/forgot-password/forgot-password";
 import {ResetPassword} from "../../pages/reset-password/reset-password";
 import {Profile} from "../../pages/profile/profile";
 import {Ingredient} from "../../pages/ingredient/ingredient";
+import ProtectedRoute from "../protected-route/protected-route";
+import {checkAuthToken} from "../../utils/api";
 
 function App() {
-
-
-    return (
-        <div className={styles.app}>
-            <Router basename={"/"}>
-              <Switch>
+    return (<div className={styles.app}>
+        <Router basename={"/"}>
+            <Switch>
                 <Route path={"/login"}>
-                  <Login />
+                    <Login/>
                 </Route>
                 <Route path={"/register"}>
-                  <Register />
+                    <Register/>
                 </Route>
                 <Route path={"/forgot-password"}>
-                  <ForgotPassword />
+                    <ForgotPassword/>
                 </Route>
                 <Route path={"/reset-password"}>
-                  <ResetPassword />
+                    <ResetPassword/>
                 </Route>
-                  <Route path={"/profile"}>
-                      <Profile />
-                  </Route>
-                  <Route path={"/ingredient/:id"} component={Ingredient}/>
+                <ProtectedRoute path={"/profile"}
+                                component={Profile}
+                                isAuth={checkAuthToken()}
+                                redirectTo={"/login"}/>
+                <Route path={"/ingredient/:id"}
+                       component={Ingredient}/>
                 <Route path="/">
-                  <Home />
+                    <Home/>
                 </Route>
-              </Switch>
-            </Router>
-        </div>
-    );
+            </Switch>
+        </Router>
+    </div>);
 }
 
 export default App;

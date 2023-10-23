@@ -31,7 +31,6 @@ export default function BurgerConstructor() {
         return ingredients.reduce((accumulator, ingredient) => accumulator + ingredient.price, bun.price * 2);
     }, [ingredients, bun]);
 
-
     const [, ref] = useDrop({
         accept: ['ingredient', 'bun'],
         drop: (item) => {
@@ -59,10 +58,11 @@ export default function BurgerConstructor() {
         }
     });
 
-    const handleOrderClick =  () => {
+    const handleOrderClick = () => {
         try {
             const itemsToOrder = [...ingredients.map(item => item._id), bun._id, bun._id];
-            dispatch(fetchOrder(itemsToOrder)).then(
+            dispatch(
+                fetchOrder(itemsToOrder)).then(
                 () => {
                     dispatch(resetIngredients());
                     dispatch(resetAllIngredientAmount());
@@ -127,7 +127,9 @@ export default function BurgerConstructor() {
                         />
                     </> :
                     <div className={styles.add_bun_container}>
-                        <p className="text text_color_inactive text_type_main-default">Пожалуйста, перенесите сюда булку и ингредиенты для создания заказа</p>
+                        <p className="text text_color_inactive text_type_main-default">Пожалуйста, перенесите сюда булку
+                                                                                       и ингредиенты для создания
+                                                                                       заказа</p>
                     </div>
             }
 
@@ -135,7 +137,7 @@ export default function BurgerConstructor() {
                 {!isNaN(memorizedSum) && (
                     <>
                         <h2 className={`text text_type_digits-medium`}>{memorizedSum}</h2>
-                        <CurrencyIcon type={"primary"} />
+                        <CurrencyIcon type={"primary"}/>
                     </>
                 )}
                 <Button

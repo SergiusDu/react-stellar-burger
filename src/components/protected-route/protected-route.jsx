@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 
-function ProtectedRoute({ component: Component, isAuth, ...rest }) {
+function ProtectedRoute({ component: Component, isAuth, redirectTo, ...rest }) {
     return (
         <Route
             {...rest}
@@ -9,7 +9,7 @@ function ProtectedRoute({ component: Component, isAuth, ...rest }) {
                 isAuth ? (
                     <Component {...props} />
                 ) : (
-                    <Redirect to="/login" />
+                    <Redirect to={redirectTo} />
                 )
             }
         />

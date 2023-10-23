@@ -16,4 +16,19 @@ export function setCookie(cname, cvalue, maxAge) {
     document.cookie = `${cname}=${cvalue}; max-age=${maxAge};`
 }
 
+export function getCookieByName(cookieName) {
+    const allCookies = document.cookie.split('; ');
+    for (let i = 0; i < allCookies.length; i++) {
+        const [name, value] = allCookies[i].split('=');
+        if (name === cookieName) {
+            return value;
+        }
+    }
+    return null;
+}
+
+export function checkAuthToken() {
+    return !!getCookieByName('accessToken');
+}
+
 export default fetchAPI;

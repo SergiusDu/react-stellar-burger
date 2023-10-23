@@ -6,7 +6,6 @@ import {useSelector} from "react-redux";
 
 export default function OrderDetails() {
     const orderNumber = useSelector(selectOrderNumber)
-
     return (
         <>
             <header className={`mt-30 ${styles.order_header}`}>
