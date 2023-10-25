@@ -34,9 +34,9 @@ export const loginSlice = createSlice({
                 state.password = '';
             })
             .addCase(authorizeUser.rejected, (state, action) => {
-            })
+            });
     }
-})
+});
 
 export const {setLoginEmailInputValue, setLoginEmailInputError, setLoginPasswordInputValue} = loginSlice.actions;
 export const loginEmailInputValue = state => state.loginData.email;

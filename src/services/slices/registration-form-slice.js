@@ -1,7 +1,9 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import fetchAPI, {setCookie} from "../../utils/api";
 
-export const registerUser = createAsyncThunk('registrationData/register-user', async (userCredentials, {rejectWithValue}) => {
+export const registerUser = createAsyncThunk(
+    'registrationData/register-user',
+    async (userCredentials, {rejectWithValue}) => {
     const registerUrl = 'https://norma.nomoreparties.space/api/auth/register'
     const response = await fetchAPI(registerUrl, 'POST', userCredentials);
     if (response.success) {

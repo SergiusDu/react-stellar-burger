@@ -6,6 +6,7 @@ import {loginSlice} from "../slices/login-form-slice";
 import {registrationSlice} from "../slices/registration-form-slice";
 import {forgotPasswordFormSlice} from "../slices/forgot-password-slice";
 import {resetPasswordFormSlice} from "../slices/reset-password-slice";
+import {profileSlice} from "../slices/profile-slice";
 
 
 export const store = configureStore({
@@ -16,7 +17,8 @@ export const store = configureStore({
     loginData: loginSlice.reducer,
     registrationFormData: registrationSlice.reducer,
     forgotPasswordForm: forgotPasswordFormSlice.reducer,
-    resetPasswordForm: resetPasswordFormSlice.reducer
+    resetPasswordForm: resetPasswordFormSlice.reducer,
+    profilePage: profileSlice.reducer
   }
 })
 

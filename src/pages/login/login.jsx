@@ -20,7 +20,7 @@ import {
 } from "../../services/slices/login-form-slice";
 import {setLoginEmailInputError} from "../../services/slices/login-form-slice";
 
-export default function Login() {
+export default function Login({successRedirect = '/'}) {
     const dispatch = useDispatch();
     const emailInputValue = useSelector(loginEmailInputValue);
     const emailInputErrorMessage = useSelector(loginEmailInputErrorMessage);
@@ -35,7 +35,7 @@ export default function Login() {
         }
         const response = await dispatch(authorizeUser(loginCredentials));
         if(response.payload.success) {
-            history.push('/')
+            history.push(successRedirect)
         }
         console.log(response);
     }
@@ -74,10 +74,10 @@ export default function Login() {
                 </Form>
                 <FormNavigation extraClass="mt-20">
                     <FormNavigationLink text="Вы - новый пользователь?"
-                                        link="/registration"
+                                        link="/register"
                                         linkName="Зарегистрироваться"/>
                     <FormNavigationLink text="Забыли пароль?"
-                                        link="/reset-password"
+                                        link="/forgot-password"
                                         linkName="Восстановить пароль"/>
                 </FormNavigation>
             </FormLayout>

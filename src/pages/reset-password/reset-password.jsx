@@ -12,10 +12,11 @@ import {
     selectResetPasswordNewPasswordErrorMessage,
     selectResetPasswordNewPasswordInput,
     selectResetPasswordTokenInput,
-    selectResetPasswordTokenInputErrorMessage,
+    selectResetPasswordTokenInputErrorMessage, serverResponseErrorMessage,
     setResetPasswordNewPasswordErrorMessage,
     setResetPasswordNewPasswordInput,
-    setResetPasswordTokenInput,
+    setResetPasswordPageAvailability,
+    setResetPasswordTokenInput, setServerResponseErrorMessage,
     setTokenErrorMessage,
 } from "../../services/slices/reset-password-slice";
 
@@ -25,21 +26,29 @@ export function ResetPassword() {
     const newPasswordInputErrorMessage = useSelector(selectResetPasswordNewPasswordErrorMessage);
     const tokenInputValue = useSelector(selectResetPasswordTokenInput);
     const tokenErrorMessage = useSelector(selectResetPasswordTokenInputErrorMessage);
+    const serverError = useSelector(serverResponseErrorMessage);
+
+    async function handleResetPasswordSubmit(e) {
+        e.preventDefault();
+        const newPasswordAndToken = {
+            password: newPasswordInputValue, token: tokenInputValue
+        };
+        const response = await dispatch(resetPassword(newPasswordAndToken));
+        if (response.payload.success) {
+            dispatch(setServerResponseErrorMessage(''));
+            dispatch(setResetPasswordPageAvailability(false));
+        } else {
+            dispatch(setServerResponseErrorMessage(response.payload.message));
+        }
+    }
+
+
     return (<>
         <AppHeader/>
         <FormLayout>
-            <Form onSubmit={async (e) => {
-                e.preventDefault();
-                const newPasswordAndToken = {
-                    password: newPasswordInputValue,
-                    token: tokenInputValue
-                }
-                const response = await dispatch(resetPassword(newPasswordAndToken));
-                console.log(response);
-                console.log(response.payload);
-            }}>
+            <Form onSubmit={handleResetPasswordSubmit}>
                 <Fieldset legend="Восстановление пароля">
-                    <PasswordInput extraClass={`${!!newPasswordInputErrorMessage ? null : 'mb-6'} mt-6`}
+                    <PasswordInput extraClass={`${newPasswordInputErrorMessage ? null : 'mb-6'} mt-6`}
                                    value={newPasswordInputValue}
                                    onChange={e => {
                                        dispatch(setResetPasswordNewPasswordInput(e.target.value));
@@ -69,6 +78,7 @@ export function ResetPassword() {
                     <Button htmlType="submit">Восстановить</Button>
                 </Fieldset>
             </Form>
+            {serverError && <p className="mt-6 text text_color_error text_type_main-default">{serverError}</p>}
             <FormNavigation extraClass="mt-20">
                 <FormNavigationLink text="Вспомнили пароль?"
                                     link="/login"

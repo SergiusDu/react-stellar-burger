@@ -32,7 +32,5 @@ export function Profile() {
                 </Fieldset>
             </Form>
         </ProfileLayout>
-
-
     </>)
 }

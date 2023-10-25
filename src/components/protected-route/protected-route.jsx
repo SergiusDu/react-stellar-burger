@@ -1,19 +1,19 @@
 import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import {Route, Redirect} from 'react-router-dom';
 
-function ProtectedRoute({ component: Component, isAuth, redirectTo, ...rest }) {
-    return (
-        <Route
-            {...rest}
-            render={props =>
-                isAuth ? (
-                    <Component {...props} />
-                ) : (
-                    <Redirect to={redirectTo} />
-                )
-            }
-        />
-    );
+function ProtectedRoute({component: Component, authFunction, redirectTo, ...rest}) {
+  return (
+    <Route
+      {...rest}
+      render={props =>
+        authFunction() ? (
+          <Component {...props} />
+        ) : (
+          <Redirect to={redirectTo}/>
+        )
+      }
+    />
+  );
 }
 
 export default ProtectedRoute;

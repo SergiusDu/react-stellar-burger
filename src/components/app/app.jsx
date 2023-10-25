@@ -10,8 +10,11 @@ import {Profile} from "../../pages/profile/profile";
 import {Ingredient} from "../../pages/ingredient/ingredient";
 import ProtectedRoute from "../protected-route/protected-route";
 import {checkAuthToken} from "../../utils/api";
+import {useSelector} from "react-redux";
+import {resetPasswordPageAvailability} from "../../services/slices/reset-password-slice";
 
 function App() {
+    const resetPasswordAvailability = useSelector(resetPasswordPageAvailability);
     return (<div className={styles.app}>
         <Router basename={"/"}>
             <Switch>
@@ -24,12 +27,13 @@ function App() {
                 <Route path={"/forgot-password"}>
                     <ForgotPassword/>
                 </Route>
-                <Route path={"/reset-password"}>
-                    <ResetPassword/>
-                </Route>
                 <ProtectedRoute path={"/profile"}
                                 component={Profile}
-                                isAuth={checkAuthToken()}
+                                authFunction={checkAuthToken}
+                                redirectTo={"/login"}/>
+                <ProtectedRoute path={"/reset-password"}
+                                component={ResetPassword}
+                                isAuth={resetPasswordAvailability}
                                 redirectTo={"/login"}/>
                 <Route path={"/ingredient/:id"}
                        component={Ingredient}/>

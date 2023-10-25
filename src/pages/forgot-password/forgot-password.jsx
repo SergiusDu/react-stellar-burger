@@ -13,25 +13,31 @@ import {
     setForgotPasswordEmailInput, setForgotPasswordEmailInputError
 } from "../../services/slices/forgot-password-slice";
 import {useHistory} from "react-router-dom";
+import {setResetPasswordPageAvailability} from "../../services/slices/reset-password-slice";
 
 export function ForgotPassword() {
     const dispatch = useDispatch();
     const history = useHistory();
     const emailInputValue = useSelector(selectForgotPasswordEmailInput);
     const emailInputError = useSelector(selectForgotPasswordEmailInputError);
+    async function handleSubmit(e) {
+        e.preventDefault();
+        const userEmail = {
+            email: emailInputValue
+        };
+        const response = await dispatch(sendResetPasswordEmail(userEmail));
+        console.log(response.payload);
+        if(response.payload.success) {
+            dispatch(setResetPasswordPageAvailability(true));
+            history.push('reset-password');
+        } else {
+            console.log(response.payload);
+        }
+    }
     return (<>
         <AppHeader/>
         <FormLayout>
-            <Form onSubmit={async (e) => {
-                e.preventDefault();
-                const userEmail = {
-                    email: emailInputValue
-                }
-                const response = await dispatch(sendResetPasswordEmail(userEmail));
-                if(response.payload.success) {
-                    history.push('reset-password');
-                }
-            }}>
+            <Form onSubmit={handleSubmit}>
                 <Fieldset legend="Восстановление пароля">
                     <EmailInput extraClass={`${!!emailInputError ? null : 'mb-6'} mt-6`}
                                 value={emailInputValue}
