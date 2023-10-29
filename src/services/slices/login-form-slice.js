@@ -14,7 +14,7 @@ export const authorizeUser = createAsyncThunk('login/sendAuthorization', async (
 
 export const loginSlice = createSlice({
     name: 'loginData', initialState: {
-        isLoading: false, email: '', emailErrorMessage: '', password: '',
+        isLoading: false, email: '', emailErrorMessage: '', password: '', redirectAfterLogin: '/'
     }, reducers: {
         setLoginEmailInputValue(state, action) {
             state.email = action.payload
@@ -22,6 +22,9 @@ export const loginSlice = createSlice({
             state.emailErrorMessage = action.payload;
         }, setLoginPasswordInputValue(state, action) {
             state.password = action.payload;
+        },
+        setRedirectAfterLogin(state, action) {
+            state.redirectAfterLogin = action.payload;
         }
     }, extraReducers: (builder) => {
         builder
@@ -38,7 +41,11 @@ export const loginSlice = createSlice({
     }
 });
 
-export const {setLoginEmailInputValue, setLoginEmailInputError, setLoginPasswordInputValue} = loginSlice.actions;
+export const {setLoginEmailInputValue,
+                 setLoginEmailInputError,
+                 setLoginPasswordInputValue,
+                 setRedirectAfterLogin} = loginSlice.actions;
 export const loginEmailInputValue = state => state.loginData.email;
 export const loginEmailInputErrorMessage = state => state.loginData.emailErrorMessage;
 export const loginPasswordInputValue = state => state.loginData.password;
+export const redirectAfterLoginSuccess = state => state.loginData.redirectAfterLogin;

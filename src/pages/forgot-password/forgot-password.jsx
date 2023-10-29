@@ -22,14 +22,10 @@ export function ForgotPassword() {
     const emailInputError = useSelector(selectForgotPasswordEmailInputError);
     async function handleSubmit(e) {
         e.preventDefault();
-        const userEmail = {
-            email: emailInputValue
-        };
-        const response = await dispatch(sendResetPasswordEmail(userEmail));
-        console.log(response.payload);
+        const response = await dispatch(sendResetPasswordEmail(emailInputValue));
         if(response.payload.success) {
-            dispatch(setResetPasswordPageAvailability(true));
-            history.push('reset-password');
+            await dispatch(setResetPasswordPageAvailability(true));
+            history.push('/reset-password');
         } else {
             console.log(response.payload);
         }
