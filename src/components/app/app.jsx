@@ -13,6 +13,13 @@ import {checkAuthToken} from "../../utils/api";
 import {useDispatch, useSelector} from "react-redux";
 import {resetPasswordPageAvailability} from "../../services/slices/reset-password-slice";
 import {profilePageAvailability, setProfilePageAvailable} from "../../services/slices/profile-slice";
+import {
+    FORGOT_PASSWORD_PAGE_PATH,
+    INGREDIENT_BY_ID_PAGE_PATH,
+    LOGIN_PAGE_PATH,
+    MAIN_PAGE_PATH,
+    PROFILE_PAGE_PATH, REGISTER_PAGE_PATH, RESET_PASSWORD_PAGE_PATH,
+} from '../../utils/constants';
 
 function App() {
     const resetPasswordAvailability = useSelector(resetPasswordPageAvailability);
@@ -23,39 +30,38 @@ function App() {
     }, [dispatch])
     return (<div className={styles.app}>
         <Router basename={"/"}>
-            <Switch >
+            <Switch>
                 <ProtectedRoute
-                    path={"/login"}
+                    path={LOGIN_PAGE_PATH}
                     component={Login}
-                    authFunction={false}
-                    successRedirectPath={'/'}
-                    failedRedirectPath={'/'}
+                    authFunction={!profileAvailability}
+                    failedRedirectPath={MAIN_PAGE_PATH}
                 />
-                <Route path={"/register"}>
+                <Route path={REGISTER_PAGE_PATH}>
                     <Register />
                 </Route >
-                <Route path={"/forgot-password"}>
+                <Route path={FORGOT_PASSWORD_PAGE_PATH}>
                     <ForgotPassword />
                 </Route >
                 <ProtectedRoute
-                    path={"/profile"}
+                    path={PROFILE_PAGE_PATH}
                     component={Profile}
                     authFunction={profileAvailability}
-                    successRedirectPath={'/profile'}
-                    failedRedirectPath={'/login'}
+                    successRedirectPath={PROFILE_PAGE_PATH}
+                    failedRedirectPath={`${LOGIN_PAGE_PATH}?redirectTo=${encodeURIComponent(PROFILE_PAGE_PATH)}`}
                 />
                 <ProtectedRoute
-                    path={"/reset-password"}
+                    path={RESET_PASSWORD_PAGE_PATH}
                     component={ResetPassword}
                     authFunction={resetPasswordAvailability}
-                    successRedirectPath={'/reset-password'}
-                    failedRedirectPath={'/login'}
+                    successRedirectPath={RESET_PASSWORD_PAGE_PATH}
+                    failedRedirectPath={LOGIN_PAGE_PATH}
                 />
                 <Route
-                    path={"/ingredient/:id"}
+                    path={INGREDIENT_BY_ID_PAGE_PATH}
                     component={Ingredient}
                 />
-                <Route path="/">
+                <Route exact path="/">
                     <Home />
                 </Route >
             </Switch >

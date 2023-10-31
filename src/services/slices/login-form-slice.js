@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {BASE_URL} from "../../utils/types";
 import fetchAPI, {setCookie} from "../../utils/api";
+import {ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME} from '../../utils/constants';
 
 export const authorizeUser = createAsyncThunk('login/sendAuthorization', async (userData, {rejectWithValue}) => {
     const response = await fetchAPI(`https://norma.nomoreparties.space/api/auth/login`, 'POST', userData);
@@ -31,8 +32,8 @@ export const loginSlice = createSlice({
             .addCase(authorizeUser.pending, (state) => {
             })
             .addCase(authorizeUser.fulfilled, (state, action) => {
-                setCookie('accessToken', action.payload.accessToken, 20*60);
-                setCookie('refreshToken', action.payload.refreshToken, 20*60);
+                setCookie(ACCESS_TOKEN_NAME, action.payload.accessToken, 20*60);
+                setCookie(REFRESH_TOKEN_NAME, action.payload.refreshToken, 60*60*2);
                 state.email = '';
                 state.password = '';
             })

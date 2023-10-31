@@ -12,8 +12,8 @@ async function fetchAPI(url, method, bodyData = null, headers = {}) {
   return data.data || data;
 }
 
-export function setCookie(cname, cvalue, maxAge) {
-  document.cookie = `${cname}=${cvalue}; max-age=${maxAge};`
+export function setCookie(cookieName, cookieValue, maxAge) {
+  document.cookie = `${cookieName}=${cookieValue}; max-age=${maxAge};`
 }
 
 export function getCookieByName(cookieName) {
@@ -25,6 +25,10 @@ export function getCookieByName(cookieName) {
     }
   }
   return null;
+}
+
+export function deleteCookie(cookieName) {
+  document.cookie = `${cookieName}=; max-age=0; path=/`;
 }
 
 export function checkAuthToken() {
