@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import styles from "./app-header-link.module.css";
 import {BurgerIcon, ListIcon, Logo, ProfileIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import PropTypes from 'prop-types';
-import {Link, useLocation} from "react-router-dom";
+import {Link, NavLink, useLocation} from 'react-router-dom';
 
 export default function AppHeaderLink({icon, position, header, to}) {
     const ICONS = {
@@ -22,13 +22,12 @@ export default function AppHeaderLink({icon, position, header, to}) {
         }
     }, [to, location]);
     return (<li className={className}>
-            <Link to={to}
-                  className={styles.link}
-                  role="button">
+            <NavLink to={to}
+                  className={styles.link}>
                 <IconComponent type={isActive ? 'primary' : 'secondary'}/>
                 {header &&
                     <h2 className={`ml-2 text text_type_main-default ${isActive ? 'text_color_primary' : 'text_color_inactive'}`}>{header}</h2>}
-            </Link>
+            </NavLink>
         </li>);
 }
 

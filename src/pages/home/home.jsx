@@ -11,11 +11,11 @@ import {useDispatch, useSelector} from "react-redux";
 import {fetchIngredients, resetSelectedIngredient} from "../../services/slices/ingredient-slice";
 import {resetOrderNumber, selectOrderNumber} from "../../services/slices/order-details-slice";
 import styles from "../home/home.module.css";
+import {useHistory, useLocation} from 'react-router-dom';
 
 export default function Home() {
   const isLoading = useSelector((state) => state.ingredient.isLoading);
   const dispatch = useDispatch();
-
   useEffect(() => {
     dispatch(fetchIngredients());
     // eslint-disable-next-line react-hooks/exhaustive-deps

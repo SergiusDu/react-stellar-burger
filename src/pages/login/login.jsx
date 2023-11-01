@@ -1,5 +1,5 @@
 import AppHeader from '../../components/app-header/app-header';
-import React from 'react';
+import React, {useEffect} from 'react';
 import styles from './login.module.css';
 import {Button, EmailInput, PasswordInput} from '@ya.praktikum/react-developer-burger-ui-components';
 import {Form} from '../../components/form/form';
@@ -14,12 +14,14 @@ import {
     loginEmailInputErrorMessage,
     loginEmailInputValue,
     loginPasswordInputValue,
-    redirectAfterLoginSuccess,
     setLoginEmailInputError,
     setLoginEmailInputValue,
     setLoginPasswordInputValue,
 } from '../../services/slices/login-form-slice';
-import {setProfilePageAvailable} from '../../services/slices/profile-slice';
+import {
+    refreshAccessToken,
+    setProfilePageAvailable,
+} from '../../services/slices/profile-slice';
 
 export default function Login() {
     const dispatch = useDispatch();
@@ -28,10 +30,12 @@ export default function Login() {
     const passwordInputValue = useSelector(loginPasswordInputValue);
     const history = useHistory();
     const location = useLocation();
-    const redirectAfterSuccess = useSelector(redirectAfterLoginSuccess);
     const queryParams = new URLSearchParams(location.search);
     const redirectTo = queryParams.get('redirectTo');
-    console.log(redirectTo);
+    useEffect(() => {
+        console.log(history);
+        console.log(location);
+    }, [history, location]);
     async function loginSubmitHandler(e) {
         e.preventDefault();
         const loginCredentials = {

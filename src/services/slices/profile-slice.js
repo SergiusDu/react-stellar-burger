@@ -1,34 +1,72 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import fetchAPI, {
   checkAuthToken,
-  deleteCookie,
-  getCookieByName,
+  deleteCookie, getAccessTokenFromCookies,
+  getCookieByName, getRefreshTokenFromCookies,
+  saveAccessTokenInCookies,
+  saveRefreshTokenInCookies,
 } from '../../utils/api';
 import {
-  ACCESS_TOKEN_NAME, GET_METHOD,
+  ACCESS_TOKEN_NAME,
+  CHANGE_USER_DATA_ENDPOINT,
+  GET_METHOD,
   LOGOUT_URL,
+  PATCH_METHOD,
   POST_METHOD,
+  REFRESH_TOKEN_ENDPOINT,
   REFRESH_TOKEN_NAME,
 } from '../../utils/constants';
 
-export const logoutUser = createAsyncThunk('profile/logoutUser',
-  async (arg, {rejectedWithValue}) => {
-    const refreshToken = getCookieByName(REFRESH_TOKEN_NAME);
+export const refreshAccessToken = createAsyncThunk('profile/refreshAccessToken',
+  async (args, {rejectedWithValue}) => {
+    const refreshToken = getRefreshTokenFromCookies();
     if (refreshToken) {
-      const requestBody = {
-        token: refreshToken,
-      };
-      const response = await fetchAPI(LOGOUT_URL, POST_METHOD, requestBody);
+      const headers = {token: refreshToken};
+      const response = await fetchAPI(
+        REFRESH_TOKEN_ENDPOINT, POST_METHOD, headers);
       if (response && response.success) {
-        deleteCookie(ACCESS_TOKEN_NAME);
+        saveAccessTokenInCookies(response[ACCESS_TOKEN_NAME]);
+        saveRefreshTokenInCookies(response[REFRESH_TOKEN_NAME]);
       }
     }
   },
 );
+export const logoutUser = createAsyncThunk('profile/logoutUser',
+  async (args, {rejectedWithValue}) => {
+    const refreshToken = getRefreshTokenFromCookies();
+    if (refreshToken) {
+      const bodyData = {
+        token: refreshToken,
+      };
+      const response = await fetchAPI(LOGOUT_URL, POST_METHOD, bodyData, null);
+      if (response && response.success) {
+        deleteCookie(ACCESS_TOKEN_NAME);
+        deleteCookie(REFRESH_TOKEN_NAME);
+      }
+    }
+  },
+);
+export const changeUserData = createAsyncThunk('profile/changeUserData',
+  async (userData, {rejectedWithValue}) => {
+    const accessToken = getAccessTokenFromCookies();
+    if(accessToken) {
+      const authorizationHeader = {
+        Authorization: accessToken
+      };
+      const response = await fetchAPI(
+        CHANGE_USER_DATA_ENDPOINT, PATCH_METHOD, userData, authorizationHeader);
+      return {
+        name: response.user.name,
+        login: response.user.email
+      }
+    }
+  },
+
+);
 export const getUserData = createAsyncThunk('profile/getUserData',
   async (ags, {rejectedWithValue}) => {
     const getUserDataUrl = 'https://norma.nomoreparties.space/api/auth/user';
-    const authToken = getCookieByName(ACCESS_TOKEN_NAME);
+    const authToken = getAccessTokenFromCookies();
     if (authToken) {
       try {
         const response = await fetchAPI(getUserDataUrl, GET_METHOD, null,
@@ -90,6 +128,13 @@ export const profileSlice = createSlice({
       state.name = '';
       state.login = '';
       state.isProfilePageAvailable = false;
+    });
+    builder.addCase(changeUserData.fulfilled, (state, action) => {
+      console.log(action);
+      if (action.payload.user) {
+        state.name = action.payload.name;
+        state.login = action.payload.email;
+      }
     })
   },
 });

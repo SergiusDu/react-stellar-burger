@@ -5,11 +5,14 @@ import {useDrag} from "react-dnd";
 import {useDispatch} from "react-redux";
 import {setSelectedIngredient} from "../../../services/slices/ingredient-slice";
 import {ingredientShape} from "../../../utils/types";
+import {useHistory} from 'react-router-dom';
 
 export default function Ingredient({ ingredient }) {
   const dispatch = useDispatch();
+  const history = useHistory();
   const handleClick = useCallback(() => {
     dispatch(setSelectedIngredient(ingredient));
+    history.push(`/ingredient/${ingredient._id}`)
   }, [dispatch, ingredient]);
 
   const [, ref] = useDrag({
