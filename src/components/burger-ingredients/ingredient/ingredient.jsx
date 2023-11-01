@@ -3,16 +3,20 @@ import {Counter, CurrencyIcon} from "@ya.praktikum/react-developer-burger-ui-com
 import styles from "./ingredient.module.css";
 import {useDrag} from "react-dnd";
 import {useDispatch} from "react-redux";
-import {setSelectedIngredient} from "../../../services/slices/ingredient-slice";
+import {openModal, setSelectedIngredient} from '../../../services/slices/ingredient-slice';
 import {ingredientShape} from "../../../utils/types";
-import {useHistory} from 'react-router-dom';
+import {useHistory, useLocation} from 'react-router-dom';
 
 export default function Ingredient({ ingredient }) {
   const dispatch = useDispatch();
   const history = useHistory();
+  const location = useLocation();
   const handleClick = useCallback(() => {
     dispatch(setSelectedIngredient(ingredient));
-    history.push(`/ingredient/${ingredient._id}`)
+    dispatch(openModal())
+    history.push({
+      pathname: `/ingredient/${ingredient._id}`
+    })
   }, [dispatch, ingredient]);
 
   const [, ref] = useDrag({

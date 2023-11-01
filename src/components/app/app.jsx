@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {BrowserRouter as Router, Route, Switch, useLocation} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import Home from '../../pages/home/home';
 import styles from '../app/app.module.css';
 import Login from '../../pages/login/login';
@@ -22,62 +22,75 @@ import {
     RESET_PASSWORD_PAGE_PATH,
 } from '../../utils/constants';
 import {refreshTokensIfNeeded} from '../../utils/api';
+import IngredientDetails from '../ingredient-details/ingredient-details';
+import Modal from '../modal/modal';
+import {selectIsModalOpen} from '../../services/slices/ingredient-slice';
 
 function App() {
     const resetPasswordAvailability = useSelector(resetPasswordPageAvailability);
     const profileAvailability = useSelector(profilePageAvailability);
     const dispatch = useDispatch();
+    const isModalOpen = useSelector(selectIsModalOpen);
     useEffect(() => {
         dispatch(setProfilePageAvailable());
         refreshTokensIfNeeded(dispatch);
     }, [dispatch]);
 
-    return (<div className={styles.app}>
-            <Router basename={'/'}>
-                <Switch >
-                    <ProtectedRoute
-                        path={LOGIN_PAGE_PATH}
-                        component={Login}
-                        authFunction={!profileAvailability}
-                        failedRedirectPath={MAIN_PAGE_PATH}
-                    />
-                    <ProtectedRoute
-                        path={REGISTER_PAGE_PATH}
-                        component={Register}
-                        authFunction={!profileAvailability}
-                        failedRedirectPath={MAIN_PAGE_PATH}
-                    />
-                    <ProtectedRoute
-                        path={FORGOT_PASSWORD_PAGE_PATH}
-                        component={ForgotPassword}
-                        authFunction={!profileAvailability}
-                        failedRedirectPath={MAIN_PAGE_PATH}
-                    />
-                    <ProtectedRoute
-                        path={PROFILE_PAGE_PATH}
-                        component={Profile}
-                        authFunction={profileAvailability}
-                        failedRedirectPath={LOGIN_PAGE_PATH}
-                    />
-                    <ProtectedRoute
-                        path={RESET_PASSWORD_PAGE_PATH}
-                        component={ResetPassword}
-                        authFunction={resetPasswordAvailability}
-                        failedRedirectPath={FORGOT_PASSWORD_PAGE_PATH}
-                    />
-                    <Route
-                        path={INGREDIENT_BY_ID_PAGE_PATH}
-                        component={Ingredient}
-                    />
-                    <Route
-                        exact
-                        component={Home}
-                        path="/"
-                    />
 
-                </Switch >
-            </Router >
-        </div >);
+    return (<div className={styles.app}>
+        <Router basename={'/'}>
+            <Switch >
+                <ProtectedRoute
+                    path={LOGIN_PAGE_PATH}
+                    component={Login}
+                    authFunction={!profileAvailability}
+                    failedRedirectPath={MAIN_PAGE_PATH}
+                />
+                <ProtectedRoute
+                    path={REGISTER_PAGE_PATH}
+                    component={Register}
+                    authFunction={!profileAvailability}
+                    failedRedirectPath={MAIN_PAGE_PATH}
+                />
+                <ProtectedRoute
+                    path={FORGOT_PASSWORD_PAGE_PATH}
+                    component={ForgotPassword}
+                    authFunction={!profileAvailability}
+                    failedRedirectPath={MAIN_PAGE_PATH}
+                />
+                <ProtectedRoute
+                    path={PROFILE_PAGE_PATH}
+                    component={Profile}
+                    authFunction={profileAvailability}
+                    failedRedirectPath={LOGIN_PAGE_PATH}
+                />
+                <ProtectedRoute
+                    path={RESET_PASSWORD_PAGE_PATH}
+                    component={ResetPassword}
+                    authFunction={resetPasswordAvailability}
+                    failedRedirectPath={FORGOT_PASSWORD_PAGE_PATH}
+                />
+                <Route
+                    path={INGREDIENT_BY_ID_PAGE_PATH}
+                    render={({
+                                 match,
+                             }) => {
+                        if (isModalOpen) {
+                            return (<Home />);
+                        } else {
+                            return <Ingredient match={match} />;
+                        }
+                    }}
+                />
+                <Route
+                    exact
+                    component={Home}
+                    path="/"
+                />
+
+            </Switch >
+        </Router >
+    </div >);
 }
 
 export default App;
