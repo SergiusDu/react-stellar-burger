@@ -1,6 +1,6 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import fetchAPI, {
-  checkAuthToken,
+  checkAuthToken, clearCookies,
   deleteCookie, getAccessTokenFromCookies,
   getCookieByName, getRefreshTokenFromCookies,
   saveAccessTokenInCookies,
@@ -18,18 +18,30 @@ import {
 } from '../../utils/constants';
 
 export const refreshAccessToken = createAsyncThunk('profile/refreshAccessToken',
-  async (args, {rejectedWithValue}) => {
+  async (args, {rejectWithValue}) => {
     const refreshToken = getRefreshTokenFromCookies();
-    if (refreshToken) {
-      const headers = {token: refreshToken};
+    if (!refreshToken) {
+      return rejectWithValue('No refresh token available.');
+    }
+    try {
+      const headers = { token: refreshToken };
       const response = await fetchAPI(
-        REFRESH_TOKEN_ENDPOINT, POST_METHOD, headers);
+          REFRESH_TOKEN_ENDPOINT, POST_METHOD, headers
+      );
       if (response && response.success) {
         saveAccessTokenInCookies(response[ACCESS_TOKEN_NAME]);
         saveRefreshTokenInCookies(response[REFRESH_TOKEN_NAME]);
+        return response;
+      } else {
+        const error = response?.message || 'Failed to refresh access token.';
+        return rejectWithValue(error);
       }
+    } catch (error) {
+      // Очищаем токены, так как запрос на их обновление не удался
+      clearCookies([ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME]);
+      return rejectWithValue(error.message || 'An error occurred during fetching.');
     }
-  },
+  }
 );
 export const logoutUser = createAsyncThunk('profile/logoutUser',
   async (args, {rejectedWithValue}) => {

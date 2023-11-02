@@ -1,7 +1,12 @@
+import {BASE_URL} from './types';
+
 export const POST_METHOD = 'POST';
 export const GET_METHOD = 'GET';
 export const PATCH_METHOD = 'PATCH';
 
+export const DOMAIN = 'norma.nomoreparties.space';
+export const BASE_URL = `https://${DOMAIN}/api`;
+export const ORDER_URL = `${BASE_URL}/orders`
 export const MAIN_PAGE_PATH = '/'
 export const PROFILE_PAGE_PATH = '/profile';
 export const ORDER_LIST_PAGE_PATH = 'order-list';

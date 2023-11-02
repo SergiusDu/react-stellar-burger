@@ -1,12 +1,13 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {BASE_URL} from "../../utils/types";
 import fetchAPI from "../../utils/api";
+import {ORDER_URL, POST_METHOD} from '../../utils/constants';
 
-const ORDER_URL = `${BASE_URL}/orders`
+
 
 export const fetchOrder = createAsyncThunk('orderDetails/sendOrder', async (orderData, {rejectWithValue}) => {
     try {
-        const response = await fetchAPI(ORDER_URL, 'POST', {ingredients: orderData});
+        const response = await fetchAPI(ORDER_URL, POST_METHOD, {ingredients: orderData});
 
         if (response && response.order && response.order.number) {
             return response;

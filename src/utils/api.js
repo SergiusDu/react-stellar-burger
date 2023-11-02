@@ -69,6 +69,9 @@ export function deleteCookie(cookieName) {
   document.cookie = `${cookieName}=; max-age=0; path=/`;
 }
 
+export function clearCookies(cookieNames) {
+  cookieNames.forEach(cookieName => deleteCookie(cookieName));
+}
 export function checkAuthToken() {
   return !!getCookieByName('accessToken');
 }

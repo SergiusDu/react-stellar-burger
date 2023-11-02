@@ -7,7 +7,7 @@ import {ProfileNavigation} from '../../components/profile-navigation/profile-nav
 import {useDispatch, useSelector} from 'react-redux';
 import {
     changeUserData,
-    getUserData,
+    getUserData, refreshAccessToken,
     selectProfileLogin,
     selectProfileLoginInputError,
     selectProfileName,
