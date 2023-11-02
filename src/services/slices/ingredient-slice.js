@@ -1,6 +1,6 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import {BASE_URL} from '../../utils/types';
 import fetchAPI from '../../utils/api';
+import {BASE_URL} from '../../utils/constants';
 
 const DATA_URL = `${BASE_URL}/ingredients`;
 export const fetchIngredients = createAsyncThunk('ingredient/fetchIngredients', async (_, {rejectWithValue}) => {
