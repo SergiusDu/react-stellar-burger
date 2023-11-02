@@ -1,10 +1,13 @@
-import React from "react";
-import styles from "./form-layout.module.css"
+import React from 'react';
+import styles from './form-layout.module.css';
+import PropTypes from 'prop-types';
 
-export function FormLayout(props) {
-    return (
-        <main className={styles.layout}>
-            {props.children}
-        </main>
-    )
+export function FormLayout({children}) {
+    return (<main className={styles.layout}>
+            {children}
+        </main >);
 }
+
+FormLayout.propTypes = {
+    children: PropTypes.node.isRequired,
+};

@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from "react";
-import styles from "./app-header-link.module.css";
-import {BurgerIcon, ListIcon, Logo, ProfileIcon} from "@ya.praktikum/react-developer-burger-ui-components";
+import React, {useEffect, useState} from 'react';
+import styles from './app-header-link.module.css';
+import {BurgerIcon, ListIcon, Logo, ProfileIcon} from '@ya.praktikum/react-developer-burger-ui-components';
 import PropTypes from 'prop-types';
-import {Link, NavLink, useLocation} from 'react-router-dom';
+import {NavLink, useLocation} from 'react-router-dom';
 
 export default function AppHeaderLink({icon, position, header, to}) {
     const ICONS = {
@@ -34,6 +34,14 @@ export default function AppHeaderLink({icon, position, header, to}) {
 AppHeaderLink.propTypes = {
     icon: PropTypes.oneOf(['burger', 'logo', 'list', 'profile']).isRequired,
     position: PropTypes.oneOf(['right']),
-    isActive: PropTypes.bool,
+    to: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.shape({
+            pathname: PropTypes.string,
+            search: PropTypes.string,
+            hash: PropTypes.string,
+            state: PropTypes.any
+        })
+    ]).isRequired,
     header: PropTypes.string
 };

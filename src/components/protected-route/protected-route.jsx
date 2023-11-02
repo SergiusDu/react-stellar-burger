@@ -1,11 +1,10 @@
-import React, {useEffect} from 'react';
-import {Redirect, Route, useHistory, useLocation} from 'react-router-dom';
-import {useDispatch} from 'react-redux';
-import {setRedirectAfterLogin} from '../../services/slices/login-form-slice';
+import React from 'react';
+import {Redirect, Route, useLocation} from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 function ProtectedRoute({
   component: Component,
-  authFunction,
+  isAuth,
   failedRedirectPath,
   ...rest
 }) {
@@ -13,7 +12,7 @@ function ProtectedRoute({
   return (
     <Route
       {...rest}
-      render={props => authFunction ?
+      render={props => isAuth ?
         (
           <Component {...props} />
         ) :
@@ -29,3 +28,9 @@ function ProtectedRoute({
 }
 
 export default ProtectedRoute;
+
+ProtectedRoute.propTypes = {
+    component: PropTypes.elementType.isRequired,
+    isAuth: PropTypes.bool.isRequired,
+    failedRedirectPath: PropTypes.string.isRequired
+};

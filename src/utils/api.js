@@ -29,13 +29,9 @@ export function refreshTokensIfNeeded(dispatch) {
 }
 export function createUrlPathWithParams(baseUrl, params) {
   const searchParams = new URLSearchParams();
-
-  // Добавление каждого параметра в строку запроса
   for (const [key, value] of Object.entries(params)) {
     searchParams.append(key, value);
   }
-
-  // Возвращение итогового URL с прикрепленными параметрами запроса
   return `${baseUrl}?${searchParams.toString()}`;
 }
 export function setCookie(cookieName, cookieValue, maxAge) {

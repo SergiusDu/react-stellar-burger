@@ -22,8 +22,6 @@ import {
     RESET_PASSWORD_PAGE_PATH,
 } from '../../utils/constants';
 import {refreshTokensIfNeeded} from '../../utils/api';
-import IngredientDetails from '../ingredient-details/ingredient-details';
-import Modal from '../modal/modal';
 import {selectIsModalOpen} from '../../services/slices/ingredient-slice';
 
 function App() {
@@ -43,31 +41,31 @@ function App() {
                 <ProtectedRoute
                     path={LOGIN_PAGE_PATH}
                     component={Login}
-                    authFunction={!profileAvailability}
+                    isAuth={!profileAvailability}
                     failedRedirectPath={MAIN_PAGE_PATH}
                 />
                 <ProtectedRoute
                     path={REGISTER_PAGE_PATH}
                     component={Register}
-                    authFunction={!profileAvailability}
+                    isAuth={!profileAvailability}
                     failedRedirectPath={MAIN_PAGE_PATH}
                 />
                 <ProtectedRoute
                     path={FORGOT_PASSWORD_PAGE_PATH}
                     component={ForgotPassword}
-                    authFunction={!profileAvailability}
+                    isAuth={!profileAvailability}
                     failedRedirectPath={MAIN_PAGE_PATH}
                 />
                 <ProtectedRoute
                     path={PROFILE_PAGE_PATH}
                     component={Profile}
-                    authFunction={profileAvailability}
+                    isAuth={profileAvailability}
                     failedRedirectPath={LOGIN_PAGE_PATH}
                 />
                 <ProtectedRoute
                     path={RESET_PASSWORD_PAGE_PATH}
                     component={ResetPassword}
-                    authFunction={resetPasswordAvailability}
+                    isAuth={resetPasswordAvailability}
                     failedRedirectPath={FORGOT_PASSWORD_PAGE_PATH}
                 />
                 <Route

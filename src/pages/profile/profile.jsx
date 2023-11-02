@@ -7,7 +7,7 @@ import {ProfileNavigation} from '../../components/profile-navigation/profile-nav
 import {useDispatch, useSelector} from 'react-redux';
 import {
     changeUserData,
-    getUserData, refreshAccessToken,
+    getUserData,
     selectProfileLogin,
     selectProfileLoginInputError,
     selectProfileName,
@@ -49,7 +49,10 @@ export function Profile() {
         refreshTokensIfNeeded(dispatch);
         dispatch(changeUserData(userData));
     }
-
+    function handleReset(e) {
+        e.preventDefault();
+        dispatch(getUserData())
+    }
     return (<>
         <AppHeader />
         <ProfileLayout >
@@ -101,7 +104,7 @@ export function Profile() {
                     />
                 </Fieldset >
                 <ProfileFormButtonLayout>
-                    <Button type="secondary" htmlType="reset">Отмена</Button>
+                    <Button type="secondary" htmlType="reset" onClick={handleReset}>Отмена</Button>
                     <Button htmlType="submit">Сохранить</Button>
                 </ProfileFormButtonLayout>
 
