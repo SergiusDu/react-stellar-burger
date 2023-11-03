@@ -1,4 +1,3 @@
-import AppHeader from '../../components/app-header/app-header';
 import React from 'react';
 import styles from './login.module.css';
 import {Button, EmailInput, PasswordInput} from '@ya.praktikum/react-developer-burger-ui-components';
@@ -45,54 +44,51 @@ export default function Login() {
         }
     }
 
-    return (<>
-        <AppHeader />
-        <main className={styles.main_layout}>
-            <FormLayout >
-                <Form onSubmit={loginSubmitHandler}>
-                    <Fieldset legend="Вход">
-                        <EmailInput
-                            extraClass={`${emailInputErrorMessage ? null : 'mb-6'} mt-6`}
-                            value={emailInputValue}
-                            onChange={e => {
-                                dispatch(setLoginEmailInputValue(e.target.value));
-                                dispatch(setLoginEmailInputError(e.target.validationMessage));
-                            }}
-                            minLength={6}
-                            error={!!emailInputErrorMessage}
-                            errorText={emailInputErrorMessage}
-                            autoComplete="email"
-                            name="email"
-                            required
-                        />
-                        <PasswordInput
-                            extraClass="mb-6"
-                            value={passwordInputValue}
-                            onChange={e => {
-                                dispatch(setLoginPasswordInputValue(e.target.value));
-                            }}
-                            autoComplete="current-password"
-                            name="password"
-                            min={6}
-                            required
-                        />
-                        <Button htmlType="submit">Войти</Button >
-                    </Fieldset >
-                </Form >
-                <FormNavigation extraClass="mt-20">
-                    <FormNavigationLink
-                        text="Вы - новый пользователь?"
-                        link="/register"
-                        linkName="Зарегистрироваться"
+    return (<main className={styles.main_layout}>
+        <FormLayout >
+            <Form onSubmit={loginSubmitHandler}>
+                <Fieldset legend="Вход">
+                    <EmailInput
+                        extraClass={`${emailInputErrorMessage ? null : 'mb-6'} mt-6`}
+                        value={emailInputValue}
+                        onChange={e => {
+                            dispatch(setLoginEmailInputValue(e.target.value));
+                            dispatch(setLoginEmailInputError(e.target.validationMessage));
+                        }}
+                        minLength={6}
+                        error={!!emailInputErrorMessage}
+                        errorText={emailInputErrorMessage}
+                        autoComplete="email"
+                        name="email"
+                        required
                     />
-                    <FormNavigationLink
-                        text="Забыли пароль?"
-                        link="/forgot-password"
-                        linkName="Восстановить пароль"
+                    <PasswordInput
+                        extraClass="mb-6"
+                        value={passwordInputValue}
+                        onChange={e => {
+                            dispatch(setLoginPasswordInputValue(e.target.value));
+                        }}
+                        autoComplete="current-password"
+                        name="password"
+                        min={6}
+                        required
                     />
-                </FormNavigation >
-            </FormLayout >
-        </main >
-    </>);
+                    <Button htmlType="submit">Войти</Button >
+                </Fieldset >
+            </Form >
+            <FormNavigation extraClass="mt-20">
+                <FormNavigationLink
+                    text="Вы - новый пользователь?"
+                    link="/register"
+                    linkName="Зарегистрироваться"
+                />
+                <FormNavigationLink
+                    text="Забыли пароль?"
+                    link="/forgot-password"
+                    linkName="Восстановить пароль"
+                />
+            </FormNavigation >
+        </FormLayout >
+    </main >);
 }
 

@@ -1,4 +1,3 @@
-import AppHeader from '../../components/app-header/app-header';
 import {Button, EmailInput, Input, PasswordInput} from '@ya.praktikum/react-developer-burger-ui-components';
 import {Form} from '../../components/form/form';
 import Fieldset from '../../components/fieldset/fieldset';
@@ -49,66 +48,69 @@ export function Profile() {
         refreshTokensIfNeeded(dispatch);
         dispatch(changeUserData(userData));
     }
+
     function handleReset(e) {
         e.preventDefault();
-        dispatch(getUserData())
+        dispatch(getUserData());
     }
-    return (<>
-        <AppHeader />
-        <ProfileLayout >
-            <ProfileNavigation />
-            <Form
-                name="userDataForm"
-                extraClass="ml-15"
-                onSubmit={handleProfileSubmit}
-            >
-                <Fieldset name="UserDataFieldSet">
-                    <Input
-                        name="Name"
-                        autoComplete="name"
-                        extraClass={`${!!nameInputError ? '' : 'mb-6'}`}
-                        placeholder="Имя"
-                        value={nameInputValue}
-                        icon="EditIcon"
-                        error={!!nameInputError}
-                        errorText={nameInputError}
-                        onChange={(e) => {
-                            handleInputWithRedux(e, dispatch, setProfileName, setNameInputError);
-                        }}
-                    />
-                    <EmailInput
-                        name="login"
-                        autoComplete="email"
-                        extraClass={`${!!loginInputError ? '' : 'mb-6'}`}
-                        placeholder="Логин"
-                        value={loginInputValue}
-                        icon="EditIcon"
-                        error={!!loginInputError}
-                        errorText={loginInputError}
-                        onChange={(e) => {
-                            handleInputWithRedux(e, dispatch, setLogin, setLoginInputError);
-                        }}
-                    />
-                    <PasswordInput
-                        name="password"
-                        extraClass={`${!!passwordInputError ? '' : 'mb-6'}`}
-                        value={passwordInputValue}
-                        icon="EditIcon"
-                        error={!!passwordInputError}
-                        errorText={passwordInputError}
-                        placeholder="Пароль"
-                        autoComplete="new-password"
-                        onChange={e => {
-                            handleInputWithRedux(e, dispatch, setPassword, setPasswordInputError);
-                        }}
-                    />
-                </Fieldset >
-                <ProfileFormButtonLayout>
-                    <Button type="secondary" htmlType="reset" onClick={handleReset}>Отмена</Button>
-                    <Button htmlType="submit">Сохранить</Button>
-                </ProfileFormButtonLayout>
 
-            </Form >
-        </ProfileLayout >
-    </>);
+    return (<ProfileLayout >
+        <ProfileNavigation />
+        <Form
+            name="userDataForm"
+            extraClass="ml-15"
+            onSubmit={handleProfileSubmit}
+        >
+            <Fieldset name="UserDataFieldSet">
+                <Input
+                    name="Name"
+                    autoComplete="name"
+                    extraClass={`${!!nameInputError ? '' : 'mb-6'}`}
+                    placeholder="Имя"
+                    value={nameInputValue}
+                    icon="EditIcon"
+                    error={!!nameInputError}
+                    errorText={nameInputError}
+                    onChange={(e) => {
+                        handleInputWithRedux(e, dispatch, setProfileName, setNameInputError);
+                    }}
+                />
+                <EmailInput
+                    name="login"
+                    autoComplete="email"
+                    extraClass={`${!!loginInputError ? '' : 'mb-6'}`}
+                    placeholder="Логин"
+                    value={loginInputValue}
+                    icon="EditIcon"
+                    error={!!loginInputError}
+                    errorText={loginInputError}
+                    onChange={(e) => {
+                        handleInputWithRedux(e, dispatch, setLogin, setLoginInputError);
+                    }}
+                />
+                <PasswordInput
+                    name="password"
+                    extraClass={`${!!passwordInputError ? '' : 'mb-6'}`}
+                    value={passwordInputValue}
+                    icon="EditIcon"
+                    error={!!passwordInputError}
+                    errorText={passwordInputError}
+                    placeholder="Пароль"
+                    autoComplete="new-password"
+                    onChange={e => {
+                        handleInputWithRedux(e, dispatch, setPassword, setPasswordInputError);
+                    }}
+                />
+            </Fieldset >
+            <ProfileFormButtonLayout >
+                <Button
+                    type="secondary"
+                    htmlType="reset"
+                    onClick={handleReset}
+                >Отмена</Button >
+                <Button htmlType="submit">Сохранить</Button >
+            </ProfileFormButtonLayout >
+
+        </Form >
+    </ProfileLayout >);
 }

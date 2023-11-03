@@ -1,9 +1,9 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import fetchAPI from "../../utils/api";
+import {RESET_PASSWORD_STEP_TWO_ENDPOINT} from '../../utils/constants';
 
 export const resetPassword = createAsyncThunk('resetPasswordForm/reset-password', async (email, {rejectWithValue}) => {
-  const registerUrl = 'https://norma.nomoreparties.space/api/password-reset/reset'
-  const response = await fetchAPI(registerUrl, 'POST', email);
+  const response = await fetchAPI(RESET_PASSWORD_STEP_TWO_ENDPOINT, 'POST', email);
   if (response.success) {
     return response;
   } else {
