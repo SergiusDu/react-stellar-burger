@@ -1,12 +1,11 @@
 import React from "react";
 import styles from "./order-details.module.css";
 import doneImage from "../../images/done.svg";
-import {selectOrderNumber} from "../../services/slices/order-details";
+import {selectOrderNumber} from "../../services/slices/order-details-slice";
 import {useSelector} from "react-redux";
 
 export default function OrderDetails() {
     const orderNumber = useSelector(selectOrderNumber)
-
     return (
         <>
             <header className={`mt-30 ${styles.order_header}`}>

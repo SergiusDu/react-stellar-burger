@@ -1,7 +1,8 @@
-import React from "react";
+import React, {useEffect} from 'react';
 import styles from "./ingredient-details.module.css";
 import IngredientData from "./ingredient-data/ingredient-data";
 import {useSelector} from "react-redux";
+import {useHistory} from 'react-router-dom';
 
 export default function IngredientDetails() {
     const selectedIngredient = useSelector(state => state.ingredient.selectedIngredient);
