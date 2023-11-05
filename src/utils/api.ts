@@ -165,4 +165,18 @@ export function checkAuthToken(): boolean {
   return !!getCookieByName('accessToken');
 }
 
+export function saveObjectInLocalStorage(objectName: string, object: Object) {
+  localStorage.setItem(objectName, JSON.stringify(object));
+}
+export function getObjectFromLocalStorage(objectName: string) : any {
+  const item = localStorage.getItem(objectName);
+  if(item === null) {
+    return null
+  }
+  return JSON.parse(item);
+}
+
+export function removeObjectFromLocalStorage(objectName: string) : void {
+  localStorage.removeItem(objectName);
+}
 export default fetchAPI;
