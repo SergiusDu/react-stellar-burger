@@ -1,9 +1,4 @@
-import {
-  ACCESS_TOKEN_LIFETIME,
-  ACCESS_TOKEN_NAME,
-  REFRESH_TOKEN_LIFETIME,
-  REFRESH_TOKEN_NAME,
-} from './constants';
+import {ACCESS_TOKEN_LIFETIME, ACCESS_TOKEN_NAME, REFRESH_TOKEN_LIFETIME, REFRESH_TOKEN_NAME} from './constants';
 import {refreshAccessToken} from '../services/slices/profile-slice';
 import {store} from '../services/store/store';
 
@@ -27,9 +22,7 @@ type Headers = Record<string, string> | null;
  * @param headers - Необязательный объект с дополнительными заголовками запроса.
  * @returns Промис, разрешающийся в данные ответа.
  */
-async function fetchAPI(url: string, method: HttpMethod,
-  bodyData: BodyData = null, headers: Headers = null,
-): Promise<any> {
+async function fetchAPI(url: string, method: HttpMethod, bodyData: BodyData = null, headers: Headers = null): Promise<any> {
   const options: RequestInit = {
     method,
     headers: {
@@ -58,8 +51,7 @@ export async function refreshTokensIfNeeded(dispatch: AppDispatch) {
   if (!accessToken && refreshToken) {
     try {
       await dispatch(refreshAccessToken()).unwrap();
-    }
-    catch (error) {
+    } catch (error) {
       console.error('Failed to refresh access token:', error);
     }
   }
@@ -71,9 +63,7 @@ export async function refreshTokensIfNeeded(dispatch: AppDispatch) {
  * @param params - Объект с параметрами запроса.
  * @returns Полный URL с параметрами запроса.
  */
-export function createUrlPathWithParams(baseUrl: string,
-  params: Record<string, string>,
-) {
+export function createUrlPathWithParams(baseUrl: string, params: Record<string, string>) {
   const searchParams = new URLSearchParams();
   for (const [key, value] of Object.entries(params)) {
     searchParams.append(key, value);
@@ -87,9 +77,7 @@ export function createUrlPathWithParams(baseUrl: string,
  * @param cookieValue - Значение куки.
  * @param maxAge - Максимальное время жизни куки в секундах.
  */
-export function setCookie(cookieName: string, cookieValue: string,
-  maxAge: number,
-) {
+export function setCookie(cookieName: string, cookieValue: string, maxAge: number) {
   document.cookie = `${cookieName}=${cookieValue}; max-age=${maxAge};`;
 }
 
@@ -168,15 +156,17 @@ export function checkAuthToken(): boolean {
 export function saveObjectInLocalStorage(objectName: string, object: Object) {
   localStorage.setItem(objectName, JSON.stringify(object));
 }
-export function getObjectFromLocalStorage(objectName: string) : any {
+
+export function getObjectFromLocalStorage(objectName: string): any {
   const item = localStorage.getItem(objectName);
-  if(item === null) {
-    return null
+  if (item === null) {
+    return null;
   }
   return JSON.parse(item);
 }
 
-export function removeObjectFromLocalStorage(objectName: string) : void {
+export function removeObjectFromLocalStorage(objectName: string): void {
   localStorage.removeItem(objectName);
 }
+
 export default fetchAPI;
