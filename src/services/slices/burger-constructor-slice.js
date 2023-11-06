@@ -34,5 +34,6 @@ export const burgerConstructorSlice = createSlice({
 });
 
 export const selectIngredients = (state) => state.burgerConstructor.ingredients;
+export const selectBun = state => state.burgerConstructor.bun;
 export const selectSum = (state) => state.burgerConstructor.sum;
 export const { addIngredient, moveItem, removeIngredient, setBun , resetIngredients} = burgerConstructorSlice.actions;

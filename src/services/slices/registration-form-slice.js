@@ -8,7 +8,7 @@ export const registerUser = createAsyncThunk('registrationData/register-user', a
         return response;
     } else {
         console.log(`Ошибка в регистрации пользователя: ${response.message}`);
-        return rejectWithValue(response);
+        return rejectWithValue(response.message);
     }
 });
 export const registrationSlice = createSlice({
@@ -40,7 +40,7 @@ export const registrationSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
-        builder.addCase(registerUser.pending, (state, action) => {
+        builder.addCase(registerUser.pending, (state) => {
             state.isFormBlocked = true;
         }).addCase(registerUser.fulfilled, (state, action) => {
             setCookie('accessToken', action.payload.accessToken, 20 * 60, 'nomoreparties.space');
@@ -50,8 +50,7 @@ export const registrationSlice = createSlice({
             state.name = '';
             state.isFormBlocked = false;
         }).addCase(registerUser.rejected, (state, action) => {
-            console.log('REGISTER REJECTED', action.payload);
-            state.responseErrorMessage = action.payload.message;
+            state.responseErrorMessage = action.payload;
             state.isFormBlocked = false;
         });
     },

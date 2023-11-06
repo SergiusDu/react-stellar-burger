@@ -107,6 +107,7 @@ export const ingredientSlice = createSlice({
 export const selectIngredients = (state) => state.ingredient.ingredients;
 export const selectedIngredient = state => state.ingredient.selectedIngredient;
 export const selectIsModalOpen = state => state.ingredient.isModalOpen;
+export const selectIsLoading = state => state.ingredient.isLoading;
 export const {
     increaseIngredientAmount,
     decreaseIngredientAmount,
