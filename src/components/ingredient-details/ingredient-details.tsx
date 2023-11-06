@@ -16,7 +16,7 @@ export const IngredientDetails: React.FC<any> = ({match}) => {
   const {id} = match.params;
   const dispatch = useDispatch();
   const ingredients: IngredientType[] = useSelector(selectIngredients);
-  const ingredient: IngredientType = useSelector(selectedIngredient);
+  const ingredient: IngredientType | null = useSelector(selectedIngredient);
   useEffect(() => {
     const foundedIngredient = ingredients.find(e => e._id === id);
     if (foundedIngredient) {

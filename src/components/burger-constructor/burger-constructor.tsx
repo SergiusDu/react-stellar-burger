@@ -34,9 +34,10 @@ const BurgerConstructor: React.FC = () => {
     const isFetchLoading = useSelector(selectIsLoading);
     const history = useHistory();
     const memorizedSum = useMemo(() => {
+      const bunPrice = bun ? bun.price * 2 : 0;
         if (!bun && ingredients.length === 0) return 0;
-        if (ingredients.length === 0) return bun.price * 2;
-        return ingredients.reduce((accumulator: number, ingredient: IngredientType) => accumulator + ingredient.price, bun.price * 2);
+        if (ingredients.length === 0) return bunPrice;
+        return ingredients.reduce((accumulator: number, ingredient: IngredientType) => accumulator + ingredient.price, bunPrice);
     }, [ingredients, bun]);
 
     const [, ref] = useDrop({
@@ -77,12 +78,14 @@ const BurgerConstructor: React.FC = () => {
             return;
         }
         try {
+          // TODO Check if I can do it better
+          if(bun) {
             const itemsToOrder = [...ingredients.map((item: IngredientType) => item._id), bun._id, bun._id];
-            // @ts-ignore
             await dispatch(fetchOrder(itemsToOrder));
             dispatch(resetIngredients());
             dispatch(resetAllIngredientAmount());
             dispatch(setBun(null));
+          }
         } catch (error) {
             console.error('Не удалось оформить заказ: ', error);
         }

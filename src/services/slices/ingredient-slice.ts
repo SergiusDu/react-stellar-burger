@@ -3,24 +3,23 @@ import fetchAPI from '../../utils/api';
 import {GET_INGREDIENTS_ENDPOINT, GET_METHOD} from '../../utils/constants';
 import {RootState} from '../store/store';
 import {IngredientType} from '../../utils/types';
-import {bool} from 'prop-types';
 
 /**
  * Асинхронный экшен для загрузки ингредиентов.
  */
 export const fetchIngredients = createAsyncThunk('ingredient/fetchIngredients', async (_, {rejectWithValue}) => {
   try {
-    const response : IngredientType[] = await fetchAPI(GET_INGREDIENTS_ENDPOINT, GET_METHOD);
-    return response
-  } catch (error) {
-    return rejectWithValue(`Ошибка, ${error}`);
+    const response: IngredientType[] = await fetchAPI(GET_INGREDIENTS_ENDPOINT, GET_METHOD);
+    return response;
+  } catch (error: any) {
+    return rejectWithValue(`Ошибка,  ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 });
 
 interface IngredientState {
   ingredients: IngredientType[];
   isLoading: boolean;
-  error: string | null;
+  error: string | null | undefined;
   defaultBunSet: boolean;
   selectedIngredient: IngredientType | null;
   isModalOpen: boolean;
@@ -30,8 +29,8 @@ const initialState: IngredientState = {
   ingredients: [], isLoading: false, error: null, defaultBunSet: false, selectedIngredient: null, isModalOpen: false,
 };
 /**
-* Срез состояния ингредиентов.
-*/
+ * Срез состояния ингредиентов.
+ */
 export const ingredientSlice = createSlice({
   name: 'ingredient', initialState, reducers: {
     setSelectedIngredient: (state, action) => {
@@ -66,13 +65,14 @@ export const ingredientSlice = createSlice({
           delete state.ingredients[index].count;
         }
       });
-    }, ssetBunCount: (state, action: PayloadAction<string>) => {
+    }, setBunCount: (state, action: PayloadAction<string>) => {
       const index = state.ingredients.findIndex(ingredient => ingredient._id === action.payload);
       if (index === -1) {
         console.warn('Ingredient not found');
         return;
       }
-      const oldBunIndex = state.ingredients.findIndex(ingredient => ingredient.type === 'bun' && (ingredient.count ?? 0) > 0);
+      const oldBunIndex = state.ingredients.findIndex(
+        ingredient => ingredient.type === 'bun' && (ingredient.count ?? 0) > 0);
       if (oldBunIndex !== -1) {
         delete state.ingredients[oldBunIndex].count;
       }
@@ -89,8 +89,8 @@ export const ingredientSlice = createSlice({
       state.ingredients = action.payload;
       state.isLoading = false;
       state.error = null;
-    }).addCase(fetchIngredients.rejected, (state, action: PayloadAction<string || null, bool, void , Error>) => {
-      state.error = action.payload || null;
+    }).addCase(fetchIngredients.rejected, (state, action) => {
+      state.error = action.error.message;
       state.isLoading = false;
       state.ingredients = [];
       state.defaultBunSet = false;
