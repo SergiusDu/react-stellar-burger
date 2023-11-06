@@ -1,6 +1,8 @@
-export const POST_METHOD: string = 'POST';
-export const GET_METHOD: string = 'GET';
-export const PATCH_METHOD: string = 'PATCH';
+import {HttpMethod} from './types';
+
+export const POST_METHOD: HttpMethod = 'POST';
+export const GET_METHOD: HttpMethod = 'GET';
+export const PATCH_METHOD: HttpMethod = 'PATCH';
 export const SELECTED_INGREDIENT: string = 'selectedIngredient';
 export const DOMAIN: string = 'norma.nomoreparties.space';
 export const BASE_URL: string = `https://${DOMAIN}/api`;
@@ -25,3 +27,4 @@ export const LOGIN_ENDPOINT: string = `${BASE_URL}/auth/login`;
 export const RESET_PASSWORD_ENDPOINT: string = `${BASE_URL}/password-reset/`;
 export const RESET_PASSWORD_STEP_TWO_ENDPOINT: string = `${BASE_URL}/password-reset/reset`;
 export const REGISTER_ENDPOINT: string = `${BASE_URL}/auth/register`;
+export const GET_INGREDIENTS_ENDPOINT: string = `${BASE_URL}/ingredients`;

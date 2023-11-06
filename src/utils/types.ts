@@ -5,7 +5,10 @@ export const SAUCE_TYPE = 'sauce';
 export interface MatchParams {
   id?: string;
 }
-
+export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+export type EmailString = string;
+export type NameString = string;
+export type PasswordString = string;
 export type IngredientType = {
   readonly _id: string;
   readonly name: string;

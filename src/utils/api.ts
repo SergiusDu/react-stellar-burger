@@ -1,17 +1,12 @@
 import {ACCESS_TOKEN_LIFETIME, ACCESS_TOKEN_NAME, REFRESH_TOKEN_LIFETIME, REFRESH_TOKEN_NAME} from './constants';
 import {refreshAccessToken} from '../services/slices/profile-slice';
 import {store} from '../services/store/store';
+import {HttpMethod} from './types';
 
 export type AppDispatch = typeof store.dispatch;
 
-type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'; // Пример. Добавьте все
-                                                     // методы, которые вы
-                                                     // используете.
 
-// Определите тип для тела запроса
 type BodyData = Record<string, any> | null;
-
-// Определите тип для заголовков запроса
 type Headers = Record<string, string> | null;
 
 /**
@@ -24,8 +19,7 @@ type Headers = Record<string, string> | null;
  */
 async function fetchAPI(url: string, method: HttpMethod, bodyData: BodyData = null, headers: Headers = null): Promise<any> {
   const options: RequestInit = {
-    method,
-    headers: {
+    method, headers: {
       'Content-Type': 'application/json', ...headers,
     },
   };
