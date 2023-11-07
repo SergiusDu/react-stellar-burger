@@ -5,6 +5,7 @@ export const SAUCE_TYPE = 'sauce';
 export interface MatchParams {
   id?: string;
 }
+
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 export type EmailString = string;
 export type NameString = string;
@@ -12,10 +13,8 @@ export type PasswordString = string;
 export type TTokenString = string;
 export type TNullableToken = TTokenString | null;
 
-
 export type TUserData = {
-  email: EmailString;
-  password: PasswordString;
+  email: EmailString; password: PasswordString;
 };
 
 export type IngredientType = {
@@ -36,31 +35,31 @@ export type IngredientType = {
 
 export interface ErrorResponse {
   response: {
-    status: number;
-    message: string;
-    name: string;
+    status: number; message: string; name: string;
   };
   name: string;
   message: string;
-  status: string
+  status: string;
 }
 
 export interface IPasswordAndToken {
   password: PasswordString;
-  token: TNullableToken
+  token: TNullableToken;
 }
+
 export function isErrorWithResponse(error: unknown): error is ErrorResponse {
   // Проверяем, что error является объектом и имеет внутри объект response
   if (typeof error === 'object' && error !== null) {
-    const response = (error as ErrorResponse).response;
-    // Проверяем, что response также является объектом и имеет свойство status, которое является числом
-    if (typeof response === 'object' &&
-      response !== null &&
-      typeof response.status === 'number' &&
-      typeof response.message === 'string' &&
-      typeof response.name === 'string')
-      {
-      // Дополнительные проверки на необязательные поля не требуются, так как они могут быть undefined
+    const response = (
+      error as ErrorResponse
+    ).response;
+    // Проверяем, что response также является объектом и имеет свойство status,
+    // которое является числом
+    if (typeof response === 'object' && response !== null
+      && typeof response.status === 'number' && typeof response.message
+      === 'string' && typeof response.name === 'string') {
+      // Дополнительные проверки на необязательные поля не требуются, так как
+      // они могут быть undefined
       return true;
     }
   }
@@ -69,18 +68,24 @@ export function isErrorWithResponse(error: unknown): error is ErrorResponse {
 
 export interface ISuccessResponse {
   success: boolean;
+  message: string;
   payload: {
     message: string;
   };
 }
+
 export interface IRejectedResponse {
   success: boolean;
   message: string;
+  error?: string;
 }
+
 export type TResponse = ISuccessResponse | IRejectedResponse;
+
 // Функция проверки для ISuccessResponse
 export function isISuccessResponse(object: any): object is ISuccessResponse {
-  return object.success === true && object.payload && typeof object.payload.message === 'string';
+  return object.success === true && object.payload
+    && typeof object.payload.message === 'string';
 }
 
 // Функция проверки для IRejectedResponse

@@ -10,11 +10,12 @@ import {
   setSelectedIngredient,
 } from '../../services/slices/ingredient-slice';
 import {IngredientType} from '../../utils/types';
+import {AppDispatch} from '../../services/store/store';
 
 
 export const IngredientDetails: React.FC<any> = ({match}) => {
   const {id} = match.params;
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const ingredients: IngredientType[] = useSelector(selectIngredients);
   const ingredient: IngredientType | null = useSelector(selectedIngredient);
   useEffect(() => {

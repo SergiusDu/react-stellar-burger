@@ -1,35 +1,36 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import fetchAPI from '../../utils/api';
 import {RESET_PASSWORD_ENDPOINT} from '../../utils/constants';
-import {EmailString} from '../../utils/types';
+import {
+  EmailString,
+  IRejectedResponse,
+  ISuccessResponse,
+} from '../../utils/types';
 import {RootState} from '../store/store';
 
 /**
  * Асинхронный экшен для отправки запроса на сброс пароля.
  */
-export const sendResetPasswordEmail = createAsyncThunk('resetPasswordForm/reset-password',
+export const sendResetPasswordEmail = createAsyncThunk<ISuccessResponse, EmailString, {
+  rejectValue: IRejectedResponse; state: RootState;
+}>(
+  'resetPasswordForm/reset-password',
   async (emailString: EmailString, {rejectWithValue}) => {
-    try {
-      const emailData = {
-        email: emailString,
-      };
-      const response = await fetchAPI(RESET_PASSWORD_ENDPOINT, 'POST', emailData);
-      if (response && response.success) {
-        return response;
-      } else {
-        console.log(`Ошибка в регистрации пользователя: ${response.message}`);
-        return rejectWithValue(response);
-      }
-    } catch (error: any) {
-      console.error(`Произошла ошибка: ${error}`);
-      return rejectWithValue(error.message || 'Unknown error');
-    }
-  });
+    const emailData = {
+      email: emailString,
+    };
+    const response = await fetchAPI(RESET_PASSWORD_ENDPOINT, 'POST', emailData);
+    return (
+      await response
+    ) as ISuccessResponse;
+  },
+);
 
 interface ForgotPasswordSliceState {
   emailInputValue: string;
   emailInputError: string;
 }
+
 /**
  * Срез (slice) для формы восстановления пароля.
  */
@@ -43,6 +44,10 @@ export const forgotPasswordFormSlice = createSlice({
     }, setForgotPasswordEmailInputError(state, action) {
       state.emailInputError = action.payload;
     },
+  }, extraReducers: builder => {
+    builder.addCase(sendResetPasswordEmail.fulfilled, (state, action) => {
+
+    });
   },
 });
 

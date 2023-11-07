@@ -30,9 +30,10 @@ import {
   TNullableToken,
 } from '../../utils/types';
 import {isNonEmptyString} from '../../utils/api';
+import {AppDispatch} from '../../services/store/store';
 
 export const ResetPassword: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const newPasswordInputValue: PasswordString = useSelector(
     selectResetPasswordNewPasswordInput);
   const newPasswordInputErrorMessage = useSelector(
@@ -52,7 +53,6 @@ export const ResetPassword: React.FC = () => {
     dispatch(resetPassword(newPasswordAndToken));
   }
 
-  // @ts-ignore
   return (
     <FormLayout >
       <Form onSubmit={handleResetPasswordSubmit}>
@@ -79,7 +79,7 @@ export const ResetPassword: React.FC = () => {
             placeholder="Введите код из письма"
             type="text"
             autoComplete="one-time-code"
-            value={tokenInputValue || ''}
+            value={tokenInputValue ?? ''}
             error={!!tokenErrorMessage}
             errorText={tokenErrorMessage}
             onChange={(e) => {

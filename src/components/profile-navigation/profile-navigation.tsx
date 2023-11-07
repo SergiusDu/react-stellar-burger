@@ -4,9 +4,10 @@ import {ProfileNavigationLink} from '../profile-navigation-link/profile-navigati
 import {useDispatch} from 'react-redux';
 import {logoutUser} from '../../services/slices/profile-slice';
 import {MAIN_PAGE_PATH, ORDER_LIST_PAGE_PATH, PROFILE_PAGE_PATH} from '../../utils/constants';
+import {AppDispatch} from '../../services/store/store';
 
 export const ProfileNavigation: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
 
     function logoutHandler() {
         dispatch(logoutUser());

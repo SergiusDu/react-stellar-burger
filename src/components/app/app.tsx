@@ -7,9 +7,10 @@ import {refreshTokensIfNeeded} from '../../utils/api';
 import {fetchIngredients} from '../../services/slices/ingredient-slice';
 import AppHeader from '../app-header/app-header';
 import {ModalSwitch} from '../modal-switch/modal-switch';
+import {AppDispatch} from '../../services/store/store';
 
 const App: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     dispatch(fetchIngredients());
     dispatch(setProfilePageAvailable());

@@ -19,6 +19,7 @@ export const registerUser = createAsyncThunk<RegistrationResponse, TUserData, { 
 interface RegistrationResponse {
   accessToken: string;
   refreshToken: string;
+  success: boolean;
 }
 interface RegistrationState {
   isLoaded: boolean;

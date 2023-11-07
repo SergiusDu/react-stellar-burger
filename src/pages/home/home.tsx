@@ -15,9 +15,10 @@ import {
 import {resetOrderNumber, selectOrderNumber} from '../../services/slices/order-details-slice';
 import styles from '../home/home.module.css';
 import {useHistory} from 'react-router-dom';
+import {AppDispatch} from '../../services/store/store';
 
 const Home: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
     const isLoading = useSelector(selectIsLoading);
     const orderNumber = useSelector(selectOrderNumber);
     const history = useHistory();

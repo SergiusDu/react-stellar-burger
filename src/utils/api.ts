@@ -1,13 +1,15 @@
-import {ACCESS_TOKEN_LIFETIME, ACCESS_TOKEN_NAME, REFRESH_TOKEN_LIFETIME, REFRESH_TOKEN_NAME} from './constants';
+import {
+  ACCESS_TOKEN_LIFETIME,
+  ACCESS_TOKEN_NAME,
+  REFRESH_TOKEN_LIFETIME,
+  REFRESH_TOKEN_NAME,
+} from './constants';
 import {refreshAccessToken} from '../services/slices/profile-slice';
-import {store} from '../services/store/store';
+import {AppDispatch} from '../services/store/store';
 import {HttpMethod, TNullableToken} from './types';
 
-export type AppDispatch = typeof store.dispatch;
-
-
 type BodyData = Record<string, any> | null;
-type Headers = Record<string, string> | Record <string, TNullableToken> | null;
+type Headers = Record<string, string> | Record<string, TNullableToken> | null;
 
 /**
  * Выполняет API запрос с использованием fetch.
@@ -17,9 +19,13 @@ type Headers = Record<string, string> | Record <string, TNullableToken> | null;
  * @param headers - Необязательный объект с дополнительными заголовками запроса.
  * @returns Промис, разрешающийся в данные ответа.
  */
-async function fetchAPI(url: string, method: HttpMethod, bodyData: BodyData = null, headers: Headers = null): Promise<any> {
+async function fetchAPI(
+  url: string, method: HttpMethod, bodyData: BodyData = null,
+  headers: Headers = null,
+): Promise<any> {
   const options: RequestInit = {
-    method, headers: {
+    method,
+    headers: {
       'Content-Type': 'application/json', ...headers,
     },
   };
@@ -45,7 +51,8 @@ export async function refreshTokensIfNeeded(dispatch: AppDispatch) {
   if (!accessToken && refreshToken) {
     try {
       await dispatch(refreshAccessToken()).unwrap();
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Failed to refresh access token:', error);
     }
   }
@@ -57,7 +64,8 @@ export async function refreshTokensIfNeeded(dispatch: AppDispatch) {
  * @param params - Объект с параметрами запроса.
  * @returns Полный URL с параметрами запроса.
  */
-export function createUrlPathWithParams(baseUrl: string, params: Record<string, string>) {
+export function createUrlPathWithParams(
+  baseUrl: string, params: Record<string, string>) {
   const searchParams = new URLSearchParams();
   for (const [key, value] of Object.entries(params)) {
     searchParams.append(key, value);
@@ -71,7 +79,8 @@ export function createUrlPathWithParams(baseUrl: string, params: Record<string, 
  * @param cookieValue - Значение куки.
  * @param maxAge - Максимальное время жизни куки в секундах.
  */
-export function setCookie(cookieName: string, cookieValue: string, maxAge: number) {
+export function setCookie(
+  cookieName: string, cookieValue: string, maxAge: number) {
   document.cookie = `${cookieName}=${cookieValue}; max-age=${maxAge};`;
 }
 
@@ -162,7 +171,9 @@ export function getObjectFromLocalStorage(objectName: string): any {
 export function removeObjectFromLocalStorage(objectName: string): void {
   localStorage.removeItem(objectName);
 }
+
 export function isNonEmptyString(value: string | null): boolean {
   return value ? value.trim().length > 0 : false;
 }
+
 export default fetchAPI;

@@ -18,9 +18,10 @@ import {
     setLoginPasswordInputValue,
 } from '../../services/slices/login-form-slice';
 import {setProfilePageAvailable} from '../../services/slices/profile-slice';
+import {AppDispatch} from '../../services/store/store';
 
 const Login: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
     const emailInputValue = useSelector(loginEmailInputValue);
     const emailInputErrorMessage = useSelector(loginEmailInputErrorMessage);
     const passwordInputValue = useSelector(loginPasswordInputValue);
@@ -34,7 +35,6 @@ const Login: React.FC = () => {
         const loginCredentials = {
             email: emailInputValue, password: passwordInputValue,
         };
-        // @ts-ignore
         const response = await dispatch(authorizeUser(loginCredentials));
         // @ts-ignore
         if (response.payload.success) {
@@ -57,7 +57,7 @@ const Login: React.FC = () => {
                             dispatch(setLoginEmailInputError(e.target.validationMessage));
                         }}
                         minLength={6}
-                        // @ts-ignore
+                      // @ts-ignore
                         error={!!emailInputErrorMessage}
                         errorText={emailInputErrorMessage}
                         autoComplete="email"

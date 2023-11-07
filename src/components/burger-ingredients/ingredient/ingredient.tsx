@@ -6,12 +6,13 @@ import {useDispatch} from 'react-redux';
 import {setSelectedIngredient} from '../../../services/slices/ingredient-slice';
 import {useHistory, useLocation} from 'react-router-dom';
 import {IngredientType} from '../../../utils/types';
+import {AppDispatch} from '../../../services/store/store';
 
 export type IngredientProps = {
     ingredient: IngredientType;
 };
 const Ingredient: React.FC<IngredientProps> = ({ingredient}) => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
     const history = useHistory();
     const location = useLocation();
     const handleClick = useCallback(() => {

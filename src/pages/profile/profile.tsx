@@ -18,21 +18,23 @@ import {
     setNameInputError,
     setPassword,
     setPasswordInputError,
-    setProfileName,
+    setProfileName, submitButtonAvailability,
 } from '../../services/slices/profile-slice';
 import {handleInputWithRedux} from '../../utils/forms-methods';
 import React, {useEffect} from 'react';
 import {ProfileFormButtonLayout} from '../../components/profile-form-button-layout/profile-form-button-layout';
 import {refreshTokensIfNeeded} from '../../utils/api';
+import {AppDispatch} from '../../services/store/store';
 
 export const Profile: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
     const nameInputValue = useSelector(selectProfileName);
     const nameInputError = useSelector(selectProfileNameInputError);
     const loginInputValue = useSelector(selectProfileLogin);
     const loginInputError = useSelector(selectProfileLoginInputError);
     const passwordInputValue = useSelector(selectProfilePassword);
     const passwordInputError = useSelector(selectProfilePasswordInputError);
+    const isSubmitButtonAvailable = useSelector(submitButtonAvailability);
     useEffect(() => {
         refreshTokensIfNeeded(dispatch);
         dispatch(getUserData());
@@ -44,7 +46,6 @@ export const Profile: React.FC = () => {
             name: nameInputValue, email: loginInputValue, password: passwordInputValue,
         };
         refreshTokensIfNeeded(dispatch);
-        // @ts-ignore
         dispatch(changeUserData(userData));
     }
 
@@ -52,7 +53,7 @@ export const Profile: React.FC = () => {
         e.preventDefault();
         dispatch(getUserData());
     }
-
+    console.log(isSubmitButtonAvailable);
     return (<ProfileLayout >
         <ProfileNavigation />
         <Form
@@ -80,7 +81,7 @@ export const Profile: React.FC = () => {
                     extraClass={`${!!loginInputError ? '' : 'mb-6'}`}
                     placeholder="Логин"
                     value={loginInputValue}
-                    // @ts-ignore
+                  // @ts-ignore
                     icon="EditIcon"
                     error={!!loginInputError}
                     errorText={loginInputError}
@@ -93,7 +94,7 @@ export const Profile: React.FC = () => {
                     extraClass={`${!!passwordInputError ? '' : 'mb-6'}`}
                     value={passwordInputValue}
                     icon="EditIcon"
-                    // @ts-ignore
+                  // @ts-ignore
                     error={!!passwordInputError}
                     errorText={passwordInputError}
                     placeholder="Пароль"
@@ -109,9 +110,8 @@ export const Profile: React.FC = () => {
                     htmlType="reset"
                     onClick={handleReset}
                 >Отмена</Button >
-                <Button htmlType="submit">Сохранить</Button >
+                <Button disabled={!isSubmitButtonAvailable} htmlType="submit">Сохранить</Button >
             </ProfileFormButtonLayout >
-
         </Form >
     </ProfileLayout >);
 };

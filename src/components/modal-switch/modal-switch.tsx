@@ -24,6 +24,7 @@ import {closeModal, resetSelectedIngredient} from '../../services/slices/ingredi
 import Modal from '../modal/modal';
 import IngredientDetails from '../ingredient-details/ingredient-details';
 import {MatchParams} from '../../utils/types';
+import {AppDispatch} from '../../services/store/store';
 
 export const ModalSwitch: React.FC = () => {
   const location = useLocation<{
@@ -32,7 +33,7 @@ export const ModalSwitch: React.FC = () => {
   const background = location.state && location.state.background;
   const resetPasswordAvailability = useSelector(resetPasswordPageAvailability);
   const profileAvailability = useSelector(profilePageAvailability);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const history = useHistory();
   const handleCloseIngredientDetails = () => {
     dispatch(resetSelectedIngredient());
