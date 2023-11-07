@@ -1,13 +1,13 @@
 import {ACCESS_TOKEN_LIFETIME, ACCESS_TOKEN_NAME, REFRESH_TOKEN_LIFETIME, REFRESH_TOKEN_NAME} from './constants';
 import {refreshAccessToken} from '../services/slices/profile-slice';
 import {store} from '../services/store/store';
-import {HttpMethod, TTokenString} from './types';
+import {HttpMethod, TNullableToken} from './types';
 
 export type AppDispatch = typeof store.dispatch;
 
 
 type BodyData = Record<string, any> | null;
-type Headers = Record<string, string> | Record <string, TTokenString> | null;
+type Headers = Record<string, string> | Record <string, TNullableToken> | null;
 
 /**
  * Выполняет API запрос с использованием fetch.
@@ -112,7 +112,7 @@ export function saveRefreshTokenInCookies(token: string) {
  * @param cookieName - Название куки, значение которой нужно получить.
  * @returns Значение куки или null, если куки с таким названием не существует.
  */
-export function getCookieByName(cookieName: string): TTokenString {
+export function getCookieByName(cookieName: string): TNullableToken {
   const allCookies = document.cookie.split('; ');
   for (const cookieString of allCookies) {
     const [name, value] = cookieString.split('=');
@@ -162,5 +162,7 @@ export function getObjectFromLocalStorage(objectName: string): any {
 export function removeObjectFromLocalStorage(objectName: string): void {
   localStorage.removeItem(objectName);
 }
-
+export function isNonEmptyString(value: string | null): boolean {
+  return value ? value.trim().length > 0 : false;
+}
 export default fetchAPI;

@@ -20,7 +20,7 @@ import {
   REFRESH_TOKEN_NAME,
 } from '../../utils/constants';
 import {RootState} from '../store/store';
-import {isErrorWithResponse, TTokenString, TUserData} from '../../utils/types';
+import {isErrorWithResponse, TNullableToken, TUserData} from '../../utils/types';
 
 
 export const refreshAccessToken = createAsyncThunk<string, void, { rejectValue: string }>('profile/refreshAccessToken',
@@ -40,7 +40,7 @@ export const refreshAccessToken = createAsyncThunk<string, void, { rejectValue: 
       if (response && response.success) {
         saveAccessTokenInCookies(response.accessToken);
         saveRefreshTokenInCookies(response.refreshToken);
-        return response.accessToken; // Возвращаем новый accessToken
+        return response.accessToken;
       } else {
         const error = response?.message || 'Failed to refresh access token.';
         return rejectWithValue(error);
@@ -76,7 +76,7 @@ export const changeUserData = createAsyncThunk('profile/changeUserData', async (
   }
 
   const sendRequestWithToken = async (
-    token: TTokenString,
+    token: TNullableToken,
     userData: TUserData,
   ) => {
     try {
@@ -98,7 +98,7 @@ export const changeUserData = createAsyncThunk('profile/changeUserData', async (
     }
   };
 
-  const handleTokenRequestWithRefresh = async (token: TTokenString) => {
+  const handleTokenRequestWithRefresh = async (token: TNullableToken) => {
     try {
       return await sendRequestWithToken(accessToken, userData);
     } catch (error: unknown) {

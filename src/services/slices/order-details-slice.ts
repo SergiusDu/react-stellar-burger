@@ -2,15 +2,15 @@ import {createAsyncThunk, createSlice, PayloadAction, SerializedError} from '@re
 import fetchAPI, {getAccessTokenFromCookies, getRefreshTokenFromCookies} from '../../utils/api';
 import {ORDER_URL, POST_METHOD} from '../../utils/constants';
 import {refreshAccessToken} from './profile-slice';
-import {IngredientType, TTokenString} from '../../utils/types';
+import {IngredientType, TNullableToken} from '../../utils/types';
 import {RootState} from '../store/store';
 
 export const fetchOrder = createAsyncThunk('orderDetails/sendOrder', async (
   orderData: string[],
   {dispatch, rejectWithValue},
 ) => {
-  let authToken: TTokenString = getAccessTokenFromCookies();
-  const sendRequestWithToken = async (token: TTokenString) => {
+  let authToken: TNullableToken = getAccessTokenFromCookies();
+  const sendRequestWithToken = async (token: TNullableToken) => {
     try {
       const response = await fetchAPI(ORDER_URL, POST_METHOD, {ingredients: orderData}, {Authorization: token});
 

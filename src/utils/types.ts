@@ -9,7 +9,9 @@ export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 export type EmailString = string;
 export type NameString = string;
 export type PasswordString = string;
-export type TTokenString = string | null;
+export type TTokenString = string;
+export type TNullableToken = TTokenString | null;
+
 
 export type TUserData = {
   email: EmailString;
@@ -42,6 +44,11 @@ export interface ErrorResponse {
   message: string;
   status: string
 }
+
+export interface IPasswordAndToken {
+  password: PasswordString;
+  token: TNullableToken
+}
 export function isErrorWithResponse(error: unknown): error is ErrorResponse {
   // Проверяем, что error является объектом и имеет внутри объект response
   if (typeof error === 'object' && error !== null) {
@@ -60,4 +67,23 @@ export function isErrorWithResponse(error: unknown): error is ErrorResponse {
   return false;
 }
 
+export interface ISuccessResponse {
+  success: boolean;
+  payload: {
+    message: string;
+  };
+}
+export interface IRejectedResponse {
+  success: boolean;
+  message: string;
+}
+export type TResponse = ISuccessResponse | IRejectedResponse;
+// Функция проверки для ISuccessResponse
+export function isISuccessResponse(object: any): object is ISuccessResponse {
+  return object.success === true && object.payload && typeof object.payload.message === 'string';
+}
 
+// Функция проверки для IRejectedResponse
+export function isIRejectedResponse(object: any): object is IRejectedResponse {
+  return object.success === false && typeof object.message === 'string';
+}
