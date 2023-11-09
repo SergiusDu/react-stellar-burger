@@ -7,6 +7,8 @@ import { registrationSlice } from "../slices/registration-form-slice";
 import { forgotPasswordFormSlice } from "../slices/forgot-password-slice";
 import { resetPasswordFormSlice } from "../slices/reset-password-slice";
 import { profileSlice } from "../slices/profile-slice";
+import {websocketMiddleware} from '../middleware/websocketMiddleware';
+import {feedSlice} from '../slices/feed-slice';
 
 /**
  * Главное хранилище приложения.
@@ -22,7 +24,10 @@ export const store = configureStore({
     forgotPasswordForm: forgotPasswordFormSlice.reducer,
     resetPasswordForm: resetPasswordFormSlice.reducer,
     profilePage: profileSlice.reducer,
+    feedSlice: feedSlice.reducer
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(websocketMiddleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

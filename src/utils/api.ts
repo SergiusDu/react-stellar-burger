@@ -175,5 +175,25 @@ export function removeObjectFromLocalStorage(objectName: string): void {
 export function isNonEmptyString(value: string | null): boolean {
   return value ? value.trim().length > 0 : false;
 }
+/**
+ * Генерирует SHA-256 хеш токена с использованием Web Crypto API.
+ * @param {string} token - Токен, который нужно захешировать.
+ * @returns {Promise<string>} Хеш токена в виде шестнадцатеричной строки.
+ */
+export async function generateTokenHash(token: string): Promise<string> {
+  // Кодируем токен в Uint8Array
+  const encoder = new TextEncoder();
+  const data = encoder.encode(token);
+
+  // Используем Web Crypto API для генерации хеша SHA-256
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+
+  // Преобразуем ArrayBuffer хеша в строку шестнадцатеричных чисел
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+
+  return hashHex;
+}
+
 
 export default fetchAPI;

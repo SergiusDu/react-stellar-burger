@@ -53,7 +53,6 @@ export const Profile: React.FC = () => {
         e.preventDefault();
         dispatch(getUserData());
     }
-    console.log(isSubmitButtonAvailable);
     return (<ProfileLayout >
         <ProfileNavigation />
         <Form

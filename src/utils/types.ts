@@ -92,3 +92,54 @@ export function isISuccessResponse(object: any): object is ISuccessResponse {
 export function isIRejectedResponse(object: any): object is IRejectedResponse {
   return object.success === false && typeof object.message === 'string';
 }
+
+export interface Order {
+  _id: string;
+  ingredients: string[];
+  status: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  number: number;
+}
+
+export interface OrderResponse {
+  success: boolean;
+  orders: Order[];
+  total: number;
+  totalToday: number;
+}
+
+/**
+ * Проверяет, соответствует ли объект интерфейсу OrderResponse.
+ *
+ * Функция выполняет проверку наличия всех необходимых свойств и их типов
+ * в предполагаемом объекте ответа заказа, который может быть получен, например,
+ * в результате вызова API. Она проверяет, что объект содержит все поля, необходимые
+ * для соответствия интерфейсу OrderResponse, включая вложенные поля в массиве orders.
+ *
+ * @param {any} object - Объект, который необходимо проверить на соответствие интерфейсу.
+ * @returns {boolean} Возвращает true, если объект соответствует интерфейсу OrderResponse, иначе false.
+ */
+export function isValidOrderResponse(object: any): object is OrderResponse {
+  return (
+    typeof object === 'object' &&
+    object !== null &&
+    typeof object.success === 'boolean' &&
+    Array.isArray(object.orders) &&
+    object.orders.every((order: any) =>
+      typeof order === 'object' &&
+      typeof order._id === 'string' &&
+      Array.isArray(order.ingredients) &&
+      order.ingredients.every((ingredient: any) => typeof ingredient === 'string') &&
+      typeof order.status === 'string' &&
+      typeof order.name === 'string' &&
+      typeof order.createdAt === 'string' &&
+      typeof order.updatedAt === 'string' &&
+      typeof order.number === 'number'
+    ) &&
+    typeof object.total === 'number' &&
+    typeof object.totalToday === 'number'
+  );
+}
+
