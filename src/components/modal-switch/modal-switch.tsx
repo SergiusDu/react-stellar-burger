@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import ProtectedRoute from '../protected-route/protected-route';
 import {
+  FEED_ORDER_ID_PATH,
   FEED_PAGE_PATH,
   FORGOT_PASSWORD_PAGE_PATH,
   INGREDIENT_BY_ID_PAGE_PATH,
@@ -39,6 +40,7 @@ import IngredientDetails from '../ingredient-details/ingredient-details';
 import {MatchParams} from '../../utils/types';
 import {AppDispatch} from '../../services/store/store';
 import {Feed} from '../../pages/feed/feed';
+import {OrderInformation} from '../order-information/order-Information';
 
 export const ModalSwitch: React.FC = () => {
   const location = useLocation<{
@@ -52,7 +54,7 @@ export const ModalSwitch: React.FC = () => {
   const handleCloseIngredientDetails = () => {
     dispatch(resetSelectedIngredient());
     dispatch(closeModal());
-    history.push(MAIN_PAGE_PATH);
+    history.goBack();
   };
 
   return (
@@ -94,12 +96,7 @@ export const ModalSwitch: React.FC = () => {
           isAuth={resetPasswordAvailability}
           failedRedirectPath={FORGOT_PASSWORD_PAGE_PATH}
         />
-        <ProtectedRoute
-          path={FEED_PAGE_PATH}
-          component={Feed}
-          isAuth={true}
-          failedRedirectPath={MAIN_PAGE_PATH}
-        />
+        <Route path={FEED_PAGE_PATH} component={Feed} />
         <Route
           path={INGREDIENT_BY_ID_PAGE_PATH}
           render={(routeProps: RouteComponentProps<MatchParams>) => (
@@ -107,6 +104,13 @@ export const ModalSwitch: React.FC = () => {
               <IngredientDetails {...routeProps} />
             </IngredientPage >
           )}
+        />
+        <Route path={FEED_ORDER_ID_PATH}
+        render={(routerProps: RouteComponentProps<MatchParams>) => (
+          <IngredientPage>
+            <OrderInformation {...routerProps} />
+          </IngredientPage>
+        )}
         />
         <Route
           exact
@@ -121,6 +125,23 @@ export const ModalSwitch: React.FC = () => {
           title={`Детали ингредиента`}
         >
           <IngredientDetails {...routeProps} />
+        </Modal >}
+      /> ||
+        <Route
+          path={FEED_ORDER_ID_PATH}
+          render={(routeProps: RouteComponentProps<MatchParams>) => <Modal
+            onClose={handleCloseIngredientDetails}
+          >
+            <OrderInformation {...routeProps} />
+          </Modal >}
+        />
+      }
+      {background && <Route
+        path={FEED_ORDER_ID_PATH}
+        render={(routeProps: RouteComponentProps<MatchParams>) => <Modal
+          onClose={handleCloseIngredientDetails}
+        >
+          <OrderInformation {...routeProps} />
         </Modal >}
       />}
     </>

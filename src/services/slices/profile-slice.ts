@@ -209,7 +209,7 @@ const initialState: ProfileState = {
   isSubmitButtonAvailable: true,
 };
 export const profileSlice = createSlice({
-  name: 'profilePage',
+  name: 'profileSlice',
   initialState,
   reducers: {
     setProfileName(state, action) {

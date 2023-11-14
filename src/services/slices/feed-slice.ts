@@ -1,41 +1,66 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {isValidOrderResponse, Order} from '../../utils/types';
+import {RootState} from '../store/store';
 
 interface feedSlice {
-  orders: Order[];
-  ordersDone: Order[];
-  ordersInProcess: Order[];
-  total: number;
-  totalToday: number;
+  allOrders: Order[];
+  allDoneOrders: Order[];
+  allOrdersInProcess: Order[];
+  allTotal: number;
+  allTotalToday: number;
+  profileOrders: Order[];
+  profileDoneOrders: Order[];
+  profileOrdersInProcess: Order[];
+  profileTotal: number;
+  profileTotalToday: number;
   connected: boolean;
 }
 
 const initialState: feedSlice = {
-  orders: [], ordersDone: [], ordersInProcess: [], total: 0, totalToday: 0, connected: false,
+  allOrders: [], allDoneOrders: [], allOrdersInProcess: [], profileOrders: [], profileDoneOrders: [], profileOrdersInProcess: [], profileTotal: 0, profileTotalToday: 0, allTotal: 0, allTotalToday: 0, connected: false,
 };
 export const feedSlice = createSlice({
   name: 'feedSlice', initialState, reducers: {
-    updateOrdersInformation(state, action) {
+    updateProfileOrdersInformation(state, action) {
       if (isValidOrderResponse(action.payload)) {
-        state.orders = action.payload.orders;
-        state.total = action.payload.total;
-        state.totalToday = action.payload.totalToday;
-        state.ordersDone = action.payload.orders.filter(
+        state.profileOrders = action.payload.orders.sort().reverse();
+        state.profileTotal = action.payload.total;
+        state.profileTotalToday = action.payload.totalToday;
+        state.profileDoneOrders = action.payload.orders.filter(
           order => order.status === 'done');
-        state.ordersInProcess = action.payload.orders.filter(
-          order => order.status !== 'done');
+        state.profileOrdersInProcess = action.payload.orders.filter(
+          order => order.status === 'pending');
       }
-    }, setOrderData(state, action) {
-      state.orders = action.payload;
+    },
+    updateAllOrdersInformation(state, action) {
+      if (isValidOrderResponse(action.payload)) {
+        state.allOrders = action.payload.orders.sort().reverse();
+        state.allTotal = action.payload.total;
+        state.allTotalToday = action.payload.totalToday;
+        state.profileDoneOrders = action.payload.orders.filter(
+          order => order.status === 'done');
+        state.profileOrdersInProcess = action.payload.orders.filter(
+          order => order.status === 'pending');
+      }
+    },
+    setOrderData(state, action) {
+      state.profileOrders = action.payload;
     }, setTotalOrders(state, action) {
-      state.total = action.payload;
+      state.profileTotal = action.payload;
     }, setTotalTodayOrders(state, action) {
-      state.totalToday = action.payload;
+      state.profileTotalToday = action.payload;
     },
   }, extraReducers: builder => {
   },
 });
 
 export const {
-  updateOrdersInformation, setOrderData, setTotalOrders, setTotalTodayOrders,
+  updateProfileOrdersInformation, updateAllOrdersInformation, setOrderData, setTotalOrders, setTotalTodayOrders,
 } = feedSlice.actions;
+
+export const selectOrders = (state: RootState) => state.feedSlice.profileOrders;
+export const selectAllOrders = (state: RootState) => state.feedSlice.allOrders;
+export const selectTotalTodayOrders = (state: RootState) => state.feedSlice.profileTotalToday;
+export const selectAllTotalTodayOrders = (state: RootState) => state.feedSlice.allTotalToday;
+export const selectTotalOrders = (state: RootState) => state.feedSlice.profileTotal;
+export const selectAllTotalOrders = (state: RootState) => state.feedSlice.allTotal;

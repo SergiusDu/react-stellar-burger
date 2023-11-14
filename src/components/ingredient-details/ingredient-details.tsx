@@ -9,11 +9,14 @@ import {
   selectIngredients,
   setSelectedIngredient,
 } from '../../services/slices/ingredient-slice';
-import {IngredientType} from '../../utils/types';
+import {IngredientType, MatchParams} from '../../utils/types';
 import {AppDispatch} from '../../services/store/store';
+import {RouteComponentProps} from 'react-router-dom';
 
+interface IngredientDetailsProps extends RouteComponentProps<MatchParams> {
+}
 
-export const IngredientDetails: React.FC<any> = ({match}) => {
+export const IngredientDetails: React.FC<IngredientDetailsProps> = ({match}) => {
   const {id} = match.params;
   const dispatch = useDispatch<AppDispatch>();
   const ingredients: IngredientType[] = useSelector(selectIngredients);
@@ -28,44 +31,46 @@ export const IngredientDetails: React.FC<any> = ({match}) => {
       dispatch(resetSelectedIngredient());
     };
   }, [ingredients, id, dispatch]);
-  return (ingredient && <figure className={styles.ingredient_details}>
-    <picture >
-      <source
-        media="(min-width: 1000px)"
-        srcSet={ingredient.image_large}
-      />
-      <source
-        media="(min-width: 600px)"
-        srcSet={ingredient.image_mobile}
-      />
-      <img
-        className={`mb-4 ${styles.ingredient_image}`}
-        src={ingredient.image}
-        alt={ingredient.name}
-      />
-    </picture >
-    <figcaption >
-      <h2 className={`text text_type_main-medium ${styles.ingredient_name}`}>{ingredient.name}</h2 >
-      <dl className={`mt-8 mb-15 ${styles.ingredient_composition}`}>
-        <IngredientData
-          name={'Калории,ккал'}
-          description={ingredient.calories}
+  return (
+    ingredient && <figure className={styles.ingredient_details}>
+      <picture >
+        <source
+          media="(min-width: 1000px)"
+          srcSet={ingredient.image_large}
         />
-        <IngredientData
-          name={'Белки, г'}
-          description={ingredient.proteins}
+        <source
+          media="(min-width: 600px)"
+          srcSet={ingredient.image_mobile}
         />
-        <IngredientData
-          name={'Жиры, г'}
-          description={ingredient.fat}
+        <img
+          className={`mb-4 ${styles.ingredient_image}`}
+          src={ingredient.image}
+          alt={ingredient.name}
         />
-        <IngredientData
-          name={'Углеводы, г'}
-          description={ingredient.carbohydrates}
-        />
-      </dl >
-    </figcaption >
-  </figure >);
+      </picture >
+      <figcaption >
+        <h2 className={`text text_type_main-medium ${styles.ingredient_name}`}>{ingredient.name}</h2 >
+        <dl className={`mt-8 mb-15 ${styles.ingredient_composition}`}>
+          <IngredientData
+            name={'Калории,ккал'}
+            description={ingredient.calories}
+          />
+          <IngredientData
+            name={'Белки, г'}
+            description={ingredient.proteins}
+          />
+          <IngredientData
+            name={'Жиры, г'}
+            description={ingredient.fat}
+          />
+          <IngredientData
+            name={'Углеводы, г'}
+            description={ingredient.carbohydrates}
+          />
+        </dl >
+      </figcaption >
+    </figure >
+  );
 };
 
 export default IngredientDetails;

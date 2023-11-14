@@ -24,17 +24,19 @@ const App: React.FC = () => {
     dispatch(setProfilePageAvailable());
     refreshTokensIfNeeded(dispatch);
     const clearAccessToken = getAccessTokenFromCookies()?.split(' ')[1];
+    dispatch({type: 'feedSlice/WEBSOCKET_CONNECT'});
     if (isProfileAvailable && typeof clearAccessToken === 'string') {
-      console.log('ЗАПУСКАЮ ВЕБСОКЕТ');
-      dispatch({
-        type: 'feedSlice/WEBSOCKET_CONNECT', payload: clearAccessToken,
-      });
+      // console.log('ЗАПУСКАЮ ВЕБСОКЕТ');
+      // dispatch({
+      //   type: 'profileSlice/WEBSOCKET_CONNECT', payload: clearAccessToken,
+      // });
     }
     else {
-      dispatch({type: 'feedSlice/WEBSOCKET_DISCONNECT'});
+      // dispatch({type: 'profileSlice/WEBSOCKET_DISCONNECT'});
     }
     return () => {
-      dispatch({type: 'feedSlice/WEBSOCKET_DISCONNECT'});
+      dispatch({type: 'profileSlice/WEBSOCKET_DISCONNECT'});
+      dispatch({type:'feedSlice/WEBSOCKET_DISCONNECT'})
     };
   }, [dispatch, isProfileAvailable]);
 

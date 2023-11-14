@@ -24,14 +24,39 @@ export type IngredientType = {
   readonly price: number;
   readonly image: string;
   readonly uniqueId?: string;
-  readonly proteins: string,
-  readonly fat: string,
-  readonly carbohydrates: string,
-  readonly calories: string,
+  readonly proteins: number,
+  readonly fat: number,
+  readonly carbohydrates: number,
+  readonly calories: number,
   readonly image_mobile: string,
   readonly image_large: string
   count?: number
 };
+
+/**
+ * Проверяет, соответствует ли объект типу IngredientType.
+ *
+ * @param {any} object - Объект для проверки.
+ * @returns {boolean} Возвращает `true`, если объект соответствует типу `IngredientType`, иначе `false`.
+ */
+export function isValidIngredient(object: any): object is IngredientType {
+  // Быстрая проверка на объект и не null
+  if (typeof object !== 'object' || object === null) return false;
+
+  // Проверка наличия всех обязательных строковых свойств
+  const requiredStringProps = ['_id', 'name', 'type', 'image', 'image_mobile', 'image_large'];
+  if (!requiredStringProps.every(prop => typeof object[prop] === 'string')) return false;
+
+  // Проверка числовых свойств
+  const requiredNumberProps = ['proteins', 'fat', 'carbohydrates', 'calories', 'price'];
+  if (!requiredNumberProps.every(prop => typeof object[prop] === 'number')) return false;
+
+  // Проверка типа ингредиента
+  const ingredientTypes = [BUN_TYPE, MAIN_TYPE, SAUCE_TYPE];
+  if (!ingredientTypes.includes(object.type)) return false;
+  return true;
+}
+
 
 export interface ErrorResponse {
   response: {

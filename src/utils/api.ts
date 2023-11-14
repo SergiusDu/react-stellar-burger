@@ -19,8 +19,9 @@ type Headers = Record<string, string> | Record<string, TNullableToken> | null;
  * @param headers - Необязательный объект с дополнительными заголовками запроса.
  * @returns Промис, разрешающийся в данные ответа.
  */
-async function fetchAPI(
-  url: string, method: HttpMethod, bodyData: BodyData = null,
+async function fetchAPI(url: string,
+  method: HttpMethod,
+  bodyData: BodyData = null,
   headers: Headers = null,
 ): Promise<any> {
   const options: RequestInit = {
@@ -65,7 +66,9 @@ export async function refreshTokensIfNeeded(dispatch: AppDispatch) {
  * @returns Полный URL с параметрами запроса.
  */
 export function createUrlPathWithParams(
-  baseUrl: string, params: Record<string, string>) {
+  baseUrl: string,
+  params: Record<string, string>,
+) {
   const searchParams = new URLSearchParams();
   for (const [key, value] of Object.entries(params)) {
     searchParams.append(key, value);
@@ -80,7 +83,10 @@ export function createUrlPathWithParams(
  * @param maxAge - Максимальное время жизни куки в секундах.
  */
 export function setCookie(
-  cookieName: string, cookieValue: string, maxAge: number) {
+  cookieName: string,
+  cookieValue: string,
+  maxAge: number,
+) {
   document.cookie = `${cookieName}=${cookieValue}; max-age=${maxAge};`;
 }
 
@@ -156,7 +162,10 @@ export function checkAuthToken(): boolean {
   return !!getCookieByName('accessToken');
 }
 
-export function saveObjectInLocalStorage(objectName: string, object: Object) {
+export function saveObjectInLocalStorage(
+  objectName: string,
+  object: Object,
+) {
   localStorage.setItem(objectName, JSON.stringify(object));
 }
 
@@ -175,6 +184,7 @@ export function removeObjectFromLocalStorage(objectName: string): void {
 export function isNonEmptyString(value: string | null): boolean {
   return value ? value.trim().length > 0 : false;
 }
+
 /**
  * Генерирует SHA-256 хеш токена с использованием Web Crypto API.
  * @param {string} token - Токен, который нужно захешировать.
@@ -190,10 +200,51 @@ export async function generateTokenHash(token: string): Promise<string> {
 
   // Преобразуем ArrayBuffer хеша в строку шестнадцатеричных чисел
   const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+  const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0'))
+    .join('');
 
   return hashHex;
 }
 
+/**
+ * Функция для подсчета количества уникальных идентификаторов в списке.
+ * @param idList Список идентификаторов.
+ * @returns Словарь с идентификаторами в качестве ключей и их количеством в
+ *   качестве значений.
+ */
+export function getUniqueIdsWithCount(idList: string[]): Record<string, number> {
+  const count: Record<string, number> = {};
+
+  idList.forEach((id) => {
+    if (count[id]) {
+      count[id] += 1;
+    }
+    else {
+      count[id] = 1;
+    }
+  });
+
+  return count;
+}
+
+/**
+ * Переводит статус заказа на русский язык.
+ *
+ * @param {string} status Статус заказа, который нужно перевести.
+ * @returns {string} Переведенный статус заказа.
+ * @throws {Error} Если статус заказа неизвестен.
+ */
+export function translateOrderStatus(status: string): string {
+  switch (status) {
+    case 'done':
+      return 'Выполнен';
+    case 'pending':
+      return 'Готовится';
+    case 'created':
+      return 'Создан';
+    default:
+      throw new Error('Неизвестный статус заказа');
+  }
+}
 
 export default fetchAPI;
