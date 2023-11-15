@@ -20,7 +20,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 }) => {
   const location = useLocation();
   return (
-    <Route
+    <Route exact
       {...rest}
       render={(props): ReactElement => isAuth ?
         (

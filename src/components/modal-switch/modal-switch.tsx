@@ -48,6 +48,7 @@ import {
   selectAllOrders,
   selectProfileOrders,
 } from '../../services/slices/feed-slice';
+import {getAccessTokenFromCookies} from '../../utils/api';
 
 export const ModalSwitch: React.FC = () => {
   const location = useLocation<{
@@ -55,7 +56,9 @@ export const ModalSwitch: React.FC = () => {
   }>();
   const background = location.state && location.state.background;
   const resetPasswordAvailability = useSelector(resetPasswordPageAvailability);
-  const profileAvailability = useSelector(profilePageAvailability);
+  const isProfileAvailable = useSelector(profilePageAvailability);
+  const profileAvailability = !!getAccessTokenFromCookies()
+    || isProfileAvailable;
   const dispatch = useDispatch<AppDispatch>();
   const history = useHistory();
   const allOrders = useSelector(selectAllOrders);
@@ -86,6 +89,16 @@ export const ModalSwitch: React.FC = () => {
           component={ForgotPassword}
           isAuth={!profileAvailability}
           failedRedirectPath={MAIN_PAGE_PATH}
+        />
+        <ProtectedRoute
+          exact
+          component={(routeProps: RouteComponentProps<MatchParams>) =>
+            <IngredientPage >
+              <OrderInformation orders={profileOrders} {...routeProps} />
+            </IngredientPage >}
+          path={PROFILE_ORDER_ID_PATH}
+          failedRedirectPath={LOGIN_PAGE_PATH}
+          isAuth={profileAvailability}
         />
         <ProtectedRoute
           exact
@@ -134,6 +147,7 @@ export const ModalSwitch: React.FC = () => {
             </IngredientPage >
           )}
         />
+
         <Route
           exact
           component={Home}

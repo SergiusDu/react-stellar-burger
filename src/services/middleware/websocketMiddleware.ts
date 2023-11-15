@@ -5,11 +5,23 @@ import {
 } from '../slices/feed-slice';
 import {getAccessTokenFromCookies} from '../../utils/api';
 import {isValidOrderResponse} from '../../utils/types';
+import {
+  CONNECT_FEED_WEBSOCKET,
+  CONNECT_PROFILE_WEBSOCKET,
+  DISCONNECT_FEED_WEBSOCKET,
+  DISCONNECT_PROFILE_WEBSOCKET, GET_ALL_ORDERS_WS_ENDPOINT,
+  GET_ORDERS_WS_ENDPOINT,
+} from '../../utils/constants';
 
-type WebsocketAction = {
-  type: string;
-  payload?: any;
-}
+type WebSocketConnectAction = {
+  type: typeof CONNECT_PROFILE_WEBSOCKET | typeof CONNECT_FEED_WEBSOCKET;
+  payload: string;
+};
+type WebSocketDisconnectAction = {
+  type: typeof DISCONNECT_PROFILE_WEBSOCKET | typeof DISCONNECT_FEED_WEBSOCKET;
+};
+
+type WebsocketAction = WebSocketConnectAction | WebSocketDisconnectAction;
 
 export const websocketMiddleware = (store: MiddlewareAPI) => {
   let profileOrdersWebSocket: WebSocket | null = null;
@@ -24,7 +36,7 @@ export const websocketMiddleware = (store: MiddlewareAPI) => {
     // Устанавливаем задержку перед попыткой переподключения
     reconnectTimeout = setTimeout(() => {
       store.dispatch({
-        type: 'feedSlice/WEBSOCKET_CONNECT',
+        type: CONNECT_FEED_WEBSOCKET,
         payload: actionPayload,
       });
     }, 5000); // Переподключаемся через 5 секунд
@@ -81,12 +93,11 @@ export const websocketMiddleware = (store: MiddlewareAPI) => {
   };
   return (next: Dispatch<AnyAction>) => (action: WebsocketAction) => {
     switch (action.type) {
-      case 'profileSlice/WEBSOCKET_CONNECT':
+      case CONNECT_PROFILE_WEBSOCKET:
         if (profileOrdersWebSocket !== null) {
           profileOrdersWebSocket.close();
         }
-        const GET_ORDERS_WS_ENDPOINT = `wss://norma.nomoreparties.space/orders?token=${action.payload}`;
-        profileOrdersWebSocket = new WebSocket(GET_ORDERS_WS_ENDPOINT);
+        profileOrdersWebSocket = new WebSocket(GET_ORDERS_WS_ENDPOINT + `?token=${action.payload}\``);
         profileOrdersWebSocket.onopen =
           onOpenProfileSocket(profileOrdersWebSocket, store);
         profileOrdersWebSocket.onmessage =
@@ -98,17 +109,17 @@ export const websocketMiddleware = (store: MiddlewareAPI) => {
         profileOrdersWebSocket.onerror =
           onError(profileOrdersWebSocket, store);
         break;
-      case 'profileSlice/WEBSOCKET_DISCONNECT':
+      case DISCONNECT_PROFILE_WEBSOCKET:
         if (profileOrdersWebSocket !== null) {
           profileOrdersWebSocket.close();
         }
         profileOrdersWebSocket = null;
         break;
-      case 'feedSlice/WEBSOCKET_CONNECT':
+      case CONNECT_FEED_WEBSOCKET:
         if (feedOrdersWebSocket !== null) {
           feedOrdersWebSocket.close();
         }
-        const GET_ALL_ORDERS_WS_ENDPOINT = `wss://norma.nomoreparties.space/orders/all`;
+
         feedOrdersWebSocket = new WebSocket(GET_ALL_ORDERS_WS_ENDPOINT);
         feedOrdersWebSocket.onmessage =
           onMessageFeedSocket(feedOrdersWebSocket, store);
@@ -118,7 +129,7 @@ export const websocketMiddleware = (store: MiddlewareAPI) => {
         feedOrdersWebSocket.onclose = onClose(feedOrdersWebSocket, store);
 
         break;
-      case 'feedSlice/WEBSOCKET_DISCONNECT': {
+      case DISCONNECT_FEED_WEBSOCKET: {
         if (feedOrdersWebSocket !== null) {
           feedOrdersWebSocket.close();
         }

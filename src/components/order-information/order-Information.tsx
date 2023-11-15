@@ -2,11 +2,11 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {isValidIngredient, MatchParams, Order} from '../../utils/types';
 import {RouteComponentProps} from 'react-router-dom';
 import {useSelector} from 'react-redux';
-import {selectAllOrders, selectProfileOrders} from '../../services/slices/feed-slice';
 import {selectIngredients} from '../../services/slices/ingredient-slice';
 import {getUniqueIdsWithCount, translateOrderStatus} from '../../utils/api';
 import {
-  CurrencyIcon, FormattedDate,
+  CurrencyIcon,
+  FormattedDate,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './order-information.module.css';
 import {
@@ -17,7 +17,10 @@ interface OrderProps extends RouteComponentProps<MatchParams> {
   orders: Order[];
 }
 
-export const OrderInformation: React.FC<OrderProps> = ({match, orders}) => {
+export const OrderInformation: React.FC<OrderProps> = ({
+  match,
+  orders,
+}) => {
   const {id} = match.params;
 
   const ingredients = useSelector(selectIngredients);
@@ -29,7 +32,7 @@ export const OrderInformation: React.FC<OrderProps> = ({match, orders}) => {
       setSelectedOrder(foundedOrder);
     }
   }, [orders, id]);
-  const ingredientELements = useMemo(() => {
+  const ingredientElements = useMemo(() => {
     let result: JSX.Element[] = [];
     let orderIngredients = selectedOrder?.ingredients;
     if (!orderIngredients || !ingredients) {
@@ -70,14 +73,17 @@ export const OrderInformation: React.FC<OrderProps> = ({match, orders}) => {
       <h2 className={`text text_type_main-medium mt-10`}>
         {selectedOrder.name}
       </h2 >
-      <p className={`text text_type_main-small mt-3 ${selectedOrder.status === 'done'? 'text_color_success' : null}`}>
+      <p
+        className={`text text_type_main-small mt-3 ${selectedOrder.status
+        === 'done' ? 'text_color_success' : null}`}
+      >
         {translateOrderStatus(selectedOrder.status)}
       </p >
       <h3 className="text text_type_main-medium mt-15 mb-6">
         Состав:
       </h3 >
       <ul className={`${styles.scrollable_container} pr-24`}>
-        {ingredientELements}
+        {ingredientElements}
       </ul >
       <div className={`${styles.row} mt-10`}>
         <FormattedDate
