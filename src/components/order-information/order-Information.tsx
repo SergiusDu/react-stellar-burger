@@ -2,7 +2,7 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {isValidIngredient, MatchParams, Order} from '../../utils/types';
 import {RouteComponentProps} from 'react-router-dom';
 import {useSelector} from 'react-redux';
-import {selectAllOrders, selectOrders} from '../../services/slices/feed-slice';
+import {selectAllOrders, selectProfileOrders} from '../../services/slices/feed-slice';
 import {selectIngredients} from '../../services/slices/ingredient-slice';
 import {getUniqueIdsWithCount, translateOrderStatus} from '../../utils/api';
 import {
@@ -14,20 +14,21 @@ import {
 } from '../rounded-ingredient-image/rounded-ingredient-image';
 
 interface OrderProps extends RouteComponentProps<MatchParams> {
+  orders: Order[];
 }
 
-export const OrderInformation: React.FC<OrderProps> = ({match}) => {
+export const OrderInformation: React.FC<OrderProps> = ({match, orders}) => {
   const {id} = match.params;
-  const allOrders = useSelector(selectAllOrders);
+
   const ingredients = useSelector(selectIngredients);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [totalPrice, setTotalPrice] = useState<number | null>(0);
   useEffect(() => {
-    const foundedOrder = allOrders.find(order => order._id === id);
+    const foundedOrder = orders.find(order => order._id === id);
     if (foundedOrder) {
       setSelectedOrder(foundedOrder);
     }
-  }, [allOrders, id]);
+  }, [orders, id]);
   const ingredientELements = useMemo(() => {
     let result: JSX.Element[] = [];
     let orderIngredients = selectedOrder?.ingredients;

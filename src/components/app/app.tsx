@@ -26,13 +26,13 @@ const App: React.FC = () => {
     const clearAccessToken = getAccessTokenFromCookies()?.split(' ')[1];
     dispatch({type: 'feedSlice/WEBSOCKET_CONNECT'});
     if (isProfileAvailable && typeof clearAccessToken === 'string') {
-      // console.log('ЗАПУСКАЮ ВЕБСОКЕТ');
-      // dispatch({
-      //   type: 'profileSlice/WEBSOCKET_CONNECT', payload: clearAccessToken,
-      // });
+      console.log('ЗАПУСКАЮ ВЕБСОКЕТ');
+      dispatch({
+        type: 'profileSlice/WEBSOCKET_CONNECT', payload: clearAccessToken,
+      });
     }
     else {
-      // dispatch({type: 'profileSlice/WEBSOCKET_DISCONNECT'});
+      dispatch({type: 'profileSlice/WEBSOCKET_DISCONNECT'});
     }
     return () => {
       dispatch({type: 'profileSlice/WEBSOCKET_DISCONNECT'});

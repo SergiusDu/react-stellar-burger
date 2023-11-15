@@ -6,17 +6,17 @@ import {
 import {useDispatch} from 'react-redux';
 import {logoutUser} from '../../services/slices/profile-slice';
 import {
-    MAIN_PAGE_PATH,
-    ORDER_LIST_PAGE_PATH,
-    PROFILE_PAGE_PATH,
+  MAIN_PAGE_PATH,
+  ORDER_LIST_PAGE_PATH, PROFILE_ORDER_ID_PATH, PROFILE_ORDERS_PATH,
+  PROFILE_PAGE_PATH,
 } from '../../utils/constants';
 import {AppDispatch} from '../../services/store/store';
 
 export const ProfileNavigation: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  function logoutHandler() {
-    dispatch(logoutUser());
+  async function logoutHandler() {
+    await dispatch(logoutUser());
   }
 
   return (
@@ -27,7 +27,7 @@ export const ProfileNavigation: React.FC = () => {
           linkName="Профиль"
         />
         <ProfileNavigationLink
-          to={ORDER_LIST_PAGE_PATH}
+          to={PROFILE_ORDERS_PATH}
           linkName="История заказов"
         />
         <ProfileNavigationLink

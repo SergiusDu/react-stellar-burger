@@ -6,7 +6,7 @@ import {
   selectAllOrders,
   selectAllTotalOrders,
   selectAllTotalTodayOrders,
-  selectOrders,
+  selectProfileOrders,
   selectTotalOrders,
   selectTotalTodayOrders,
 } from '../../services/slices/feed-slice';
@@ -14,6 +14,7 @@ import styles from './feed.module.css';
 import {useHistory, useLocation} from 'react-router-dom';
 import {Order} from '../../utils/types';
 import {FEED_PAGE_PATH} from '../../utils/constants';
+import {OrderList} from '../../components/order-list/order-list';
 
 export const Feed: React.FC = () => {
   const orders = useSelector(selectAllOrders);
@@ -28,14 +29,6 @@ export const Feed: React.FC = () => {
       state: {background: location},
     });
   }
-
-  const ordersCards = useMemo(() => {
-    return orders.map(order => <FeedCard
-      onClick={() => navigateOrderClick(order)}
-      order={order}
-      key={order._id}
-    />);
-  }, [orders]);
   const readyOrdersNumbers = useMemo(() => {
     let readyOrders: JSX.Element[] = [];
     orders.forEach(order => {
@@ -64,9 +57,7 @@ export const Feed: React.FC = () => {
   }, [navigateOrderClick, orders]);
   return ( orders.length ?
     <ProfileLayout >
-      <ul className={`${styles.scrollable_container}`}>
-        {ordersCards}
-      </ul >
+      <OrderList orders={orders} navigateOnOrderClick={navigateOrderClick} />
       <div className="ml-15">
         <div className={`${styles.row} mb-15`}>
           <div >
@@ -84,11 +75,11 @@ export const Feed: React.FC = () => {
             </ul >
           </div >
         </div >
-        <h2 className={`text text_type_main-medium`}>Выполнено за все
-                                                     время:</h2 >
+        <h2 className={`text text_type_main-medium`}>Выполнено за
+                                                     сегодня:</h2 >
         <p className={`text text_type_digits-large ${styles.text_shadow}`}>{totalOrders}</p >
-        <h2 className={`text text_type_main-medium mt-15`}>Выполнено за
-                                                           сегодня:</h2 >
+        <h2 className={`text text_type_main-medium mt-15`}>Выполнено за все
+                                                           время:</h2 >
         <p className={`text text_type_digits-large ${styles.text_shadow}`}>{totalTodayOrders}</p >
       </div >
     </ProfileLayout > : null

@@ -10,6 +10,7 @@ export const ORDER_URL: string = `${BASE_URL}/orders`;
 export const GET_USER_DATA_ENDPOINT: string = `${BASE_URL}/auth/user`;
 export const MAIN_PAGE_PATH: string = '/';
 export const PROFILE_PAGE_PATH: string = '/profile';
+export const PROFILE_ORDERS_PATH: string = '/profile/orders';
 export const PROFILE_ORDER_ID_PATH: string = '/profile/orders/:id';
 export const FEED_PAGE_PATH: string = '/feed';
 export const FEED_ORDER_ID_PATH: string = '/feed/:id';

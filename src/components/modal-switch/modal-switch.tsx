@@ -14,6 +14,8 @@ import {
   INGREDIENT_BY_ID_PAGE_PATH,
   LOGIN_PAGE_PATH,
   MAIN_PAGE_PATH,
+  PROFILE_ORDER_ID_PATH,
+  PROFILE_ORDERS_PATH,
   PROFILE_PAGE_PATH,
   REGISTER_PAGE_PATH,
   RESET_PASSWORD_PAGE_PATH,
@@ -41,6 +43,11 @@ import {MatchParams} from '../../utils/types';
 import {AppDispatch} from '../../services/store/store';
 import {Feed} from '../../pages/feed/feed';
 import {OrderInformation} from '../order-information/order-Information';
+import {ProfileOrders} from '../../pages/profile-orders/profile-orders';
+import {
+  selectAllOrders,
+  selectProfileOrders,
+} from '../../services/slices/feed-slice';
 
 export const ModalSwitch: React.FC = () => {
   const location = useLocation<{
@@ -51,6 +58,8 @@ export const ModalSwitch: React.FC = () => {
   const profileAvailability = useSelector(profilePageAvailability);
   const dispatch = useDispatch<AppDispatch>();
   const history = useHistory();
+  const allOrders = useSelector(selectAllOrders);
+  const profileOrders = useSelector(selectProfileOrders);
   const handleCloseIngredientDetails = () => {
     dispatch(resetSelectedIngredient());
     dispatch(closeModal());
@@ -79,8 +88,15 @@ export const ModalSwitch: React.FC = () => {
           failedRedirectPath={MAIN_PAGE_PATH}
         />
         <ProtectedRoute
+          exact
           path={PROFILE_PAGE_PATH}
           component={Profile}
+          isAuth={profileAvailability}
+          failedRedirectPath={LOGIN_PAGE_PATH}
+        />
+        <ProtectedRoute
+          path={PROFILE_ORDERS_PATH}
+          component={ProfileOrders}
           isAuth={profileAvailability}
           failedRedirectPath={LOGIN_PAGE_PATH}
         />
@@ -96,7 +112,6 @@ export const ModalSwitch: React.FC = () => {
           isAuth={resetPasswordAvailability}
           failedRedirectPath={FORGOT_PASSWORD_PAGE_PATH}
         />
-        <Route path={FEED_PAGE_PATH} component={Feed} />
         <Route
           path={INGREDIENT_BY_ID_PAGE_PATH}
           render={(routeProps: RouteComponentProps<MatchParams>) => (
@@ -105,12 +120,19 @@ export const ModalSwitch: React.FC = () => {
             </IngredientPage >
           )}
         />
-        <Route path={FEED_ORDER_ID_PATH}
-        render={(routerProps: RouteComponentProps<MatchParams>) => (
-          <IngredientPage>
-            <OrderInformation {...routerProps} />
-          </IngredientPage>
-        )}
+        <Route
+          exact
+          path={FEED_PAGE_PATH}
+          component={Feed}
+        />
+        <Route
+          exact
+          path={FEED_ORDER_ID_PATH}
+          render={(routerProps: RouteComponentProps<MatchParams>) => (
+            <IngredientPage >
+              <OrderInformation orders={allOrders} {...routerProps} />
+            </IngredientPage >
+          )}
         />
         <Route
           exact
@@ -126,23 +148,24 @@ export const ModalSwitch: React.FC = () => {
         >
           <IngredientDetails {...routeProps} />
         </Modal >}
-      /> ||
-        <Route
-          path={FEED_ORDER_ID_PATH}
-          render={(routeProps: RouteComponentProps<MatchParams>) => <Modal
-            onClose={handleCloseIngredientDetails}
-          >
-            <OrderInformation {...routeProps} />
-          </Modal >}
-        />
-      }
+      />}
       {background && <Route
         path={FEED_ORDER_ID_PATH}
         render={(routeProps: RouteComponentProps<MatchParams>) => <Modal
           onClose={handleCloseIngredientDetails}
         >
-          <OrderInformation {...routeProps} />
+          <OrderInformation {...routeProps} orders={allOrders} />
         </Modal >}
+      />}
+      {background && profileAvailability && <ProtectedRoute
+        component={(routeProps: RouteComponentProps<MatchParams>) => <Modal
+          onClose={handleCloseIngredientDetails}
+        >
+          <OrderInformation orders={profileOrders} {...routeProps} />
+        </Modal >}
+        path={PROFILE_ORDER_ID_PATH}
+        failedRedirectPath={LOGIN_PAGE_PATH}
+        isAuth={profileAvailability}
       />}
     </>
   );

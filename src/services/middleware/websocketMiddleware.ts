@@ -66,13 +66,13 @@ export const websocketMiddleware = (store: MiddlewareAPI) => {
       store.dispatch(updateAllOrdersInformation(response));
     }
   };
-  const onCloseFeedSocket = (
+  const onClose = (
     ws: WebSocket,
     store: MiddlewareAPI,
   ) => (evt: CloseEvent) => {
-
+    console.log(evt);
   };
-  const onErrorProfileSocket = (
+  const onError = (
     ws: WebSocket,
     store: MiddlewareAPI,
   ) => (evt: any) => {
@@ -96,7 +96,7 @@ export const websocketMiddleware = (store: MiddlewareAPI) => {
             GET_ORDERS_WS_ENDPOINT,
           );
         profileOrdersWebSocket.onerror =
-          onErrorProfileSocket(profileOrdersWebSocket, store);
+          onError(profileOrdersWebSocket, store);
         break;
       case 'profileSlice/WEBSOCKET_DISCONNECT':
         if (profileOrdersWebSocket !== null) {
@@ -113,7 +113,10 @@ export const websocketMiddleware = (store: MiddlewareAPI) => {
         feedOrdersWebSocket.onmessage =
           onMessageFeedSocket(feedOrdersWebSocket, store);
         feedOrdersWebSocket.onclose =
-          onCloseFeedSocket(feedOrdersWebSocket, store);
+          onClose(feedOrdersWebSocket, store);
+        feedOrdersWebSocket.onerror = onError(feedOrdersWebSocket, store);
+        feedOrdersWebSocket.onclose = onClose(feedOrdersWebSocket, store);
+
         break;
       case 'feedSlice/WEBSOCKET_DISCONNECT': {
         if (feedOrdersWebSocket !== null) {

@@ -58,7 +58,7 @@ export const {
   updateProfileOrdersInformation, updateAllOrdersInformation, setOrderData, setTotalOrders, setTotalTodayOrders,
 } = feedSlice.actions;
 
-export const selectOrders = (state: RootState) => state.feedSlice.profileOrders;
+export const selectProfileOrders = (state: RootState) => state.feedSlice.profileOrders;
 export const selectAllOrders = (state: RootState) => state.feedSlice.allOrders;
 export const selectTotalTodayOrders = (state: RootState) => state.feedSlice.profileTotalToday;
 export const selectAllTotalTodayOrders = (state: RootState) => state.feedSlice.allTotalToday;
