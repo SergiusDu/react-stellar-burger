@@ -97,7 +97,7 @@ export const websocketMiddleware = (store: MiddlewareAPI) => {
         if (profileOrdersWebSocket !== null) {
           profileOrdersWebSocket.close();
         }
-        profileOrdersWebSocket = new WebSocket(GET_ORDERS_WS_ENDPOINT + `?token=${action.payload}\``);
+        profileOrdersWebSocket = new WebSocket(`wss://norma.nomoreparties.space/orders?token=${action.payload}`);
         profileOrdersWebSocket.onopen =
           onOpenProfileSocket(profileOrdersWebSocket, store);
         profileOrdersWebSocket.onmessage =

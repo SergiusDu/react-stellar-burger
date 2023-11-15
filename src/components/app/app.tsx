@@ -14,6 +14,11 @@ import {fetchIngredients} from '../../services/slices/ingredient-slice';
 import AppHeader from '../app-header/app-header';
 import {ModalSwitch} from '../modal-switch/modal-switch';
 import {AppDispatch} from '../../services/store/store';
+import {
+  CONNECT_FEED_WEBSOCKET,
+  CONNECT_PROFILE_WEBSOCKET, DISCONNECT_FEED_WEBSOCKET,
+  DISCONNECT_PROFILE_WEBSOCKET,
+} from '../../utils/constants';
 
 const App: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -24,19 +29,19 @@ const App: React.FC = () => {
     dispatch(setProfilePageAvailable());
     refreshTokensIfNeeded(dispatch);
     const clearAccessToken = getAccessTokenFromCookies()?.split(' ')[1];
-    dispatch({type: 'feedSlice/WEBSOCKET_CONNECT'});
+    dispatch({type: CONNECT_FEED_WEBSOCKET});
     if (isProfileAvailable && typeof clearAccessToken === 'string') {
       console.log('ЗАПУСКАЮ ВЕБСОКЕТ');
       dispatch({
-        type: 'profileSlice/WEBSOCKET_CONNECT', payload: clearAccessToken,
+        type: CONNECT_PROFILE_WEBSOCKET, payload: clearAccessToken,
       });
     }
     else {
-      dispatch({type: 'profileSlice/WEBSOCKET_DISCONNECT'});
+      dispatch({type: DISCONNECT_PROFILE_WEBSOCKET});
     }
     return () => {
-      dispatch({type: 'profileSlice/WEBSOCKET_DISCONNECT'});
-      dispatch({type:'feedSlice/WEBSOCKET_DISCONNECT'})
+      dispatch({type: DISCONNECT_PROFILE_WEBSOCKET});
+      dispatch({type: DISCONNECT_FEED_WEBSOCKET})
     };
   }, [dispatch, isProfileAvailable]);
 
