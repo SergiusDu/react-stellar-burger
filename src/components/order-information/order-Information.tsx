@@ -1,7 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {isValidIngredient, MatchParams, Order} from '../../utils/types';
 import {RouteComponentProps} from 'react-router-dom';
-import {useSelector} from 'react-redux';
 import {selectIngredients} from '../../services/slices/ingredient-slice';
 import {getUniqueIdsWithCount, translateOrderStatus} from '../../utils/api';
 import {
@@ -12,25 +11,29 @@ import styles from './order-information.module.css';
 import {
   RoundedIngredientImage,
 } from '../rounded-ingredient-image/rounded-ingredient-image';
+import {useAppSelector} from '../../utils/hooks/reduxHooks';
+import useOrdersWebSocketHandler
+  from '../../utils/hooks/ordersWebSocketHandler';
 
 interface OrderProps extends RouteComponentProps<MatchParams> {
   orders: Order[];
 }
 
 export const OrderInformation: React.FC<OrderProps> = ({
-  match,
-  orders,
+  match, orders,
 }) => {
   const {id} = match.params;
-
-  const ingredients = useSelector(selectIngredients);
+  const ingredients = useAppSelector(selectIngredients);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [totalPrice, setTotalPrice] = useState<number | null>(0);
+  useOrdersWebSocketHandler();
   useEffect(() => {
     const foundedOrder = orders.find(order => order._id === id);
     if (foundedOrder) {
       setSelectedOrder(foundedOrder);
     }
+    return () => {
+    };
   }, [orders, id]);
   const ingredientElements = useMemo(() => {
     let result: JSX.Element[] = [];

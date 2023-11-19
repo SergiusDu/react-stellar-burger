@@ -46,6 +46,7 @@ export const forgotPasswordFormSlice = createSlice({
     },
   }, extraReducers: builder => {
     builder.addCase(sendResetPasswordEmail.fulfilled, (state, action) => {
+
     });
   },
 });

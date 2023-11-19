@@ -1,19 +1,18 @@
 import React from 'react';
 import styles from './profile-navigation.module.css';
 import {
-    ProfileNavigationLink,
+  ProfileNavigationLink,
 } from '../profile-navigation-link/profile-navigation-link';
-import {useDispatch} from 'react-redux';
 import {logoutUser} from '../../services/slices/profile-slice';
 import {
   MAIN_PAGE_PATH,
-  ORDER_LIST_PAGE_PATH, PROFILE_ORDER_ID_PATH, PROFILE_ORDERS_PATH,
+  PROFILE_ORDERS_PATH,
   PROFILE_PAGE_PATH,
 } from '../../utils/constants';
-import {AppDispatch} from '../../services/store/store';
+import {useAppDispatch} from '../../utils/hooks/reduxHooks';
 
 export const ProfileNavigation: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
 
   async function logoutHandler() {
     await dispatch(logoutUser());

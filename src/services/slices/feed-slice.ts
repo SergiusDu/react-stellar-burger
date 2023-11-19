@@ -2,7 +2,11 @@ import {createSlice} from '@reduxjs/toolkit';
 import {isValidOrderResponse, Order} from '../../utils/types';
 import {RootState} from '../store/store';
 import {TWsActions} from '../middleware/websocketMiddleware';
-import {GET_ALL_ORDERS_WS_ENDPOINT} from '../../utils/constants';
+import {
+  CONNECT_FEED_WEBSOCKET,
+  DISCONNECT_FEED_WEBSOCKET,
+  GET_ALL_ORDERS_WS_ENDPOINT,
+} from '../../utils/constants';
 
 interface feedSlice {
   allOrders: Order[];
@@ -20,10 +24,23 @@ interface feedSlice {
 }
 
 const initialState: feedSlice = {
-  allOrders: [], allDoneOrders: [], allOrdersInProcess: [], profileOrders: [], profileDoneOrders: [], profileOrdersInProcess: [], profileTotal: 0, profileTotalToday: 0, allTotal: 0, allTotalToday: 0, connected: false, isWebSocketOpened: false,
+  allOrders: [],
+  allDoneOrders: [],
+  allOrdersInProcess: [],
+  profileOrders: [],
+  profileDoneOrders: [],
+  profileOrdersInProcess: [],
+  profileTotal: 0,
+  profileTotalToday: 0,
+  allTotal: 0,
+  allTotalToday: 0,
+  connected: false,
+  isWebSocketOpened: false
 };
 export const feedSlice = createSlice({
-  name: 'feedSlice', initialState, reducers: {
+  name: 'feedSlice',
+  initialState,
+  reducers: {
     updateProfileOrdersInformation(
       state,
       action,
@@ -37,7 +54,8 @@ export const feedSlice = createSlice({
         state.profileOrdersInProcess =
           action.payload.orders.filter(order => order.status === 'pending');
       }
-    }, updateAllOrdersInformation(
+    },
+    updateAllOrdersInformation(
       state,
       action,
     ) {
@@ -50,32 +68,44 @@ export const feedSlice = createSlice({
         state.profileOrdersInProcess =
           action.payload.orders.filter(order => order.status === 'pending');
       }
-    }, connectWebSocket(state) {
-      state.isWebSocketOpened = true;
-    }, disconnectWebSocket(state) {
+    },
+    connectWebSocket(state) {
+      state.isWebSocketOpened = true
+    },
+    disconnectWebSocket(state) {
       state.isWebSocketOpened = false;
-    }, setOrderData(
+    },
+    setOrderData(
       state,
       action,
     ) {
       state.profileOrders = action.payload;
-    }, setTotalOrders(
+    },
+    setTotalOrders(
       state,
       action,
     ) {
       state.profileTotal = action.payload;
-    }, setTotalTodayOrders(
+    },
+    setTotalTodayOrders(
       state,
       action,
     ) {
       state.profileTotalToday = action.payload;
     },
-  }, extraReducers: builder => {
+  },
+  extraReducers: builder => {
   },
 });
 
 export const {
-  updateProfileOrdersInformation, updateAllOrdersInformation, setOrderData, setTotalOrders, setTotalTodayOrders, connectWebSocket, disconnectWebSocket,
+  updateProfileOrdersInformation,
+  updateAllOrdersInformation,
+  setOrderData,
+  setTotalOrders,
+  setTotalTodayOrders,
+  connectWebSocket,
+  disconnectWebSocket
 } = feedSlice.actions;
 
 export const selectProfileOrders = (state: RootState) => state.feedSlice.profileOrders;
@@ -86,8 +116,12 @@ export const selectTotalOrders = (state: RootState) => state.feedSlice.profileTo
 export const selectAllTotalOrders = (state: RootState) => state.feedSlice.allTotal;
 export const selectWebSocketStatus = (state: RootState) => state.feedSlice.isWebSocketOpened;
 export const FeedWebsocketActions: TWsActions = {
-  type: connectWebSocket.type, payload: {
-    url: GET_ALL_ORDERS_WS_ENDPOINT, wsConnect: connectWebSocket.type, wsDisconnect: disconnectWebSocket.type, onMessage: updateAllOrdersInformation.type,
+  type: connectWebSocket.type,
+  payload: {
+    url: GET_ALL_ORDERS_WS_ENDPOINT,
+    wsConnect: connectWebSocket.type,
+    wsDisconnect: disconnectWebSocket.type,
+    onMessage: updateAllOrdersInformation.type,
   },
 };
 

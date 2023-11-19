@@ -30,6 +30,7 @@ export type IngredientType = {
   readonly calories: number,
   readonly image_mobile: string,
   readonly image_large: string
+  readonly __v?: number;
   count?: number
 };
 
