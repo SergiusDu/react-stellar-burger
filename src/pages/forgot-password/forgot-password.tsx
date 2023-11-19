@@ -10,7 +10,6 @@ import {
   FormNavigationLink,
 } from '../../components/form-navigation-link/form-navigation-link';
 import React from 'react';
-import {useDispatch, useSelector} from 'react-redux';
 import {
   selectForgotPasswordEmailInput,
   selectForgotPasswordEmailInputError,
@@ -23,18 +22,18 @@ import {
   setResetPasswordPageAvailability,
 } from '../../services/slices/reset-password-slice';
 import {RESET_PASSWORD_PAGE_PATH} from '../../utils/constants';
-import {AppDispatch} from '../../services/store/store';
+import {useAppDispatch, useAppSelector} from '../../utils/hooks/reduxHooks';
 
 export const ForgotPassword: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const history = useHistory();
-  const emailInputValue = useSelector(selectForgotPasswordEmailInput);
-  const emailInputError = useSelector(selectForgotPasswordEmailInputError);
+  const emailInputValue = useAppSelector(selectForgotPasswordEmailInput);
+  const emailInputError = useAppSelector(selectForgotPasswordEmailInputError);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const response = await dispatch(sendResetPasswordEmail(emailInputValue)).
-      unwrap();
+    const response = await dispatch(sendResetPasswordEmail(emailInputValue))
+      .unwrap();
     if (response.success) {
       await dispatch(setResetPasswordPageAvailability(true));
       history.push(RESET_PASSWORD_PAGE_PATH);

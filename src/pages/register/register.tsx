@@ -8,7 +8,6 @@ import {
 import {Form} from '../../components/form/form';
 import Fieldset from '../../components/fieldset/fieldset';
 import {FormLayout} from '../../components/form-layout/form-layout';
-import {useDispatch, useSelector} from 'react-redux';
 import {
   isFormBlocked,
   registerUser,
@@ -28,19 +27,19 @@ import {FormNavigation} from '../../components/form-navigation/form-navigation';
 import {
   FormNavigationLink,
 } from '../../components/form-navigation-link/form-navigation-link';
-import {AppDispatch} from '../../services/store/store';
 import {PROFILE_PAGE_PATH} from '../../utils/constants';
 import {setProfilePageAvailable} from '../../services/slices/profile-slice';
 import {isErrorWithResponse} from '../../utils/types';
+import {useAppDispatch, useAppSelector} from '../../utils/hooks/reduxHooks';
 
 const Register: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const emailInputValue = useSelector(selectEmailInputValue);
-  const passwordInputValue = useSelector(selectPasswordInputValue);
-  const emailInputErrorMessage = useSelector(selectEmailInputErrorMessage);
-  const nameInputValue = useSelector(selectNameInputValue);
-  const serverResponseErrorMessage = useSelector(responseErrorMessage);
-  const formStatus = useSelector(isFormBlocked);
+  const dispatch = useAppDispatch();
+  const emailInputValue = useAppSelector(selectEmailInputValue);
+  const passwordInputValue = useAppSelector(selectPasswordInputValue);
+  const emailInputErrorMessage = useAppSelector(selectEmailInputErrorMessage);
+  const nameInputValue = useAppSelector(selectNameInputValue);
+  const serverResponseErrorMessage = useAppSelector(responseErrorMessage);
+  const formStatus = useAppSelector(isFormBlocked);
   const history = useHistory();
 
   async function handleRegistrationFormSubmit(e: React.FormEvent<HTMLElement>) {

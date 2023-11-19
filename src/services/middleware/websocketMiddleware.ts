@@ -1,143 +1,140 @@
-import {AnyAction, Dispatch, MiddlewareAPI} from 'redux';
-import {
-  updateAllOrdersInformation,
-  updateProfileOrdersInformation,
-} from '../slices/feed-slice';
-import {getAccessTokenFromCookies} from '../../utils/api';
-import {isValidOrderResponse} from '../../utils/types';
-import {
-  CONNECT_FEED_WEBSOCKET,
-  CONNECT_PROFILE_WEBSOCKET,
-  DISCONNECT_FEED_WEBSOCKET,
-  DISCONNECT_PROFILE_WEBSOCKET, GET_ALL_ORDERS_WS_ENDPOINT,
-  GET_ORDERS_WS_ENDPOINT,
-} from '../../utils/constants';
+import {AnyAction, Middleware, MiddlewareAPI} from 'redux';
+import {AppDispatch, RootState} from '../store/store';
 
-type WebSocketConnectAction = {
-  type: typeof CONNECT_PROFILE_WEBSOCKET | typeof CONNECT_FEED_WEBSOCKET;
-  payload: string;
-};
-type WebSocketDisconnectAction = {
-  type: typeof DISCONNECT_PROFILE_WEBSOCKET | typeof DISCONNECT_FEED_WEBSOCKET;
-};
+// Определяем отдельный тип для payload
+export interface TWsActionsPayload {
+  url: string;
+  wsConnect: string;
+  wsDisconnect: string;
+  onOpen?: string;
+  onClose?: string;
+  onError?: string;
+  onMessage?: string;
+}
 
-type WebsocketAction = WebSocketConnectAction | WebSocketDisconnectAction;
+// Определяем интерфейс TWsActions с использованием нового типа payload
+export interface TWsActions extends AnyAction {
+  type: string;
+  payload: TWsActionsPayload;
+}
 
-export const websocketMiddleware = (store: MiddlewareAPI) => {
-  let profileOrdersWebSocket: WebSocket | null = null;
-  let feedOrdersWebSocket: WebSocket | null = null;
-  let reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
+export function isTWsActions(action: AnyAction): action is TWsActions {
+  if (typeof action !== 'object' || action === null) {
+    return false;
+  }
 
-  const reconnect = (actionPayload: string) => {
-    // Очищаем текущий таймаут, если он был установлен
-    if (reconnectTimeout) {
-      clearTimeout(reconnectTimeout);
-    }
-    // Устанавливаем задержку перед попыткой переподключения
-    reconnectTimeout = setTimeout(() => {
-      store.dispatch({
-        type: CONNECT_FEED_WEBSOCKET,
-        payload: actionPayload,
-      });
-    }, 5000); // Переподключаемся через 5 секунд
-  };
-  const onOpenProfileSocket = (
-    ws: WebSocket,
-    store: MiddlewareAPI,
-  ) => (evt: Event) => {
-  };
-  const onCloseProfileSocket = (ws: WebSocket,
-    store: MiddlewareAPI,
-    payload: string,
-  ) => (evt: CloseEvent) => {
-    if (evt.code !== 1000) {
-      console.error(`Вебсокет был закрыт неожиданно, с кодом ${evt.code}`);
-      if (getAccessTokenFromCookies()) {
-        const clearToken = getAccessTokenFromCookies()?.split(' ')[1];
-        if (typeof clearToken === 'string') {
-          reconnect(clearToken);
+  // Проверяем наличие и тип свойств action
+  const hasType = 'type' in action && typeof action.type === 'string';
+  const hasPayload = 'payload' in action && typeof action.payload === 'object';
+
+  if (!hasType || !hasPayload) {
+    return false;
+  }
+
+  // Дополнительная проверка свойств payload
+  const payload = action.payload as TWsActionsPayload;
+  const hasUrl = 'url' in payload && typeof payload.url === 'string';
+  const hasWsConnect = 'wsConnect' in payload && typeof payload.wsConnect
+    === 'string';
+  const hasWsDisconnect = 'wsDisconnect' in payload
+    && typeof payload.wsDisconnect === 'string';
+
+  // Проверка опциональных полей
+  const hasOnOpen = !payload.onOpen || typeof payload.onOpen === 'string';
+  const hasOnClose = !payload.onClose || typeof payload.onClose === 'string';
+  const hasOnError = !payload.onError || typeof payload.onError === 'string';
+  const hasOnMessage = !payload.onMessage || typeof payload.onMessage
+    === 'string';
+
+  return hasUrl && hasWsConnect && hasWsDisconnect && hasOnOpen && hasOnClose
+    && hasOnError && hasOnMessage;
+}
+
+export const socketMiddleware = (): Middleware => {
+  const socketMap = new Map<string, WebSocket>();
+
+  return (store: MiddlewareAPI<AppDispatch, RootState>) => {
+    let socket: WebSocket | null = null;
+    return (next: AppDispatch) => (action: TWsActions) => {
+      const {
+        dispatch,
+      } = store;
+      const {
+        type,
+        payload,
+      } = action;
+      if (socketMap.has(type)) {
+        const socketToClose = socketMap.get(type);
+        if (socketToClose) {
+          socketToClose.close();
+          socketMap.delete(type);
         }
-      }
-    }
-  };
-  const onMessageProfileSocket = (
-    ws: WebSocket,
-    store: MiddlewareAPI,
-  ) => (evt: MessageEvent) => {
-    const response = JSON.parse(evt.data);
-    if (response.success && isValidOrderResponse(response)) {
-      store.dispatch(updateProfileOrdersInformation(response));
-    }
-  };
-  const onMessageFeedSocket = (
-    ws: WebSocket,
-    store: MiddlewareAPI,
-  ) => (evt: MessageEvent) => {
-    const response = JSON.parse(evt.data);
-    if(response.success && isValidOrderResponse(response)){
-      store.dispatch(updateAllOrdersInformation(response));
-    }
-  };
-  const onClose = (
-    ws: WebSocket,
-    store: MiddlewareAPI,
-  ) => (evt: CloseEvent) => {
-    console.log(evt);
-  };
-  const onError = (
-    ws: WebSocket,
-    store: MiddlewareAPI,
-  ) => (evt: any) => {
-    console.error('Websocket got error: ');
-    console.log(evt);
-  };
-  return (next: Dispatch<AnyAction>) => (action: WebsocketAction) => {
-    switch (action.type) {
-      case CONNECT_PROFILE_WEBSOCKET:
-        if (profileOrdersWebSocket !== null) {
-          profileOrdersWebSocket.close();
-        }
-        profileOrdersWebSocket = new WebSocket(`wss://norma.nomoreparties.space/orders?token=${action.payload}`);
-        profileOrdersWebSocket.onopen =
-          onOpenProfileSocket(profileOrdersWebSocket, store);
-        profileOrdersWebSocket.onmessage =
-          onMessageProfileSocket(profileOrdersWebSocket, store);
-        profileOrdersWebSocket.onclose =
-          onCloseProfileSocket(profileOrdersWebSocket, store,
-            GET_ORDERS_WS_ENDPOINT,
-          );
-        profileOrdersWebSocket.onerror =
-          onError(profileOrdersWebSocket, store);
-        break;
-      case DISCONNECT_PROFILE_WEBSOCKET:
-        if (profileOrdersWebSocket !== null) {
-          profileOrdersWebSocket.close();
-        }
-        profileOrdersWebSocket = null;
-        break;
-      case CONNECT_FEED_WEBSOCKET:
-        if (feedOrdersWebSocket !== null) {
-          feedOrdersWebSocket.close();
-        }
-
-        feedOrdersWebSocket = new WebSocket(GET_ALL_ORDERS_WS_ENDPOINT);
-        feedOrdersWebSocket.onmessage =
-          onMessageFeedSocket(feedOrdersWebSocket, store);
-        feedOrdersWebSocket.onclose =
-          onClose(feedOrdersWebSocket, store);
-        feedOrdersWebSocket.onerror = onError(feedOrdersWebSocket, store);
-        feedOrdersWebSocket.onclose = onClose(feedOrdersWebSocket, store);
-
-        break;
-      case DISCONNECT_FEED_WEBSOCKET: {
-        if (feedOrdersWebSocket !== null) {
-          feedOrdersWebSocket.close();
-        }
-        feedOrdersWebSocket = null;
-        break;
-      }
-      default:
         return next(action);
-    }
+      }
+      else if (!isTWsActions(action)) {
+        return next(action);
+      }
+      const {
+        wsConnect,
+        wsDisconnect,
+      } = payload;
+      const {
+        onOpen,
+        onClose,
+        onError,
+        onMessage,
+      } = action.payload;
+      if (type === wsConnect) {
+        if (socketMap.has(wsDisconnect)) {
+          return next(action);
+        }
+        socket = new WebSocket(payload.url);
+        socketMap.set(payload.wsDisconnect, socket);
+        const socketRef = socket;
+        socket.onopen = (event: Event) => {
+          if (socketRef && onOpen) {
+            dispatch({
+              type: onOpen,
+              payload: event,
+            });
+          }
+        };
+        socket.onclose = (event: CloseEvent) => {
+          if (socket) {
+            socketMap.delete(wsDisconnect);
+          }
+          if (socketRef && onClose) {
+            dispatch({
+              type: onClose,
+              payload: event,
+            });
+          }
+        };
+        socket.onerror = (event: Event) => {
+          console.log('Ошибка вебсокета', event);
+          if (onError && socketRef) {
+            dispatch({
+              type: onError,
+              payload: event,
+            });
+          }
+        };
+        socket.onmessage = (event: MessageEvent) => {
+          try {
+            const parsedData = JSON.parse(event.data);
+            if (onMessage) {
+              dispatch({
+                type: onMessage,
+                payload: parsedData,
+              });
+            }
+          }
+          catch (error) {
+            console.error('Ошибка при разборе сообщения:', error);
+          }
+        };
+      }
+      return next(action);
+    };
   };
 };

@@ -1,54 +1,53 @@
 import React, {useMemo} from 'react';
 import styles from './burger-constructor.module.css';
 import {
-    Button,
-    ConstructorElement,
-    CurrencyIcon,
+  Button,
+  ConstructorElement,
+  CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import ScrollableContainer from '../scrollable-container/scrollable-container';
 import DraggableItem
-    from '../scrollable-container/draggable-item/draggable-item';
-import {useDispatch, useSelector} from 'react-redux';
+  from '../scrollable-container/draggable-item/draggable-item';
 import {
-    addIngredient,
-    moveItem,
-    removeIngredient,
-    resetIngredients,
-    selectBun,
-    selectIngredients,
-    setBun,
+  addIngredient,
+  moveItem,
+  removeIngredient,
+  resetIngredients,
+  selectBun,
+  selectIngredients,
+  setBun,
 } from '../../services/slices/burger-constructor-slice';
 import {
-    decreaseIngredientAmount,
-    increaseIngredientAmount,
-    resetAllIngredientAmount,
-    setBunCount,
+  decreaseIngredientAmount,
+  increaseIngredientAmount,
+  resetAllIngredientAmount,
+  setBunCount,
 } from '../../services/slices/ingredient-slice';
 import {useDrop} from 'react-dnd';
 import {
-    fetchOrder,
-    selectIsLoading,
+  fetchOrder,
+  selectIsLoading,
 } from '../../services/slices/order-details-slice';
 import {
-    BUN_TYPE,
-    IngredientType,
-    MAIN_TYPE,
-    SAUCE_TYPE,
+  BUN_TYPE,
+  IngredientType,
+  MAIN_TYPE,
+  SAUCE_TYPE,
 } from '../../utils/types';
 import {
-    profilePageAvailability,
-    setProfilePageAvailable,
+  profilePageAvailability,
+  setProfilePageAvailable,
 } from '../../services/slices/profile-slice';
 import {useHistory} from 'react-router-dom';
 import {LOGIN_PAGE_PATH} from '../../utils/constants';
-import {AppDispatch} from '../../services/store/store';
+import {useAppDispatch, useAppSelector} from '../../utils/hooks/reduxHooks';
 
 const BurgerConstructor: React.FC = () => {
-  const bun = useSelector(selectBun);
-  const dispatch = useDispatch<AppDispatch>();
-  const ingredients = useSelector(selectIngredients);
-  const isAuthorized = useSelector(profilePageAvailability);
-  const isFetchLoading = useSelector(selectIsLoading);
+  const bun = useAppSelector(selectBun);
+  const dispatch = useAppDispatch();
+  const ingredients = useAppSelector(selectIngredients);
+  const isAuthorized = useAppSelector(profilePageAvailability);
+  const isFetchLoading = useAppSelector(selectIsLoading);
   const history = useHistory();
   const memorizedSum = useMemo(() => {
     const bunPrice = bun ? bun.price * 2 : 0;
@@ -58,9 +57,10 @@ const BurgerConstructor: React.FC = () => {
     if (ingredients.length === 0) {
       return bunPrice;
     }
-    return ingredients.reduce(
-      (accumulator: number, ingredient: IngredientType) => accumulator
-        + ingredient.price, bunPrice);
+    return ingredients.reduce((
+      accumulator: number,
+      ingredient: IngredientType,
+    ) => accumulator + ingredient.price, bunPrice);
   }, [ingredients, bun]);
 
   const [, ref] = useDrop({
@@ -125,7 +125,10 @@ const BurgerConstructor: React.FC = () => {
     dispatch(decreaseIngredientAmount(ingredient._id));
   };
 
-  const moveItemInRedux = (fromIndex: number, toIndex: number) => {
+  const moveItemInRedux = (
+    fromIndex: number,
+    toIndex: number,
+  ) => {
     dispatch(moveItem({
       fromIndex,
       toIndex,
@@ -148,7 +151,10 @@ const BurgerConstructor: React.FC = () => {
         />
         <ScrollableContainer extraClass={'mt-4'}>
           <ul className={styles.item_list}>
-            {ingredients.map((ingredient: IngredientType, index: number) => (
+            {ingredients.map((
+              ingredient: IngredientType,
+              index: number,
+            ) => (
               <DraggableItem
                 key={ingredient.uniqueId}
                 index={index}

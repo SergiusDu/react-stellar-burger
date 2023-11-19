@@ -1,17 +1,21 @@
 import React, {MouseEventHandler, useEffect, useMemo, useState} from 'react';
 import styles from './feed-card.module.css';
 import {
-  CurrencyIcon, FormattedDate,
+  CurrencyIcon,
+  FormattedDate,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import {
-  BUN_TYPE, IngredientType, isValidIngredient, Order,
+  BUN_TYPE,
+  IngredientType,
+  isValidIngredient,
+  Order,
 } from '../../utils/types';
-import {useSelector} from 'react-redux';
 import {selectIngredients} from '../../services/slices/ingredient-slice';
 import {
-  RoundedIngredientImage, RoundedIngredientImageProps,
+  RoundedIngredientImage,
 } from '../rounded-ingredient-image/rounded-ingredient-image';
 import {translateOrderStatus} from '../../utils/api';
+import {useAppSelector} from '../../utils/hooks/reduxHooks';
 
 interface FeedCardProps {
   order: Order;
@@ -23,7 +27,7 @@ export const FeedCard: React.FC<FeedCardProps> = ({
   onClick,
 }) => {
   const date = new Date(order.createdAt);
-  const ingredients = useSelector(selectIngredients);
+  const ingredients = useAppSelector(selectIngredients);
   const [burgerPrice, setBurgerPrice] = useState<number>(0);
   const [burgerIngredientsWithDetails, setBurgerIngredientsWithDetails] = useState<IngredientType[]>(
     []);
@@ -100,8 +104,12 @@ export const FeedCard: React.FC<FeedCardProps> = ({
       <div className={`${styles.row} mt-6 mr-6`}>
         <h2 className="text">{order.name}</h2 >
       </div >
-      <div className={`${styles.row} ${order.status === 'done' ? 'text_color_success' : null} mt-2`}>
-        <p className="text text_type_main-small">{translateOrderStatus(order.status)}</p >
+      <div
+        className={`${styles.row} ${order.status === 'done' ?
+          'text_color_success' : null} mt-2`}
+      >
+        <p className="text text_type_main-small">{translateOrderStatus(
+          order.status)}</p >
       </div >
       <div className={`${styles.row} mt-6 mr-6`}>
         <div className={styles.images_row}>

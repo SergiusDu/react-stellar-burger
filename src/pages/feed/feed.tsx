@@ -1,25 +1,25 @@
 import {ProfileLayout} from '../../components/profile-layout/profile-layout';
-import {useSelector} from 'react-redux';
 import React, {useMemo} from 'react';
-import {FeedCard} from '../../components/feed-card/feed-card';
 import {
+  FeedWebsocketActions,
   selectAllOrders,
   selectAllTotalOrders,
-  selectAllTotalTodayOrders,
-  selectProfileOrders,
-  selectTotalOrders,
-  selectTotalTodayOrders,
+  selectAllTotalTodayOrders, selectWebSocketStatus,
 } from '../../services/slices/feed-slice';
 import styles from './feed.module.css';
 import {useHistory, useLocation} from 'react-router-dom';
 import {Order} from '../../utils/types';
 import {FEED_PAGE_PATH} from '../../utils/constants';
 import {OrderList} from '../../components/order-list/order-list';
+import {useAppSelector} from '../../utils/hooks/reduxHooks';
+import useWebSocket from '../../utils/hooks/useWebSocket';
 
 export const Feed: React.FC = () => {
-  const orders = useSelector(selectAllOrders);
-  const totalOrders = useSelector(selectAllTotalTodayOrders);
-  const totalTodayOrders = useSelector(selectAllTotalOrders);
+  const isFeedWebSocketWorking = useAppSelector(selectWebSocketStatus);
+  useWebSocket(FeedWebsocketActions, isFeedWebSocketWorking);
+  const orders = useAppSelector(selectAllOrders);
+  const totalOrders = useAppSelector(selectAllTotalTodayOrders);
+  const totalTodayOrders = useAppSelector(selectAllTotalOrders);
   const history = useHistory();
   const location = useLocation();
 
@@ -29,6 +29,7 @@ export const Feed: React.FC = () => {
       state: {background: location},
     });
   }
+
   const readyOrdersNumbers = useMemo(() => {
     let readyOrders: JSX.Element[] = [];
     orders.forEach(order => {
@@ -55,9 +56,12 @@ export const Feed: React.FC = () => {
     });
     return readyOrders;
   }, [navigateOrderClick, orders]);
-  return ( orders.length ?
-    <ProfileLayout >
-      <OrderList orders={orders} navigateOnOrderClick={navigateOrderClick} />
+  return (
+    orders.length ? <ProfileLayout >
+      <OrderList
+        orders={orders}
+        navigateOnOrderClick={navigateOrderClick}
+      />
       <div className="ml-15">
         <div className={`${styles.row} mb-15`}>
           <div >

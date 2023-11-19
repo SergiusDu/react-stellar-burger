@@ -1,7 +1,6 @@
 import React, {useEffect} from 'react';
 import styles from './ingredient-details.module.css';
 import IngredientData from './ingredient-data/ingredient-data';
-import {useDispatch, useSelector} from 'react-redux';
 import {
   closeModal,
   resetSelectedIngredient,
@@ -10,17 +9,17 @@ import {
   setSelectedIngredient,
 } from '../../services/slices/ingredient-slice';
 import {IngredientType, MatchParams} from '../../utils/types';
-import {AppDispatch} from '../../services/store/store';
 import {RouteComponentProps} from 'react-router-dom';
+import {useAppDispatch, useAppSelector} from '../../utils/hooks/reduxHooks';
 
 interface IngredientDetailsProps extends RouteComponentProps<MatchParams> {
 }
 
 export const IngredientDetails: React.FC<IngredientDetailsProps> = ({match}) => {
   const {id} = match.params;
-  const dispatch = useDispatch<AppDispatch>();
-  const ingredients: IngredientType[] = useSelector(selectIngredients);
-  const ingredient: IngredientType | null = useSelector(selectedIngredient);
+  const dispatch = useAppDispatch();
+  const ingredients: IngredientType[] = useAppSelector(selectIngredients);
+  const ingredient: IngredientType | null = useAppSelector(selectedIngredient);
   useEffect(() => {
     const foundedIngredient = ingredients.find(e => e._id === id);
     if (foundedIngredient) {

@@ -11,7 +11,6 @@ import {
   FormNavigationLink,
 } from '../../components/form-navigation-link/form-navigation-link';
 import React from 'react';
-import {useDispatch, useSelector} from 'react-redux';
 import {
   resetPassword,
   selectResetPasswordNewPasswordErrorMessage,
@@ -30,19 +29,19 @@ import {
   TNullableToken,
 } from '../../utils/types';
 import {isNonEmptyString} from '../../utils/api';
-import {AppDispatch} from '../../services/store/store';
+import {useAppDispatch, useAppSelector} from '../../utils/hooks/reduxHooks';
 
 export const ResetPassword: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const newPasswordInputValue: PasswordString = useSelector(
+  const dispatch = useAppDispatch();
+  const newPasswordInputValue: PasswordString = useAppSelector(
     selectResetPasswordNewPasswordInput);
-  const newPasswordInputErrorMessage = useSelector(
+  const newPasswordInputErrorMessage = useAppSelector(
     selectResetPasswordNewPasswordErrorMessage);
-  const tokenInputValue: TNullableToken = useSelector(
+  const tokenInputValue: TNullableToken = useAppSelector(
     selectResetPasswordTokenInput);
-  const tokenErrorMessage = useSelector(
+  const tokenErrorMessage = useAppSelector(
     selectResetPasswordTokenInputErrorMessage);
-  const serverError = useSelector(serverResponseErrorMessage);
+  const serverError = useAppSelector(serverResponseErrorMessage);
 
   async function handleResetPasswordSubmit(e: React.FormEvent<HTMLElement>) {
     e.preventDefault();
@@ -67,7 +66,8 @@ export const ResetPassword: React.FC = () => {
             }}
             placeholder="Введите новый пароль"
             minLength={6}
-            // @ts-ignore Почему-то выводит ошибку, что поля Error нет, хотя оно есть
+            // @ts-ignore Почему-то выводит ошибку, что поля Error нет, хотя
+            // оно есть
             error={isNonEmptyString(newPasswordInputErrorMessage)}
             errorText={newPasswordInputErrorMessage}
             autoComplete="new-password"

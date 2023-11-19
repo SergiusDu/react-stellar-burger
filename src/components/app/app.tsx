@@ -1,7 +1,6 @@
 import React, {useEffect} from 'react';
 import {BrowserRouter as Router} from 'react-router-dom';
 import styles from '../app/app.module.css';
-import {useDispatch, useSelector} from 'react-redux';
 import {
   profilePageAvailability,
   setProfilePageAvailable,
@@ -13,27 +12,28 @@ import {
 import {fetchIngredients} from '../../services/slices/ingredient-slice';
 import AppHeader from '../app-header/app-header';
 import {ModalSwitch} from '../modal-switch/modal-switch';
-import {AppDispatch} from '../../services/store/store';
 import {
-  CONNECT_FEED_WEBSOCKET,
-  CONNECT_PROFILE_WEBSOCKET, DISCONNECT_FEED_WEBSOCKET,
+  CONNECT_PROFILE_WEBSOCKET,
+  DISCONNECT_FEED_WEBSOCKET,
   DISCONNECT_PROFILE_WEBSOCKET,
 } from '../../utils/constants';
+import {useAppDispatch, useAppSelector} from '../../utils/hooks/reduxHooks';
 
 const App: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const isProfileAvailable = useSelector(profilePageAvailability);
+  const dispatch = useAppDispatch();
+  const isProfileAvailable = useAppSelector(profilePageAvailability);
 
   useEffect(() => {
     dispatch(fetchIngredients());
     dispatch(setProfilePageAvailable());
     refreshTokensIfNeeded(dispatch);
+
     const clearAccessToken = getAccessTokenFromCookies()?.split(' ')[1];
-    dispatch({type: CONNECT_FEED_WEBSOCKET});
+
     if (isProfileAvailable && typeof clearAccessToken === 'string') {
-      console.log('ЗАПУСКАЮ ВЕБСОКЕТ');
       dispatch({
-        type: CONNECT_PROFILE_WEBSOCKET, payload: clearAccessToken,
+        type: CONNECT_PROFILE_WEBSOCKET,
+        payload: clearAccessToken,
       });
     }
     else {
@@ -41,7 +41,7 @@ const App: React.FC = () => {
     }
     return () => {
       dispatch({type: DISCONNECT_PROFILE_WEBSOCKET});
-      dispatch({type: DISCONNECT_FEED_WEBSOCKET})
+      dispatch({type: DISCONNECT_FEED_WEBSOCKET});
     };
   }, [dispatch, isProfileAvailable]);
 

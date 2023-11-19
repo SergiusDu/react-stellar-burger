@@ -28,7 +28,6 @@ import {ResetPassword} from '../../pages/reset-password/reset-password';
 import Home from '../../pages/home/home';
 import {IngredientPage} from '../../pages/ingredient/ingredientPage';
 import React from 'react';
-import {useDispatch, useSelector} from 'react-redux';
 import {
   resetPasswordPageAvailability,
 } from '../../services/slices/reset-password-slice';
@@ -40,7 +39,6 @@ import {
 import Modal from '../modal/modal';
 import IngredientDetails from '../ingredient-details/ingredient-details';
 import {MatchParams} from '../../utils/types';
-import {AppDispatch} from '../../services/store/store';
 import {Feed} from '../../pages/feed/feed';
 import {OrderInformation} from '../order-information/order-Information';
 import {ProfileOrders} from '../../pages/profile-orders/profile-orders';
@@ -48,21 +46,26 @@ import {
   selectAllOrders,
   selectProfileOrders,
 } from '../../services/slices/feed-slice';
-import {getAccessTokenFromCookies} from '../../utils/api';
+import {
+  createWebSocketProfileOrdersAction,
+  getAccessTokenFromCookies,
+} from '../../utils/api';
+import {useAppDispatch, useAppSelector} from '../../utils/hooks/reduxHooks';
 
 export const ModalSwitch: React.FC = () => {
   const location = useLocation<{
     background?: RouteProps['location']
   }>();
   const background = location.state && location.state.background;
-  const resetPasswordAvailability = useSelector(resetPasswordPageAvailability);
-  const isProfileAvailable = useSelector(profilePageAvailability);
+  const resetPasswordAvailability = useAppSelector(
+    resetPasswordPageAvailability);
+  const isProfileAvailable = useAppSelector(profilePageAvailability);
   const profileAvailability = !!getAccessTokenFromCookies()
     || isProfileAvailable;
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const history = useHistory();
-  const allOrders = useSelector(selectAllOrders);
-  const profileOrders = useSelector(selectProfileOrders);
+  const allOrders = useAppSelector(selectAllOrders);
+  const profileOrders = useAppSelector(selectProfileOrders);
   const handleCloseIngredientDetails = () => {
     dispatch(resetSelectedIngredient());
     dispatch(closeModal());
@@ -147,7 +150,6 @@ export const ModalSwitch: React.FC = () => {
             </IngredientPage >
           )}
         />
-
         <Route
           exact
           component={Home}
@@ -172,11 +174,16 @@ export const ModalSwitch: React.FC = () => {
         </Modal >}
       />}
       {background && profileAvailability && <ProtectedRoute
-        component={(routeProps: RouteComponentProps<MatchParams>) => <Modal
-          onClose={handleCloseIngredientDetails}
-        >
-          <OrderInformation orders={profileOrders} {...routeProps} />
-        </Modal >}
+        component={(routeProps: RouteComponentProps<MatchParams>) => {
+          return (
+            <Modal
+              onClose={handleCloseIngredientDetails}
+            >
+              <OrderInformation orders={profileOrders} {...routeProps} />
+            </Modal >
+          );
+        }
+        }
         path={PROFILE_ORDER_ID_PATH}
         failedRedirectPath={LOGIN_PAGE_PATH}
         isAuth={profileAvailability}
