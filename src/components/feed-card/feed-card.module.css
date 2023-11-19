@@ -1,0 +1,34 @@
+.card {
+  width: 65vw;
+  max-width: 844px;
+  list-style: none;
+  cursor: pointer;
+  border-radius: 40px;
+  background: rgba(28, 28, 33, 1);
+  box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.04), 0 0 2px 0 rgba(0, 0, 0, 0.06), 0 4px 8px 0 rgba(0, 0, 0, 0.04);
+}
+
+.ingredient_image {
+  position: relative;
+  display: inline-block;
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid rgba(128, 26, 178, 1);
+  background-color: #131316;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.images_row {
+  display: flex;
+}
+
+.price {
+  display: flex;
+  gap: 8px;
+}

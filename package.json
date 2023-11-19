@@ -29,6 +29,9 @@
     "@types/react": "17.0.0",
     "@types/react-dom": "17.0.0",
     "@types/react-router-dom": "^5.3.3",
+    "fetch-mock": "^9.11.0",
+    "jest": "^27.5.1",
+    "redux-mock-store": "^1.5.4",
     "typescript": "^4.9.5"
   },
   "scripts": {

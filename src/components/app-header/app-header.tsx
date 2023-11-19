@@ -1,17 +1,17 @@
 import React from 'react';
 import styles from './app-header.module.css';
 import AppHeaderLink from './app-header-link/app-header-link';
-import {useSelector} from 'react-redux';
 import {profilePageAvailability} from '../../services/slices/profile-slice';
 import {
+  FEED_PAGE_PATH,
   LOGIN_PAGE_PATH,
   MAIN_PAGE_PATH,
-  ORDER_LIST_PAGE_PATH,
   PROFILE_PAGE_PATH,
 } from '../../utils/constants';
+import {useAppSelector} from '../../utils/hooks/reduxHooks';
 
 const AppHeader: React.FC = () => {
-  const profileAvailability: boolean = useSelector(profilePageAvailability);
+  const profileAvailability: boolean = useAppSelector(profilePageAvailability);
   return (
     <header className={styles.AppHeader}>
       <nav className={styles.navbar}>
@@ -26,7 +26,7 @@ const AppHeader: React.FC = () => {
             icon="list"
             header={'Лента заказов'}
             key={'order-link'}
-            to={ORDER_LIST_PAGE_PATH}
+            to={FEED_PAGE_PATH}
           />
           <AppHeaderLink
             icon="logo"
@@ -53,5 +53,5 @@ const AppHeader: React.FC = () => {
       </nav >
     </header >
   );
-}
+};
 export default AppHeader;

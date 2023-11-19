@@ -1,18 +1,20 @@
-import {ACCESS_TOKEN_LIFETIME, ACCESS_TOKEN_NAME, REFRESH_TOKEN_LIFETIME, REFRESH_TOKEN_NAME} from './constants';
-import {refreshAccessToken} from '../services/slices/profile-slice';
-import {store} from '../services/store/store';
+import {
+  ACCESS_TOKEN_LIFETIME,
+  ACCESS_TOKEN_NAME, GET_ORDERS_WS_ENDPOINT,
+  REFRESH_TOKEN_LIFETIME,
+  REFRESH_TOKEN_NAME,
+} from './constants';
+import {
+  ProfileWebsocketActions,
+  refreshAccessToken,
+} from '../services/slices/profile-slice';
+import {AppDispatch} from '../services/store/store';
+import {HttpMethod, IngredientType, TNullableToken} from './types';
+import {TWsActions} from '../services/middleware/websocketMiddleware';
+import ingredient from '../components/burger-ingredients/ingredient/ingredient';
 
-export type AppDispatch = typeof store.dispatch;
-
-type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'; // Пример. Добавьте все
-                                                     // методы, которые вы
-                                                     // используете.
-
-// Определите тип для тела запроса
 type BodyData = Record<string, any> | null;
-
-// Определите тип для заголовков запроса
-type Headers = Record<string, string> | null;
+type Headers = Record<string, string> | Record<string, TNullableToken> | null;
 
 /**
  * Выполняет API запрос с использованием fetch.
@@ -22,7 +24,11 @@ type Headers = Record<string, string> | null;
  * @param headers - Необязательный объект с дополнительными заголовками запроса.
  * @returns Промис, разрешающийся в данные ответа.
  */
-async function fetchAPI(url: string, method: HttpMethod, bodyData: BodyData = null, headers: Headers = null): Promise<any> {
+async function fetchAPI(url: string,
+  method: HttpMethod,
+  bodyData: BodyData = null,
+  headers: Headers = null,
+): Promise<any> {
   const options: RequestInit = {
     method,
     headers: {
@@ -51,7 +57,8 @@ export async function refreshTokensIfNeeded(dispatch: AppDispatch) {
   if (!accessToken && refreshToken) {
     try {
       await dispatch(refreshAccessToken()).unwrap();
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Failed to refresh access token:', error);
     }
   }
@@ -63,7 +70,10 @@ export async function refreshTokensIfNeeded(dispatch: AppDispatch) {
  * @param params - Объект с параметрами запроса.
  * @returns Полный URL с параметрами запроса.
  */
-export function createUrlPathWithParams(baseUrl: string, params: Record<string, string>) {
+export function createUrlPathWithParams(
+  baseUrl: string,
+  params: Record<string, string>,
+) {
   const searchParams = new URLSearchParams();
   for (const [key, value] of Object.entries(params)) {
     searchParams.append(key, value);
@@ -77,7 +87,11 @@ export function createUrlPathWithParams(baseUrl: string, params: Record<string, 
  * @param cookieValue - Значение куки.
  * @param maxAge - Максимальное время жизни куки в секундах.
  */
-export function setCookie(cookieName: string, cookieValue: string, maxAge: number) {
+export function setCookie(
+  cookieName: string,
+  cookieValue: string,
+  maxAge: number,
+) {
   document.cookie = `${cookieName}=${cookieValue}; max-age=${maxAge};`;
 }
 
@@ -118,7 +132,7 @@ export function saveRefreshTokenInCookies(token: string) {
  * @param cookieName - Название куки, значение которой нужно получить.
  * @returns Значение куки или null, если куки с таким названием не существует.
  */
-export function getCookieByName(cookieName: string) {
+export function getCookieByName(cookieName: string): TNullableToken {
   const allCookies = document.cookie.split('; ');
   for (const cookieString of allCookies) {
     const [name, value] = cookieString.split('=');
@@ -153,7 +167,10 @@ export function checkAuthToken(): boolean {
   return !!getCookieByName('accessToken');
 }
 
-export function saveObjectInLocalStorage(objectName: string, object: Object) {
+export function saveObjectInLocalStorage(
+  objectName: string,
+  object: Object,
+) {
   localStorage.setItem(objectName, JSON.stringify(object));
 }
 
@@ -167,6 +184,122 @@ export function getObjectFromLocalStorage(objectName: string): any {
 
 export function removeObjectFromLocalStorage(objectName: string): void {
   localStorage.removeItem(objectName);
+}
+
+export function isNonEmptyString(value: string | null): boolean {
+  return value ? value.trim().length > 0 : false;
+}
+
+/**
+ * Генерирует SHA-256 хеш токена с использованием Web Crypto API.
+ * @param {string} token - Токен, который нужно захешировать.
+ * @returns {Promise<string>} Хеш токена в виде шестнадцатеричной строки.
+ */
+export async function generateTokenHash(token: string): Promise<string> {
+  // Кодируем токен в Uint8Array
+  const encoder = new TextEncoder();
+  const data = encoder.encode(token);
+
+  // Используем Web Crypto API для генерации хеша SHA-256
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+
+  // Преобразуем ArrayBuffer хеша в строку шестнадцатеричных чисел
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0'))
+    .join('');
+
+  return hashHex;
+}
+
+/**
+ * Функция для подсчета количества уникальных идентификаторов в списке.
+ * @param idList Список идентификаторов.
+ * @returns Словарь с идентификаторами в качестве ключей и их количеством в
+ *   качестве значений.
+ */
+export function getUniqueIdsWithCount(idList: string[]): Record<string, number> {
+  const count: Record<string, number> = {};
+
+  idList.forEach((id) => {
+    if (count[id]) {
+      count[id] += 1;
+    }
+    else {
+      count[id] = 1;
+    }
+  });
+
+  return count;
+}
+
+/**
+ * Переводит статус заказа на русский язык.
+ *
+ * @param {string} status Статус заказа, который нужно перевести.
+ * @returns {string} Переведенный статус заказа.
+ * @throws {Error} Если статус заказа неизвестен.
+ */
+export function translateOrderStatus(status: string): string {
+  switch (status) {
+    case 'done':
+      return 'Выполнен';
+    case 'pending':
+      return 'Готовится';
+    case 'created':
+      return 'Создан';
+    default:
+      throw new Error('Неизвестный статус заказа');
+  }
+}
+
+/**
+ * Создает объект действия WebSocket с обновленным URL.
+ *
+ * Эта функция принимает объект действия WebSocket и возвращает новый объект,
+ * с обновленным URL, включающим токен доступа. Токен извлекается из куки.
+ *
+ * @returns {TWsActions} Новый объект действия WebSocket с обновленным URL.
+ */
+export function createWebSocketProfileOrdersAction(): TWsActions {
+  // Предполагается, что GET_ORDERS_WS_ENDPOINT и getAccessTokenFromCookies() уже определены.
+  const updatedUrl = GET_ORDERS_WS_ENDPOINT + '?token=' + getAccessTokenFromCookies()?.split(' ')[1];
+
+  return {
+    ...ProfileWebsocketActions,
+    payload: {
+      ...ProfileWebsocketActions.payload,
+      url: updatedUrl,
+    },
+  };
+}
+
+/**
+ * Возвращает случайный элемент из массива.
+ * @param {Array} array - Массив, из которого нужно выбрать элемент.
+ * @returns {any} Случайный элемент массива.
+ */
+export function getRandomElement<T>(array: T[]) {
+  const randomIndex = Math.floor(Math.random() * array.length);
+  return array[randomIndex];
+}
+/**
+ * Возвращает случайную булочку из массива ингредиентов.
+ * @param {Array<IngredientType>} ingredients - Массив ингредиентов.
+ * @returns {IngredientType} Случайная булочка.
+ */
+export function getRandomBun(ingredients: IngredientType[]): IngredientType {
+  const buns = ingredients.filter(ingredient => ingredient.type === 'bun');
+  return getRandomElement(buns);
+}
+
+/**
+ * Возвращает случайны ингридиент.
+ * @param {Array<IngredientType>} ingredients - Массив ингредиентов.
+ * @returns {IngredientType} Случайная ингридиент.
+ */
+export function getRandomBurgerIngredient(ingredients: IngredientType[]): IngredientType {
+  const notBunIngredients = ingredients.filter(ingredient => ingredient.type !== 'bun');
+  return getRandomElement(notBunIngredients);
 }
 
 export default fetchAPI;

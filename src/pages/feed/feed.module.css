@@ -1,0 +1,39 @@
+.scrollable_container {
+  list-style: none;
+  max-height: 70vh;
+  overflow-y: auto;
+  padding: 0;
+  margin: 0 0 0 60px;
+}
+
+.scrollable_container::-webkit-scrollbar {
+  width: 8px;
+  background: rgba(47, 47, 55, 1);
+}
+
+.scrollable_container::-webkit-scrollbar-thumb {
+  width: 8px;
+  border: 3px solid rgba(133, 133, 173, 1);
+  background-color: #8585AD;
+}
+
+.text_shadow {
+  text-shadow: 0 4px 32px rgba(51, 51, 255, 0.50), 0 0 8px rgba(51, 51, 255, 0.25), 0 0 16px rgba(51, 51, 255, 0.25);
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.orders_list {
+  min-width: 272px;
+  max-height: 17.5vw;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.list_item {
+  cursor: pointer;
+}
