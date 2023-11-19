@@ -2,7 +2,7 @@ import {createSlice} from '@reduxjs/toolkit';
 import {IngredientType} from '../../utils/types';
 import {RootState} from '../store/store';
 
-interface BurgerConstructorState {
+export interface BurgerConstructorState {
   ingredients: IngredientType[];
   bun: IngredientType | null;
 }

@@ -34,3 +34,29 @@ export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
 export default store;
+
+// Создаем начальные состояния для каждого редьюсера
+const initialStateIngredient = ingredientSlice.getInitialState();
+const initialStateBurgerConstructor = burgerConstructorSlice.getInitialState();
+const initialStateOrderDetails = orderDetailsSlice.getInitialState();
+const initialStateLogin = loginSlice.getInitialState();
+const initialStateRegistration = registrationSlice.getInitialState();
+const initialStateForgotPassword = forgotPasswordFormSlice.getInitialState();
+const initialStateResetPassword = resetPasswordFormSlice.getInitialState();
+const initialStateProfile = profileSlice.getInitialState();
+const initialStateFeed = feedSlice.getInitialState();
+
+// Создаем testState
+export const testState: RootState = {
+  ingredient: initialStateIngredient,
+  burgerConstructor: initialStateBurgerConstructor,
+  orderDetails: initialStateOrderDetails,
+  loginData: initialStateLogin,
+  registrationFormData: initialStateRegistration,
+  forgotPasswordForm: initialStateForgotPassword,
+  resetPasswordForm: initialStateResetPassword,
+  profilePage: initialStateProfile,
+  feedSlice: initialStateFeed,
+};
+
+// Используйте testState в тестах для создания мока состояния store

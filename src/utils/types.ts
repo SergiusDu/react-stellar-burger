@@ -23,7 +23,7 @@ export type IngredientType = {
   readonly type: string | typeof BUN_TYPE | typeof MAIN_TYPE | typeof SAUCE_TYPE;
   readonly price: number;
   readonly image: string;
-  readonly uniqueId?: string;
+  readonly uniqueId?: string | number;
   readonly proteins: number,
   readonly fat: number,
   readonly carbohydrates: number,

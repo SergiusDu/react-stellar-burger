@@ -6,7 +6,7 @@ import {
 } from './constants';
 import {refreshAccessToken} from '../services/slices/profile-slice';
 import {AppDispatch} from '../services/store/store';
-import {HttpMethod, TNullableToken} from './types';
+import {HttpMethod, IngredientType, TNullableToken} from './types';
 
 type BodyData = Record<string, any> | null;
 type Headers = Record<string, string> | Record<string, TNullableToken> | null;
@@ -245,6 +245,34 @@ export function translateOrderStatus(status: string): string {
     default:
       throw new Error('Неизвестный статус заказа');
   }
+}
+/**
+ * Возвращает случайный элемент из массива.
+ * @param {Array} array - Массив, из которого нужно выбрать элемент.
+ * @returns {any} Случайный элемент массива.
+ */
+export function getRandomElement<T>(array: T[]) {
+  const randomIndex = Math.floor(Math.random() * array.length);
+  return array[randomIndex];
+}
+/**
+ * Возвращает случайную булочку из массива ингредиентов.
+ * @param {Array<IngredientType>} ingredients - Массив ингредиентов.
+ * @returns {IngredientType} Случайная булочка.
+ */
+export function getRandomBun(ingredients: IngredientType[]): IngredientType {
+  const buns = ingredients.filter(ingredient => ingredient.type === 'bun');
+  return getRandomElement(buns);
+}
+
+/**
+ * Возвращает случайны ингридиент.
+ * @param {Array<IngredientType>} ingredients - Массив ингредиентов.
+ * @returns {IngredientType} Случайная ингридиент.
+ */
+export function getRandomBurgerIngredient(ingredients: IngredientType[]): IngredientType {
+  const notBunIngredients = ingredients.filter(ingredient => ingredient.type !== 'bun');
+  return getRandomElement(notBunIngredients);
 }
 
 export default fetchAPI;
