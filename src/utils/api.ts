@@ -1,12 +1,17 @@
 import {
   ACCESS_TOKEN_LIFETIME,
-  ACCESS_TOKEN_NAME,
+  ACCESS_TOKEN_NAME, GET_ORDERS_WS_ENDPOINT,
   REFRESH_TOKEN_LIFETIME,
   REFRESH_TOKEN_NAME,
 } from './constants';
-import {refreshAccessToken} from '../services/slices/profile-slice';
+import {
+  ProfileWebsocketActions,
+  refreshAccessToken,
+} from '../services/slices/profile-slice';
 import {AppDispatch} from '../services/store/store';
 import {HttpMethod, IngredientType, TNullableToken} from './types';
+import {TWsActions} from '../services/middleware/websocketMiddleware';
+import ingredient from '../components/burger-ingredients/ingredient/ingredient';
 
 type BodyData = Record<string, any> | null;
 type Headers = Record<string, string> | Record<string, TNullableToken> | null;
@@ -246,6 +251,28 @@ export function translateOrderStatus(status: string): string {
       throw new Error('Неизвестный статус заказа');
   }
 }
+
+/**
+ * Создает объект действия WebSocket с обновленным URL.
+ *
+ * Эта функция принимает объект действия WebSocket и возвращает новый объект,
+ * с обновленным URL, включающим токен доступа. Токен извлекается из куки.
+ *
+ * @returns {TWsActions} Новый объект действия WebSocket с обновленным URL.
+ */
+export function createWebSocketProfileOrdersAction(): TWsActions {
+  // Предполагается, что GET_ORDERS_WS_ENDPOINT и getAccessTokenFromCookies() уже определены.
+  const updatedUrl = GET_ORDERS_WS_ENDPOINT + '?token=' + getAccessTokenFromCookies()?.split(' ')[1];
+
+  return {
+    ...ProfileWebsocketActions,
+    payload: {
+      ...ProfileWebsocketActions.payload,
+      url: updatedUrl,
+    },
+  };
+}
+
 /**
  * Возвращает случайный элемент из массива.
  * @param {Array} array - Массив, из которого нужно выбрать элемент.
