@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
-import fetchAPI from '../../utils/api';
+import {fetchAPI} from '../../utils/api';
 import {GET_INGREDIENTS_ENDPOINT, GET_METHOD} from '../../utils/constants';
 import {RootState} from '../store/store';
 import {IngredientType} from '../../utils/types';

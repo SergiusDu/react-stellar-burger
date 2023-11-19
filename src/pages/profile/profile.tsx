@@ -34,6 +34,7 @@ import {
 } from '../../components/profile-form-button-layout/profile-form-button-layout';
 import {refreshTokensIfNeeded} from '../../utils/api';
 import {useAppDispatch, useAppSelector} from '../../utils/hooks/reduxHooks';
+import {TUserData} from '../../utils/types';
 
 export const Profile: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -51,7 +52,7 @@ export const Profile: React.FC = () => {
 
   function handleProfileSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const userData = {
+    const userData: TUserData = {
       name: nameInputValue,
       email: loginInputValue,
       password: passwordInputValue,

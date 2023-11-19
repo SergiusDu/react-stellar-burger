@@ -24,7 +24,7 @@ type Headers = Record<string, string> | Record<string, TNullableToken> | null;
  * @param headers - Необязательный объект с дополнительными заголовками запроса.
  * @returns Промис, разрешающийся в данные ответа.
  */
-async function fetchAPI(url: string,
+export async function fetchAPI(url: string,
   method: HttpMethod,
   bodyData: BodyData = null,
   headers: Headers = null,
@@ -301,5 +301,3 @@ export function getRandomBurgerIngredient(ingredients: IngredientType[]): Ingred
   const notBunIngredients = ingredients.filter(ingredient => ingredient.type !== 'bun');
   return getRandomElement(notBunIngredients);
 }
-
-export default fetchAPI;

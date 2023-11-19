@@ -14,50 +14,48 @@ export type TTokenString = string;
 export type TNullableToken = TTokenString | null;
 
 export type TUserData = {
-  email: EmailString; password: PasswordString;
+  name: string; email: EmailString; password: PasswordString;
 };
 
 export type IngredientType = {
-  readonly _id: string;
-  readonly name: string;
-  readonly type: string | typeof BUN_TYPE | typeof MAIN_TYPE | typeof SAUCE_TYPE;
-  readonly price: number;
-  readonly image: string;
-  readonly uniqueId?: string | number;
-  readonly proteins: number,
-  readonly fat: number,
-  readonly carbohydrates: number,
-  readonly calories: number,
-  readonly image_mobile: string,
-  readonly image_large: string
-  readonly __v?: number;
-  count?: number
+  readonly _id: string; readonly name: string; readonly type: string | typeof BUN_TYPE | typeof MAIN_TYPE | typeof SAUCE_TYPE; readonly price: number; readonly image: string; readonly uniqueId?: string | number; readonly proteins: number, readonly fat: number, readonly carbohydrates: number, readonly calories: number, readonly image_mobile: string, readonly image_large: string
+  readonly __v?: number; count?: number
 };
 
 /**
  * Проверяет, соответствует ли объект типу IngredientType.
  *
  * @param {any} object - Объект для проверки.
- * @returns {boolean} Возвращает `true`, если объект соответствует типу `IngredientType`, иначе `false`.
+ * @returns {boolean} Возвращает `true`, если объект соответствует типу
+ *   `IngredientType`, иначе `false`.
  */
 export function isValidIngredient(object: any): object is IngredientType {
   // Быстрая проверка на объект и не null
-  if (typeof object !== 'object' || object === null) return false;
+  if (typeof object !== 'object' || object === null) {
+    return false;
+  }
 
   // Проверка наличия всех обязательных строковых свойств
-  const requiredStringProps = ['_id', 'name', 'type', 'image', 'image_mobile', 'image_large'];
-  if (!requiredStringProps.every(prop => typeof object[prop] === 'string')) return false;
+  const requiredStringProps = [
+    '_id', 'name', 'type', 'image', 'image_mobile', 'image_large'];
+  if (!requiredStringProps.every(prop => typeof object[prop] === 'string')) {
+    return false;
+  }
 
   // Проверка числовых свойств
-  const requiredNumberProps = ['proteins', 'fat', 'carbohydrates', 'calories', 'price'];
-  if (!requiredNumberProps.every(prop => typeof object[prop] === 'number')) return false;
+  const requiredNumberProps = [
+    'proteins', 'fat', 'carbohydrates', 'calories', 'price'];
+  if (!requiredNumberProps.every(prop => typeof object[prop] === 'number')) {
+    return false;
+  }
 
   // Проверка типа ингредиента
   const ingredientTypes = [BUN_TYPE, MAIN_TYPE, SAUCE_TYPE];
-  if (!ingredientTypes.includes(object.type)) return false;
+  if (!ingredientTypes.includes(object.type)) {
+    return false;
+  }
   return true;
 }
-
 
 export interface ErrorResponse {
   response: {
@@ -140,32 +138,28 @@ export interface OrderResponse {
  * Проверяет, соответствует ли объект интерфейсу OrderResponse.
  *
  * Функция выполняет проверку наличия всех необходимых свойств и их типов
- * в предполагаемом объекте ответа заказа, который может быть получен, например,
- * в результате вызова API. Она проверяет, что объект содержит все поля, необходимые
- * для соответствия интерфейсу OrderResponse, включая вложенные поля в массиве orders.
+ * в предполагаемом объекте ответа заказа, который может быть получен,
+ * например,
+ * в результате вызова API. Она проверяет, что объект содержит все поля,
+ * необходимые для соответствия интерфейсу OrderResponse, включая вложенные
+ * поля в массиве orders.
  *
- * @param {any} object - Объект, который необходимо проверить на соответствие интерфейсу.
- * @returns {boolean} Возвращает true, если объект соответствует интерфейсу OrderResponse, иначе false.
+ * @param {any} object - Объект, который необходимо проверить на соответствие
+ *   интерфейсу.
+ * @returns {boolean} Возвращает true, если объект соответствует интерфейсу
+ *   OrderResponse, иначе false.
  */
 export function isValidOrderResponse(object: any): object is OrderResponse {
   return (
-    typeof object === 'object' &&
-    object !== null &&
-    typeof object.success === 'boolean' &&
-    Array.isArray(object.orders) &&
-    object.orders.every((order: any) =>
-      typeof order === 'object' &&
-      typeof order._id === 'string' &&
-      Array.isArray(order.ingredients) &&
-      order.ingredients.every((ingredient: any) => typeof ingredient === 'string') &&
-      typeof order.status === 'string' &&
-      typeof order.name === 'string' &&
-      typeof order.createdAt === 'string' &&
-      typeof order.updatedAt === 'string' &&
-      typeof order.number === 'number'
-    ) &&
-    typeof object.total === 'number' &&
-    typeof object.totalToday === 'number'
+    typeof object === 'object' && object !== null && typeof object.success
+    === 'boolean' && Array.isArray(object.orders) && object.orders.every(
+      (order: any) => typeof order === 'object' && typeof order._id === 'string'
+        && Array.isArray(order.ingredients) && order.ingredients.every(
+          (ingredient: any) => typeof ingredient === 'string')
+        && typeof order.status === 'string' && typeof order.name === 'string'
+        && typeof order.createdAt === 'string' && typeof order.updatedAt
+        === 'string' && typeof order.number === 'number') && typeof object.total
+    === 'number' && typeof object.totalToday === 'number'
   );
 }
 

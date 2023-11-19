@@ -6,7 +6,7 @@ import {
   setForgotPasswordEmailInput,
   setForgotPasswordEmailInputError,
 } from './forgot-password-slice';
-import fetchAPI from '../../utils/api';
+import {fetchAPI} from '../../utils/api';
 import {sendResetPasswordEmailMock} from '../../utils/fetchApiMocs';
 import * as apiModule from '../../utils/api';
 import {Action, configureStore, Store} from '@reduxjs/toolkit';
@@ -84,4 +84,3 @@ it('should select the correct email input error', () => {
     emailError);
 });
 })
-

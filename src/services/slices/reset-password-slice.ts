@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import fetchAPI from '../../utils/api';
+import {fetchAPI} from '../../utils/api';
 import {RESET_PASSWORD_STEP_TWO_ENDPOINT} from '../../utils/constants';
 import {RootState} from '../store/store';
 import {

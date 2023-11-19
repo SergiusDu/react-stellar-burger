@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import fetchAPI, {setCookie} from '../../utils/api';
+import {fetchAPI, setCookie} from '../../utils/api';
 import {ACCESS_TOKEN_NAME, LOGIN_ENDPOINT, REFRESH_TOKEN_NAME} from '../../utils/constants';
 import {RootState} from '../store/store';
 import {TUserData} from '../../utils/types';

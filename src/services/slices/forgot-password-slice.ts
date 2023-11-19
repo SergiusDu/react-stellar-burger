@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import fetchAPI from '../../utils/api';
+import {fetchAPI} from '../../utils/api';
 import {RESET_PASSWORD_ENDPOINT} from '../../utils/constants';
 import {
   EmailString,

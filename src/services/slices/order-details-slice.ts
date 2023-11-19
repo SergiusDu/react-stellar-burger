@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice, PayloadAction, SerializedError} from '@reduxjs/toolkit';
-import fetchAPI, {getAccessTokenFromCookies, getRefreshTokenFromCookies} from '../../utils/api';
+import {fetchAPI, getAccessTokenFromCookies, getRefreshTokenFromCookies} from '../../utils/api';
 import {ORDER_URL, POST_METHOD} from '../../utils/constants';
 import {refreshAccessToken} from './profile-slice';
 import {IngredientType, TNullableToken} from '../../utils/types';
