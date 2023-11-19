@@ -11,11 +11,14 @@ import fetchAPI, {
 import {
   ACCESS_TOKEN_NAME,
   CHANGE_USER_DATA_ENDPOINT,
-  GET_METHOD,
+  CONNECT_FEED_WEBSOCKET, CONNECT_PROFILE_WEBSOCKET,
+  DISCONNECT_FEED_WEBSOCKET,
+  GET_ALL_ORDERS_WS_ENDPOINT,
+  GET_METHOD, GET_ORDERS_WS_ENDPOINT,
   GET_USER_DATA_ENDPOINT,
   LOGOUT_URL,
   PATCH_METHOD,
-  POST_METHOD,
+  POST_METHOD, PROFILE_ORDERS_PATH,
   REFRESH_TOKEN_ENDPOINT,
   REFRESH_TOKEN_NAME,
 } from '../../utils/constants';
@@ -25,6 +28,11 @@ import {
   TNullableToken,
   TUserData,
 } from '../../utils/types';
+import {TWsActions} from '../middleware/websocketMiddleware';
+import {
+  updateAllOrdersInformation,
+  updateProfileOrdersInformation,
+} from './feed-slice';
 
 export const refreshAccessToken = createAsyncThunk<string, void, {
   rejectValue: string
@@ -196,6 +204,7 @@ interface ProfileState {
   passwordInputError: string;
   isProfilePageAvailable: boolean;
   isSubmitButtonAvailable: boolean;
+  isWebSocketOpened: boolean;
 }
 
 const initialState: ProfileState = {
@@ -207,6 +216,7 @@ const initialState: ProfileState = {
   passwordInputError: '',
   isProfilePageAvailable: false,
   isSubmitButtonAvailable: true,
+  isWebSocketOpened: false
 };
 export const profileSlice = createSlice({
   name: 'profileSlice',
@@ -232,6 +242,12 @@ export const profileSlice = createSlice({
     },
     setProfilePageAvailable(state) {
       state.isProfilePageAvailable = checkAuthToken();
+    },
+    connectWebSocket(state) {
+      state.isWebSocketOpened = true
+    },
+    disconnectWebSocket(state) {
+      state.isWebSocketOpened = false;
     },
   },
   extraReducers: builder => {
@@ -267,6 +283,7 @@ export const selectProfilePassword = (state: RootState) => state.profilePage.pas
 export const selectProfilePasswordInputError = (state: RootState) => state.profilePage.passwordInputError;
 export const profilePageAvailability = (state: RootState) => state.profilePage.isProfilePageAvailable;
 export const submitButtonAvailability = (state: RootState) => state.profilePage.isSubmitButtonAvailable;
+export const selectProfileOrdersWebSocketStatus = (state: RootState) => state.profilePage.isWebSocketOpened;
 export const {
   setProfileName,
   setNameInputError,
@@ -275,4 +292,16 @@ export const {
   setPassword,
   setPasswordInputError,
   setProfilePageAvailable,
+  connectWebSocket,
+  disconnectWebSocket
 } = profileSlice.actions;
+
+export const ProfileWebsocketActions: TWsActions = {
+  type: connectWebSocket.type,
+  payload: {
+    url: GET_ORDERS_WS_ENDPOINT,
+    wsConnect: connectWebSocket.type,
+    wsDisconnect: disconnectWebSocket.type,
+    onMessage: updateProfileOrdersInformation.type,
+  },
+};
