@@ -76,7 +76,7 @@ export const ModalSwitch: React.FC = () => {
         <ProtectedRoute
           path={LOGIN_PAGE_PATH}
           component={Login}
-          isAuth={!profileAvailability}
+          isAuth={!isProfileAvailable}
           failedRedirectPath={MAIN_PAGE_PATH}
         />
         <ProtectedRoute
