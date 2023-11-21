@@ -17,9 +17,9 @@ export const ProfileNavigation: React.FC = () => {
   const dispatch = useAppDispatch();
 
   async function logoutHandler() {
-    clearCookies([ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME]);
     localStorage.clear();
     dispatch(logoutUser());
+    clearCookies([ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME]);
   }
 
   return (
