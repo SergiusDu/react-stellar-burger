@@ -18,7 +18,7 @@ export const ProfileNavigation: React.FC = () => {
 
   async function logoutHandler() {
     localStorage.clear();
-    dispatch(logoutUser());
+    await dispatch(logoutUser());
     clearCookies([ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME]);
   }
 
@@ -43,7 +43,6 @@ export const ProfileNavigation: React.FC = () => {
         В этом разделе вы можете <br />
         изменить свои персональные данные
       </p >
-
     </nav >
   );
 };
