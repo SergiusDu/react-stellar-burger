@@ -5,17 +5,21 @@ import {
 } from '../profile-navigation-link/profile-navigation-link';
 import {logoutUser} from '../../services/slices/profile-slice';
 import {
+  ACCESS_TOKEN_NAME,
   MAIN_PAGE_PATH,
   PROFILE_ORDERS_PATH,
-  PROFILE_PAGE_PATH,
+  PROFILE_PAGE_PATH, REFRESH_TOKEN_NAME,
 } from '../../utils/constants';
 import {useAppDispatch} from '../../utils/hooks/reduxHooks';
+import {clearCookies} from '../../utils/api';
 
 export const ProfileNavigation: React.FC = () => {
   const dispatch = useAppDispatch();
 
   async function logoutHandler() {
-    await dispatch(logoutUser());
+    clearCookies([ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME]);
+    localStorage.clear();
+    dispatch(logoutUser());
   }
 
   return (

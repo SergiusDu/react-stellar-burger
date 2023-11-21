@@ -66,7 +66,7 @@ const Login: React.FC = () => {
               }}
               minLength={6}
               // @ts-ignore
-              error={emailInputErrorMessage}
+              error={!!emailInputErrorMessage}
               errorText={emailInputErrorMessage}
               autoComplete="email"
               name="email"
@@ -83,7 +83,7 @@ const Login: React.FC = () => {
               min={6}
               required
             />
-            <Button htmlType="submit">Войти</Button >
+            <Button htmlType="submit" >Войти</Button >
           </Fieldset >
         </Form >
         <FormNavigation extraClass="mt-20">

@@ -98,7 +98,7 @@ const Register: React.FC = () => {
               dispatch(setEmailInputErrorMessage(e.target.validationMessage));
             }}
             // @ts-ignore Пишет что поля Error нет, но оно есть.
-            error={emailInputErrorMessage}
+            error={!!emailInputErrorMessage}
             errorText={emailInputErrorMessage}
             required
           />

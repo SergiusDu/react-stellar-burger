@@ -258,7 +258,8 @@ export const profileSlice = createSlice({
         state.name = action.payload.name;
         state.login = action.payload.login;
       });
-    builder.addCase(logoutUser.fulfilled, (state) => {
+
+    builder.addCase(logoutUser.pending, (state) => {
       state.name = '';
       state.login = '';
       state.isProfilePageAvailable = false;
