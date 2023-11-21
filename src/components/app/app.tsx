@@ -48,7 +48,7 @@ const App: React.FC = () => {
 
   return (
     <div className={styles.app}>
-      <Router basename={'/'}>
+      <Router basename={'react-stellar-burger/'}>
         <AppHeader />
         <ModalSwitch />
       </Router >
