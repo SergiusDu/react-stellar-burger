@@ -1,10 +1,9 @@
 import {store} from '../store/store';
-import {TWsActions} from '../middleware/websocketMiddleware';
 import {
   changeUserData,
   getUserData,
   logoutUser,
-  profileSlice,
+  profileSlice, profileSliceInitialState,
   ProfileWebsocketActions,
   refreshAccessToken,
   setLogin,
@@ -12,9 +11,7 @@ import {
   setNameInputError,
   setPassword, setPasswordInputError, setProfilePageAvailable,
 } from './profile-slice';
-import {TUserData} from '../../utils/types';
-import {connectWebSocket, disconnectWebSocket} from './feed-slice';
-import {checkAuthToken} from '../../utils/api';
+import {TUserData, TWsActions} from '../../utils/types';
 
 
 describe('Profile Reducers', () => {
@@ -24,9 +21,6 @@ describe('Profile Reducers', () => {
     const updatedState = store.getState().profilePage;
     expect(updatedState.name).toEqual(newName);
   });
-
-  // Add similar tests for other reducers
-
   // Async thunk tests
   it('should refresh access token', async () => {
     const dispatch = store.dispatch as jest.Mock;

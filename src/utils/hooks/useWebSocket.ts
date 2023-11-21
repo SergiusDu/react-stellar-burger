@@ -1,6 +1,7 @@
-import {TWsActions} from '../../services/middleware/websocketMiddleware';
+
 import {useAppDispatch} from './reduxHooks';
 import {useEffect} from 'react';
+import {TWsActions} from '../types';
 
 /**
  * Хук для управления WebSocket подключением и отключением.

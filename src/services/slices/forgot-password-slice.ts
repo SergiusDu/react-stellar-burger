@@ -54,7 +54,6 @@ export const forgotPasswordFormSlice = createSlice({
         state,
         action,
       ) => {
-
       });
   },
 });

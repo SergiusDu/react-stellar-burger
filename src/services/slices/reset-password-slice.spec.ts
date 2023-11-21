@@ -5,7 +5,7 @@ import {fetchAPI} from '../../utils/api';
 import {RESET_PASSWORD_STEP_TWO_ENDPOINT} from '../../utils/constants';
 import {
   resetPassword,
-  resetPasswordFormSlice,
+  resetPasswordFormSlice, resetPasswordFormSliceInitialState,
   setResetPasswordNewPasswordErrorMessage,
   setResetPasswordNewPasswordInput, setResetPasswordPageAvailability,
   setResetPasswordTokenInput, setServerResponseErrorMessage,
@@ -23,17 +23,14 @@ jest.mock(
   ));
 
 describe('resetPasswordFormSlice reducer and actions', () => {
-  const initialState: RootState['resetPasswordForm'] = {
-    newPassword: '', newPasswordErrorMessage: '', token: '', tokenErrorMessage: '', serverResponseErrorMessage: '', isAvailable: false,
-  };
 
   it('should return the initial state on first run', () => {
     expect(resetPasswordFormSlice.reducer(undefined, {type: ''})).toEqual(
-      initialState);
+      resetPasswordFormSliceInitialState);
   });
   it('should handle setResetPasswordNewPasswordInput', () => {
     const nextState = resetPasswordFormSlice.reducer(
-      initialState,
+      resetPasswordFormSliceInitialState,
       setResetPasswordNewPasswordInput('newPassword123')
     );
     expect(nextState.newPassword).toEqual('newPassword123');
@@ -41,7 +38,7 @@ describe('resetPasswordFormSlice reducer and actions', () => {
 
   it('should handle setResetPasswordNewPasswordErrorMessage', () => {
     const nextState = resetPasswordFormSlice.reducer(
-      initialState,
+      resetPasswordFormSliceInitialState,
       setResetPasswordNewPasswordErrorMessage('Invalid password format')
     );
     expect(nextState.newPasswordErrorMessage).toEqual('Invalid password format');
@@ -49,7 +46,7 @@ describe('resetPasswordFormSlice reducer and actions', () => {
 
   it('should handle setResetPasswordTokenInput', () => {
     const nextState = resetPasswordFormSlice.reducer(
-      initialState,
+      resetPasswordFormSliceInitialState,
       setResetPasswordTokenInput('token123')
     );
     expect(nextState.token).toEqual('token123');
@@ -57,7 +54,7 @@ describe('resetPasswordFormSlice reducer and actions', () => {
 
   it('should handle setTokenErrorMessage', () => {
     const nextState = resetPasswordFormSlice.reducer(
-      initialState,
+      resetPasswordFormSliceInitialState,
       setTokenErrorMessage('Invalid token')
     );
     expect(nextState.tokenErrorMessage).toEqual('Invalid token');
@@ -65,7 +62,7 @@ describe('resetPasswordFormSlice reducer and actions', () => {
 
   it('should handle setResetPasswordPageAvailability', () => {
     const nextState = resetPasswordFormSlice.reducer(
-      initialState,
+      resetPasswordFormSliceInitialState,
       setResetPasswordPageAvailability(true)
     );
     expect(nextState.isAvailable).toEqual(true);
@@ -73,7 +70,7 @@ describe('resetPasswordFormSlice reducer and actions', () => {
 
   it('should handle setServerResponseErrorMessage', () => {
     const nextState = resetPasswordFormSlice.reducer(
-      initialState,
+      resetPasswordFormSliceInitialState,
       setServerResponseErrorMessage('Server error')
     );
     expect(nextState.serverResponseErrorMessage).toEqual('Server error');

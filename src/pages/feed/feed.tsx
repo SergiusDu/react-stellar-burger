@@ -1,5 +1,5 @@
 import {ProfileLayout} from '../../components/profile-layout/profile-layout';
-import React, {useCallback, useMemo} from 'react';
+import React, {useCallback, useEffect, useMemo} from 'react';
 import {
   FeedWebsocketActions,
   selectAllOrders,
@@ -9,10 +9,16 @@ import {
 import styles from './feed.module.css';
 import {useHistory, useLocation} from 'react-router-dom';
 import {Order} from '../../utils/types';
-import {FEED_PAGE_PATH} from '../../utils/constants';
+import {
+  CONNECT_PROFILE_WEBSOCKET, DISCONNECT_FEED_WEBSOCKET,
+  DISCONNECT_PROFILE_WEBSOCKET,
+  FEED_PAGE_PATH,
+} from '../../utils/constants';
 import {OrderList} from '../../components/order-list/order-list';
-import {useAppSelector} from '../../utils/hooks/reduxHooks';
+import {useAppDispatch, useAppSelector} from '../../utils/hooks/reduxHooks';
 import useWebSocket from '../../utils/hooks/useWebSocket';
+import {getAccessTokenFromCookies} from '../../utils/api';
+import {profilePageAvailability} from '../../services/slices/profile-slice';
 
 export const Feed: React.FC = () => {
   const isFeedWebSocketWorking = useAppSelector(selectWebSocketStatus);
@@ -22,6 +28,25 @@ export const Feed: React.FC = () => {
   const totalTodayOrders = useAppSelector(selectAllTotalOrders);
   const history = useHistory();
   const location = useLocation();
+  const dispatch = useAppDispatch();
+  const isProfileAvailable = useAppSelector(profilePageAvailability)
+  useEffect(() => {
+    const clearAccessToken = getAccessTokenFromCookies()?.split(' ')[1];
+    if (isProfileAvailable && typeof clearAccessToken === 'string') {
+      console.log('ЗАПУСКАЮ ВЕБСОКЕТ');
+      dispatch({
+        type: CONNECT_PROFILE_WEBSOCKET,
+        payload: clearAccessToken,
+      });
+    }
+    else {
+      dispatch({type: DISCONNECT_PROFILE_WEBSOCKET});
+    }
+    return () => {
+      dispatch({type: DISCONNECT_PROFILE_WEBSOCKET});
+      dispatch({type: DISCONNECT_FEED_WEBSOCKET});
+    };
+  }, [isProfileAvailable, dispatch]);
 
   const navigateOrderClick = useCallback((order: Order) => {
     history.push({

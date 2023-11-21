@@ -10,12 +10,12 @@ import {
   isValidIngredient,
   Order,
 } from '../../utils/types';
-import {useSelector} from 'react-redux';
 import {selectIngredients} from '../../services/slices/ingredient-slice';
 import {
   RoundedIngredientImage,
 } from '../rounded-ingredient-image/rounded-ingredient-image';
 import {translateOrderStatus} from '../../utils/api';
+import {useAppSelector} from '../../utils/hooks/reduxHooks';
 
 interface FeedCardProps {
   order: Order;
@@ -27,7 +27,7 @@ export const FeedCard: React.FC<FeedCardProps> = ({
   onClick,
 }) => {
   const date = new Date(order.createdAt);
-  const ingredients = useSelector(selectIngredients);
+  const ingredients = useAppSelector(selectIngredients);
   const [burgerPrice, setBurgerPrice] = useState<number>(0);
   const [burgerIngredientsWithDetails, setBurgerIngredientsWithDetails] = useState<IngredientType[]>(
     []);

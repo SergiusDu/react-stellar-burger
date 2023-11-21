@@ -1,6 +1,8 @@
 import {
   addIngredient,
-  burgerConstructorSlice, BurgerConstructorState,
+  burgerConstructorSlice,
+  BurgerConstructorSliceInitialState,
+  BurgerConstructorState,
   moveItem,
   removeIngredient,
   resetIngredients,
@@ -10,20 +12,13 @@ import {
 } from './burger-constructor-slice';
 import {IngredientType} from '../../utils/types';
 import {data} from '../../utils/data';
-import {getRandomBun, getRandomBurgerIngredient} from '../../utils/api';
-import {testState} from '../store/store';
+import {
+  getRandomBun, getRandomBurgerIngredient, getRandomElement,
+} from '../../utils/api';
+import {createMockStore} from '../../utils/mockStore';
 
 describe('burgerConstructorSlice', () => {
-  let initialState: BurgerConstructorState;
-  let ingredients: IngredientType[];
 
-  beforeEach(() => {
-    initialState = {
-      ingredients: [],
-      bun: null,
-    };
-    ingredients = [];
-  });
   it('should handle addIngredient', () => {
     const initialState = {
       ingredients: [],
@@ -37,7 +32,7 @@ describe('burgerConstructorSlice', () => {
   it('should handle removeIngredient', () => {
     const ingredient = getRandomBurgerIngredient(data);
     const stateWithIngredient = {
-      ...initialState,
+      ...BurgerConstructorSliceInitialState,
       ingredients: [ingredient],
     };
     const nextState = burgerConstructorSlice.reducer(
@@ -46,13 +41,14 @@ describe('burgerConstructorSlice', () => {
   });
   it('should handle setBun', () => {
     const bun = getRandomBun(data);
-    const nextState = burgerConstructorSlice.reducer(initialState, setBun(bun));
+    const nextState = burgerConstructorSlice.reducer(
+      BurgerConstructorSliceInitialState, setBun(bun));
     expect(nextState.bun).toEqual(bun);
   });
   it('should not remove an ingredient if uniqueId not found', () => {
     const ingredient = getRandomBurgerIngredient(data);
     const stateWithIngredient = {
-      ...initialState,
+      ...BurgerConstructorSliceInitialState,
       ingredients: [ingredient],
     };
     const nextState = burgerConstructorSlice.reducer(
@@ -82,7 +78,7 @@ describe('burgerConstructorSlice', () => {
   it('should handle resetIngredients', () => {
     const ingredient = getRandomBurgerIngredient(data);
     const stateWithIngredients = {
-      ...initialState,
+      ...BurgerConstructorSliceInitialState,
       ingredients: [ingredient, ingredient],
     };
     const nextState = burgerConstructorSlice.reducer(
@@ -100,7 +96,7 @@ describe('burgerConstructorSlice', () => {
       }
     ));
     const modifiedState = {
-      ...initialState,
+      ...BurgerConstructorSliceInitialState,
       ingredients,
     };
     const nextState = burgerConstructorSlice.reducer(modifiedState, moveItem({
@@ -122,7 +118,7 @@ describe('burgerConstructorSlice', () => {
       }
     ));
     const modifiedState = {
-      ...initialState,
+      ...BurgerConstructorSliceInitialState,
       ingredients,
     };
     const nextState = burgerConstructorSlice.reducer(modifiedState, moveItem({
@@ -132,7 +128,7 @@ describe('burgerConstructorSlice', () => {
     expect(nextState).toEqual(modifiedState);
   });
   it('should add multiple ingredients correctly', () => {
-    let state = initialState;
+    let state = BurgerConstructorSliceInitialState;
     data.slice(0, 3).forEach(ingredient => {
       state = burgerConstructorSlice.reducer(state, addIngredient(ingredient));
     });
@@ -140,25 +136,35 @@ describe('burgerConstructorSlice', () => {
   });
   it('should not change bun when modifying ingredients', () => {
     const bun = getRandomBun(data);
-    let state = burgerConstructorSlice.reducer(initialState, setBun(bun));
+    let state = burgerConstructorSlice.reducer(
+      BurgerConstructorSliceInitialState, setBun(bun));
     state = burgerConstructorSlice.reducer(state, addIngredient(data[0]));
     expect(state.bun).toEqual(bun);
   });
 
   // Тесты для селекторов
-  it('should correctly select ingredients', () => {
-    expect(selectIngredients(testState)).toEqual(initialState.ingredients);
+  it('selects the ingredients correctly', () => {
+    const testIngredients: IngredientType[] = [
+      getRandomBun(data), getRandomElement(data)];
+    const store = createMockStore({
+      burgerConstructor: {
+        ...BurgerConstructorSliceInitialState,
+        ingredients: testIngredients,
+      },
+    });
+    const state = store.getState();
+    expect(selectIngredients(state)).toEqual(testIngredients);
   });
 
-  it('should correctly select bun', () => {
-    const bun = getRandomBun(data);
-    const stateWithBun = {
-      ...testState,
+  it('selects the bun correctly', () => {
+    const testBun: IngredientType = getRandomBun(data);
+    const store = createMockStore({
       burgerConstructor: {
-        ...testState.burgerConstructor,
-        bun: bun,
+        ...BurgerConstructorSliceInitialState,
+        bun: testBun,
       },
-    };
-    expect(selectBun(stateWithBun)).toEqual(bun);
+    });
+    const state = store.getState();
+    expect(selectBun(state)).toEqual(testBun);
   });
 });

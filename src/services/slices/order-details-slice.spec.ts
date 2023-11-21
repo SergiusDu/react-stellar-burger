@@ -1,6 +1,10 @@
 // orderDetailsSlice.spec.ts
 import {
-  fetchOrder, orderDetailsSlice, OrderDetailsState, resetOrderNumber,
+  fetchOrder,
+  orderDetailsSlice,
+  orderDetailsSliceInitialState,
+  OrderDetailsState,
+  resetOrderNumber,
 } from './order-details-slice';
 
 import * as apiUtils from '../../utils/api';
@@ -15,23 +19,19 @@ const middlewares = [thunk];
 const mockStore = configureMockStore<RootState, any>(middlewares);
 type MockDispatch = (action: ThunkAction<any, any, any, any>) => Promise<any>;
 describe('async POST order details actions', () => {
-  let store: MockStore<RootState>;
+  let store: MockStore<RootState> = createMockStore();
 
   beforeEach(() => {
     store = createMockStore();
-  });
-  beforeEach(() => {
-    jest.spyOn(apiUtils, 'getAccessTokenFromCookies').mockReturnValue(
-      'test-token');
+    jest.spyOn(apiUtils, 'getAccessTokenFromCookies').mockReturnValue('test-token');
+    jest.spyOn(global, 'fetch').mockResolvedValue({
+      json: () => Promise.resolve(fetchOrderResponseMock), ok: true,
+    } as any);
   });
   afterEach(() => {
     jest.restoreAllMocks();
   });
-
   it('posts order', () => {
-    jest.spyOn(global, 'fetch').mockResolvedValue({
-      json: () => Promise.resolve(fetchOrderResponseMock), ok: true,
-    } as any);
     const sendMock = [
       '643d69a5c3f7b9001cfa0941',
       '643d69a5c3f7b9001cfa093c',
@@ -51,12 +51,12 @@ describe('async POST order details actions', () => {
   });
   describe('reducers', () => {
     it('should handle resetOrderNumber', () => {
-      store.dispatch(resetOrderNumber());
-      const actions = store.getActions();
-      const expectedPayload = {type: 'burgerDetails/resetOrderNumber'};
-      expect(actions).toEqual([expectedPayload]);
-      const newState = orderDetailsSlice.reducer(
-        store.getState().orderDetails, resetOrderNumber());
+      let currentState = {
+        ...orderDetailsSliceInitialState,
+        orderNumber: 12345
+      };
+      const newState = orderDetailsSlice.reducer(currentState, resetOrderNumber());
+
       expect(newState.orderNumber).toBeNull();
     });
   });

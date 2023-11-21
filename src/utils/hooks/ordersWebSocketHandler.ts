@@ -10,7 +10,7 @@ import {useAppSelector} from './reduxHooks';
 import {
   selectProfileOrdersWebSocketStatus,
 } from '../../services/slices/profile-slice';
-import {TWsActions} from '../../services/middleware/websocketMiddleware';
+import {TWsActions} from '../types';
 
 function useOrdersWebSocketHandler() {
   const pathname = useLocation().pathname;

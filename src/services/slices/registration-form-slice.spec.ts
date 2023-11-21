@@ -5,7 +5,7 @@ import { REGISTER_ENDPOINT } from '../../utils/constants';
 import mocked = jest.mocked;
 import {
   registerUser,
-  registrationSlice,
+  registrationSlice, registrationSliceInitialState,
   selectEmailInputValue,
 } from './registration-form-slice';
 import {TUserData} from '../../utils/types';
@@ -17,19 +17,10 @@ jest.mock('../../utils/constants', () => ({
 }));
 
 describe('registrationSlice reducer and actions', () => {
-  const initialState: RootState['registrationFormData'] = {
-    isLoaded: false,
-    name: '',
-    email: '',
-    emailInputErrorMessage: '',
-    password: '',
-    responseErrorMessage: '',
-    isFormBlocked: false,
-  };
 
   it('should return the initial state on first run', () => {
     expect(registrationSlice.reducer(undefined, {type: ''})).toEqual(
-      initialState);
+      registrationSliceInitialState);
   });
 
   // Тесты для асинхронных действий
@@ -57,7 +48,7 @@ describe('registrationSlice reducer and actions', () => {
   describe('registrationSlice reducers', () => {
     it('should handle setEmailInputValue', () => {
       const nextState = registrationSlice.reducer(
-        initialState,
+        registrationSliceInitialState,
         registrationSlice.actions.setEmailInputValue('test@example.com')
       );
       expect(nextState.email).toEqual('test@example.com');
@@ -65,7 +56,7 @@ describe('registrationSlice reducer and actions', () => {
 
     it('should handle setNameInputValue', () => {
       const nextState = registrationSlice.reducer(
-        initialState,
+        registrationSliceInitialState,
         registrationSlice.actions.setNameInputValue('John Doe')
       );
       expect(nextState.name).toEqual('John Doe');
@@ -73,7 +64,7 @@ describe('registrationSlice reducer and actions', () => {
 
     it('should handle setEmailInputErrorMessage', () => {
       const nextState = registrationSlice.reducer(
-        initialState,
+        registrationSliceInitialState,
         registrationSlice.actions.setEmailInputErrorMessage('Invalid email')
       );
       expect(nextState.emailInputErrorMessage).toEqual('Invalid email');
@@ -81,7 +72,7 @@ describe('registrationSlice reducer and actions', () => {
 
     it('should handle setPasswordInputValue', () => {
       const nextState = registrationSlice.reducer(
-        initialState,
+        registrationSliceInitialState,
         registrationSlice.actions.setPasswordInputValue('newPassword')
       );
       expect(nextState.password).toEqual('newPassword');
@@ -89,7 +80,7 @@ describe('registrationSlice reducer and actions', () => {
 
     it('should handle setResponseErrorMessage', () => {
       const nextState = registrationSlice.reducer(
-        initialState,
+        registrationSliceInitialState,
         registrationSlice.actions.setResponseErrorMessage('Server error')
       );
       expect(nextState.responseErrorMessage).toEqual('Server error');

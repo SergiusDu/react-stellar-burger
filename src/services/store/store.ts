@@ -30,20 +30,10 @@ export const store = configureStore({
     feedSlice: feedSlice.reducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(
-    socketMiddleware()
+      socketMiddleware()
   ),
 });
-export const testState: RootState = {
-  ingredient: ingredientSlice.reducer(undefined, { type: '' }),
-  burgerConstructor: burgerConstructorSlice.reducer(undefined, { type: '' }),
-  orderDetails: orderDetailsSlice.reducer(undefined, { type: '' }),
-  loginData: loginSlice.reducer(undefined, { type: '' }),
-  registrationFormData: registrationSlice.reducer(undefined, { type: '' }),
-  forgotPasswordForm: forgotPasswordFormSlice.reducer(undefined, { type: '' }),
-  resetPasswordForm: resetPasswordFormSlice.reducer(undefined, { type: '' }),
-  profilePage: profileSlice.reducer(undefined, { type: '' }),
-  feedSlice: feedSlice.reducer(undefined, { type: '' }),
-};
+
 export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+export type TAppDispatch = typeof store.dispatch;
 export default store;

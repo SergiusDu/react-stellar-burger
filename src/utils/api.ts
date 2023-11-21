@@ -8,10 +8,8 @@ import {
   ProfileWebsocketActions,
   refreshAccessToken,
 } from '../services/slices/profile-slice';
-import {AppDispatch} from '../services/store/store';
-import {HttpMethod, IngredientType, TNullableToken} from './types';
-import {TWsActions} from '../services/middleware/websocketMiddleware';
-
+import {TAppDispatch} from '../services/store/store';
+import {HttpMethod, IngredientType, TNullableToken, TWsActions} from './types';
 type BodyData = Record<string, any> | null;
 type Headers = Record<string, string> | Record<string, TNullableToken> | null;
 
@@ -50,7 +48,7 @@ export async function fetchAPI(url: string,
  * обновления.
  * @param dispatch - Функция диспатча Redux.
  */
-export async function refreshTokensIfNeeded(dispatch: AppDispatch) {
+export async function refreshTokensIfNeeded(dispatch: TAppDispatch) {
   const accessToken = getAccessTokenFromCookies();
   const refreshToken = getRefreshTokenFromCookies();
   if (!accessToken && refreshToken) {

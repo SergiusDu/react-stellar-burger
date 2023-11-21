@@ -1,7 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {isValidOrderResponse, Order} from '../../utils/types';
+import {isValidOrderResponse, Order, TWsActions} from '../../utils/types';
 import {RootState} from '../store/store';
-import {TWsActions} from '../middleware/websocketMiddleware';
 import {GET_ALL_ORDERS_WS_ENDPOINT} from '../../utils/constants';
 
 interface IFeedSlice {

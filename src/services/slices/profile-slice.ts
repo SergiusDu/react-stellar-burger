@@ -25,9 +25,8 @@ import {RootState} from '../store/store';
 import {
   isErrorWithResponse,
   TNullableToken,
-  TUserData,
+  TUserData, TWsActions,
 } from '../../utils/types';
-import {TWsActions} from '../middleware/websocketMiddleware';
 import {updateProfileOrdersInformation} from './feed-slice';
 
 export const refreshAccessToken = createAsyncThunk<string, void, {

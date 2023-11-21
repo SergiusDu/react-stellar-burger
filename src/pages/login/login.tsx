@@ -43,7 +43,6 @@ const Login: React.FC = () => {
       password: passwordInputValue,
     };
     const response = await dispatch(authorizeUser(loginCredentials));
-    // @ts-ignore
     if (response.payload.success) {
       dispatch(setProfilePageAvailable());
       if (redirectTo) {
@@ -51,6 +50,7 @@ const Login: React.FC = () => {
       }
     }
   }
+
 
   return (
     <main className={styles.main_layout}>
@@ -66,7 +66,7 @@ const Login: React.FC = () => {
               }}
               minLength={6}
               // @ts-ignore
-              error={!!emailInputErrorMessage}
+              error={emailInputErrorMessage}
               errorText={emailInputErrorMessage}
               autoComplete="email"
               name="email"

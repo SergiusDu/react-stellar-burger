@@ -57,9 +57,6 @@ export const ForgotPassword: React.FC = () => {
             }}
             placeholder="Укажите e-mail"
             minLength={6}
-            // @ts-ignore
-            error={emailInputError}
-            errorText={emailInputError}
             autoComplete="email"
             name="email"
             required

@@ -2,14 +2,14 @@ import React, {ForwardedRef, useMemo} from 'react';
 import styles from './ingredient-list.module.css';
 import {CategorySection} from '../category-section/category-section';
 import {selectIngredients} from '../../../services/slices/ingredient-slice';
-import {useSelector} from 'react-redux';
 import {IngredientType} from '../../../utils/types';
+import {useAppSelector} from '../../../utils/hooks/reduxHooks';
 
 type IngredientListProps = {
     refs?: Record<string, ForwardedRef<HTMLElement>>;
 };
 const IngredientList = React.forwardRef<HTMLElement, IngredientListProps>((props, ref: React.ForwardedRef<HTMLElement>) => {
-    const ingredients: IngredientType[] = useSelector(selectIngredients);
+    const ingredients: IngredientType[] = useAppSelector(selectIngredients);
     const uniqueCategories = useMemo(() => {
         const uniqueTypes = new Set<string>();
         Object.values(ingredients).forEach(ingredient => {

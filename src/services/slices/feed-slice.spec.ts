@@ -1,7 +1,7 @@
 import {
   connectWebSocket,
   disconnectWebSocket,
-  feedSlice,
+  feedSlice, feedSliceInitialState,
   selectAllOrders,
   selectAllTotalOrders,
   selectAllTotalTodayOrders,
@@ -19,7 +19,7 @@ import {Order} from '../../utils/types';
 import {allOrdersWsServerResponse} from '../../utils/mockAllOrders';
 import {profileOrdersWsServerResponse} from '../../utils/mockProfileOrders';
 import {getRandomElement} from '../../utils/api';
-import {testState} from '../store/store';
+import {createMockStore, mockedInitialState} from '../../utils/mockStore';
 
 describe('feedSlice reducers', () => {
   const initialState = feedSlice.getInitialState();
@@ -119,67 +119,79 @@ describe('feedSlice reducers', () => {
   // Тесты для селекторов
   it('should select correct profile orders', () => {
     const mockOrder = getRandomElement(profileOrders);
-    const customTestState = {
-      ...testState, feedSlice: {
-        ...testState.feedSlice, profileOrders: [mockOrder],
-      },
-    };
-    expect(selectProfileOrders(customTestState)).toEqual([mockOrder]);
+    const store = createMockStore({
+      feedSlice: {
+        ...feedSliceInitialState,
+        profileOrders: [mockOrder],
+      }
+    });
+    const state = store.getState();
+    expect(selectProfileOrders(state)).toEqual([mockOrder]);
   });
 
   it('should select all orders correctly', () => {
-    const customTestState = {
-      ...testState, feedSlice: {
-        ...testState.feedSlice, allOrders,
-      },
-    };
-    expect(selectAllOrders(customTestState)).toEqual(allOrders);
+    const store = createMockStore({
+      feedSlice: {
+        ...feedSliceInitialState,
+        allOrders,
+      }
+    });
+    const state = store.getState();
+    expect(selectAllOrders(state)).toEqual(allOrders);
   });
 
   it('should select total today orders correctly', () => {
-    const customTestState = {
-      ...testState, feedSlice: {
-        ...testState.feedSlice, profileTotalToday: allTotalOrdersToday,
-      },
-    };
-    expect(selectTotalTodayOrders(customTestState)).toEqual(
-      allTotalOrdersToday);
+    const store = createMockStore({
+      feedSlice: {
+        ...feedSliceInitialState,
+        profileTotalToday: allTotalOrdersToday,
+      }
+    });
+    const state = store.getState();
+    expect(selectTotalTodayOrders(state)).toEqual(allTotalOrdersToday);
   });
 
   it('should select all total today orders correctly', () => {
-    const customTestState = {
-      ...testState, feedSlice: {
-        ...testState.feedSlice, allTotalToday: allTotalOrdersToday,
-      },
-    };
-    expect(selectAllTotalTodayOrders(customTestState)).toEqual(
-      allTotalOrdersToday);
+    const store = createMockStore({
+      feedSlice: {
+        ...feedSliceInitialState,
+        allTotalToday: allTotalOrdersToday,
+      }
+    });
+    const state = store.getState();
+    expect(selectAllTotalTodayOrders(state)).toEqual(allTotalOrdersToday);
   });
 
   it('should select total orders correctly', () => {
-    const customTestState = {
-      ...testState, feedSlice: {
-        ...testState.feedSlice, profileTotal: profileTotalOrders,
-      },
-    };
-    expect(selectTotalOrders(customTestState)).toEqual(profileTotalOrders);
+    const store = createMockStore({
+      feedSlice: {
+        ...feedSliceInitialState,
+        profileTotal: profileTotalOrders,
+      }
+    });
+    const state = store.getState();
+    expect(selectTotalOrders(state)).toEqual(profileTotalOrders);
   });
 
   it('should select all total orders correctly', () => {
-    const customTestState = {
-      ...testState, feedSlice: {
-        ...testState.feedSlice, allTotal: allTotalOrders,
-      },
-    };
-    expect(selectAllTotalOrders(customTestState)).toEqual(allTotalOrders);
+    const store = createMockStore({
+      feedSlice: {
+        ...feedSliceInitialState,
+        allTotal: allTotalOrders,
+      }
+    });
+    const state = store.getState();
+    expect(selectAllTotalOrders(state)).toEqual(allTotalOrders);
   });
 
   it('should select WebSocket status correctly', () => {
-    const customTestState = {
-      ...testState, feedSlice: {
-        ...testState.feedSlice, isWebSocketOpened: true,
-      },
-    };
-    expect(selectWebSocketStatus(customTestState)).toBeTruthy();
+    const store = createMockStore({
+      feedSlice: {
+        ...feedSliceInitialState,
+        isWebSocketOpened: true,
+      }
+    });
+    const state = store.getState();
+    expect(selectWebSocketStatus(state)).toBeTruthy();
   });
 });

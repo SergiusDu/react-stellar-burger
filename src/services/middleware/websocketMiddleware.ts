@@ -1,63 +1,12 @@
-import {AnyAction, Middleware, MiddlewareAPI} from 'redux';
-import {AppDispatch, RootState} from '../store/store';
-
-// Определяем отдельный тип для payload
-export interface TWsActionsPayload {
-  url: string;
-  wsConnect: string;
-  wsDisconnect: string;
-  onOpen?: string;
-  onClose?: string;
-  onError?: string;
-  onMessage?: string;
-}
-
-// Определяем интерфейс TWsActions с использованием нового типа payload
-export interface TWsActions extends AnyAction {
-  type: string;
-  payload: TWsActionsPayload;
-}
-
-export function isTWsActions(action: AnyAction): action is TWsActions {
-  // Проверяем, является ли action объектом и не равен ли он null
-  if (typeof action !== 'object' || action === null) {
-    return false;
-  }
-
-  // Проверяем наличие и тип свойства type у action
-  const hasType = 'type' in action && typeof action.type === 'string';
-
-  // Проверяем наличие свойства payload и что оно является объектом и не равно null
-  const hasPayload = 'payload' in action && action.payload !== null && typeof action.payload === 'object';
-
-  if (!hasType || !hasPayload) {
-    return false;
-  }
-
-  // Теперь безопасно приводим payload к типу TWsActionsPayload
-  const payload = action.payload as TWsActionsPayload;
-
-  // Проверяем наличие и тип свойств в payload
-  const hasUrl = 'url' in payload && typeof payload.url === 'string';
-  const hasWsConnect = 'wsConnect' in payload && typeof payload.wsConnect === 'string';
-  const hasWsDisconnect = 'wsDisconnect' in payload && typeof payload.wsDisconnect === 'string';
-
-  // Проверка опциональных полей
-  const hasOnOpen = !payload.onOpen || typeof payload.onOpen === 'string';
-  const hasOnClose = !payload.onClose || typeof payload.onClose === 'string';
-  const hasOnError = !payload.onError || typeof payload.onError === 'string';
-  const hasOnMessage = !payload.onMessage || typeof payload.onMessage === 'string';
-
-  return hasUrl && hasWsConnect && hasWsDisconnect && hasOnOpen && hasOnClose && hasOnError && hasOnMessage;
-}
-
+import {Middleware, MiddlewareAPI} from 'redux';
+import {TAppDispatch, RootState} from '../store/store';
+import {isTWsActions, TWsActions} from '../../utils/types';
 
 export const socketMiddleware = (): Middleware => {
   const socketMap = new Map<string, WebSocket>();
-
-  return (store: MiddlewareAPI<AppDispatch, RootState>) => {
+  return (store: MiddlewareAPI<TAppDispatch, RootState>) => {
     let socket: WebSocket | null = null;
-    return (next: AppDispatch) => (action: TWsActions) => {
+    return (next: TAppDispatch) => (action: TWsActions) => {
       const {
         dispatch,
       } = store;

@@ -1,7 +1,54 @@
-# Dependency directories
-/node_modules/
-/node_modules/*
+# Зависимости
+/node_modules
 
-# Build outputs
-/build/
-/build/*
+# Папка сборки
+/build
+
+# Локальные конфигурации IDE
+/.idea
+/.vscode
+
+# Логи
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Файлы временной среды выполнения
+/pids
+*.pid
+*.seed
+*.pid.lock
+
+# Каталоги, создаваемые npm
+npm-debug.log
+.npm
+
+# Файлы конфигурации редактора
+.editorconfig
+
+# Файлы кэша
+.cache
+
+# MacOS файлы
+.DS_Store
+
+# Файлы архивов
+*.tgz
+
+# Файлы логов
+*.log
+
+# Файлы временные
+*.tmp
+*.temp
+
+# Файлы среды разработки
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Файлы и папки, часто используемые для локальной разработки
+/public/
+/coverage/
