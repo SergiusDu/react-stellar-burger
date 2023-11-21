@@ -39,11 +39,11 @@ interface RegistrationState {
   isFormBlocked: boolean;
 }
 
-const initialState: RegistrationState = {
+export const registrationSliceInitialState: RegistrationState = {
   isLoaded: false, name: '', email: '', emailInputErrorMessage: '', password: '', responseErrorMessage: '', isFormBlocked: false,
 };
 export const registrationSlice = createSlice({
-  name: 'registrationData', initialState, reducers: {
+  name: 'registrationData', initialState: registrationSliceInitialState, reducers: {
     setNameInputValue(
       state,
       action,

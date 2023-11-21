@@ -1,26 +1,41 @@
-import {createAsyncThunk, createSlice, PayloadAction, SerializedError} from '@reduxjs/toolkit';
-import {fetchAPI, getAccessTokenFromCookies, getRefreshTokenFromCookies} from '../../utils/api';
+import {
+  createAsyncThunk, createSlice, PayloadAction, SerializedError,
+} from '@reduxjs/toolkit';
+import {
+  fetchAPI, getAccessTokenFromCookies, getRefreshTokenFromCookies,
+} from '../../utils/api';
 import {ORDER_URL, POST_METHOD} from '../../utils/constants';
 import {refreshAccessToken} from './profile-slice';
-import {IngredientType, TNullableToken} from '../../utils/types';
+import {
+  FetchOrderResponse, IngredientType, TNullableToken,
+} from '../../utils/types';
 import {RootState} from '../store/store';
 
-export const fetchOrder = createAsyncThunk('orderDetails/sendOrder', async (
+export const fetchOrder = createAsyncThunk<FetchOrderResponse, string[], {
+  rejectValue: string
+}>('orderDetails/sendOrder', async (
   orderData: string[],
-  {dispatch, rejectWithValue},
+  {
+    dispatch, rejectWithValue,
+  },
 ) => {
   let authToken: TNullableToken = getAccessTokenFromCookies();
   const sendRequestWithToken = async (token: TNullableToken) => {
     try {
-      const response = await fetchAPI(ORDER_URL, POST_METHOD, {ingredients: orderData}, {Authorization: token});
+      const response: FetchOrderResponse = await fetchAPI(ORDER_URL, POST_METHOD,
+        {ingredients: orderData}, {Authorization: token},
+      );
 
-      // Проверяем, был ли ответ преобразован в JSON и содержит ли он поле order с полем number
+      // Проверяем, был ли ответ преобразован в JSON и содержит ли он поле
+      // order с полем number
       if (response.order && response.order.number) {
         return response;
-      } else {
+      }
+      else {
         throw new Error('Invalid response format');
       }
-    } catch (error: unknown) {
+    }
+    catch (error: unknown) {
       // Если fetchAPI выбросил исключение, мы его здесь перехватываем
       if (error instanceof Error) {
         // Now TypeScript knows error is an Error object
@@ -31,8 +46,10 @@ export const fetchOrder = createAsyncThunk('orderDetails/sendOrder', async (
           return rejectWithValue('Network request failed');
         }
         return rejectWithValue(error.message);
-      } else {
-        // If it's not an Error object, we can handle it accordingly or throw an unexpected error type
+      }
+      else {
+        // If it's not an Error object, we can handle it accordingly or throw
+        // an unexpected error type
         return rejectWithValue('An unexpected error occurred');
       }
     }
@@ -45,7 +62,8 @@ export const fetchOrder = createAsyncThunk('orderDetails/sendOrder', async (
     }
     try {
       authToken = await dispatch(refreshAccessToken()).unwrap();
-    } catch (refreshError) {
+    }
+    catch (refreshError) {
       return rejectWithValue('Failed to refresh token');
     }
   }
@@ -55,45 +73,34 @@ export const fetchOrder = createAsyncThunk('orderDetails/sendOrder', async (
     if (error.message === 'Failed to fetch') {
       // Если ошибка связана с сетью, пытаемся еще раз отправить запрос
       return sendRequestWithToken(authToken);
-    } else if (error.message === 'Invalid response format' || error.message === 'Need to be authorized') {
+    }
+    else if (error.message === 'Invalid response format' || error.message
+      === 'Need to be authorized') {
       // Если формат ответа неверен или требуется авторизация, обновляем токен
       const newToken = await dispatch(refreshAccessToken()).unwrap();
       return sendRequestWithToken(newToken);
-    } else {
+    }
+    else {
       return rejectWithValue(error.message);
     }
   });
 });
 
-interface OrderDetailsState {
+export interface OrderDetailsState {
   isLoading: boolean;
   error: string | null;
   orderNumber: number | null;
   ingredients: IngredientType[] | null;
 }
 
-const initialState: OrderDetailsState = {
+export const orderDetailsSliceInitialState: OrderDetailsState = {
   isLoading: false, error: null, orderNumber: null, ingredients: null,
 };
 export const orderDetailsSlice = createSlice({
-  name: 'burgerDetails', initialState, reducers: {
+  name: 'burgerDetails', initialState: orderDetailsSliceInitialState, reducers: {
     resetOrderNumber: state => {
       state.orderNumber = null;
-    }, fetchOrderStart: state => {
-      state.isLoading = true;
-    }, fetchOrderSuccess: (
-      state,
-      action,
-    ) => {
-      state.ingredients = action.payload;
-      state.isLoading = false;
-    }, fetchOrderFailed: (
-      state,
-      action,
-    ) => {
-      state.error = action.payload;
-      state.isLoading = false;
-    },
+    }
   }, extraReducers: (builder) => {
     builder.addCase(fetchOrder.pending, (state) => {
       state.isLoading = true;
@@ -107,15 +114,15 @@ export const orderDetailsSlice = createSlice({
     }).addCase(fetchOrder.rejected, (
       state,
       action: PayloadAction<unknown, string, {
-        arg: string[];
-        requestId: string;
-        rejectedWithValue: boolean;
+        arg: string[]; requestId: string; rejectedWithValue: boolean;
       }, SerializedError>,
     ) => {
-      if (action.payload && typeof action.payload === 'object' && 'message' in action.payload) {
+      if (action.payload && typeof action.payload === 'object' && 'message'
+        in action.payload) {
         const serializedError = action.payload as SerializedError;
         state.error = serializedError.message || null;
-      } else {
+      }
+      else {
         state.error = 'An unknown error occurred';
       }
       state.isLoading = false;

@@ -52,6 +52,7 @@ describe('registrationSlice reducer and actions', () => {
     });
   });
 
+
   // Тесты для редьюсеров
   describe('registrationSlice reducers', () => {
     it('should handle setEmailInputValue', () => {
@@ -62,7 +63,37 @@ describe('registrationSlice reducer and actions', () => {
       expect(nextState.email).toEqual('test@example.com');
     });
 
-    // Другие тесты для редьюсеров
+    it('should handle setNameInputValue', () => {
+      const nextState = registrationSlice.reducer(
+        initialState,
+        registrationSlice.actions.setNameInputValue('John Doe')
+      );
+      expect(nextState.name).toEqual('John Doe');
+    });
+
+    it('should handle setEmailInputErrorMessage', () => {
+      const nextState = registrationSlice.reducer(
+        initialState,
+        registrationSlice.actions.setEmailInputErrorMessage('Invalid email')
+      );
+      expect(nextState.emailInputErrorMessage).toEqual('Invalid email');
+    });
+
+    it('should handle setPasswordInputValue', () => {
+      const nextState = registrationSlice.reducer(
+        initialState,
+        registrationSlice.actions.setPasswordInputValue('newPassword')
+      );
+      expect(nextState.password).toEqual('newPassword');
+    });
+
+    it('should handle setResponseErrorMessage', () => {
+      const nextState = registrationSlice.reducer(
+        initialState,
+        registrationSlice.actions.setResponseErrorMessage('Server error')
+      );
+      expect(nextState.responseErrorMessage).toEqual('Server error');
+    });
   });
 
 });

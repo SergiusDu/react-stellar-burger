@@ -40,7 +40,7 @@ export const resetPassword = createAsyncThunk<ISuccessResponse, IPasswordAndToke
   },
 );
 
-const initialState: ResetPasswordState = {
+export const resetPasswordFormSliceInitialState: ResetPasswordState = {
   newPassword: '',
   newPasswordErrorMessage: '',
   token: '',
@@ -50,7 +50,7 @@ const initialState: ResetPasswordState = {
 };
 export const resetPasswordFormSlice = createSlice({
   name: 'forgotPasswordForm',
-  initialState,
+  initialState: resetPasswordFormSliceInitialState,
   reducers: {
     setResetPasswordNewPasswordInput(state, action) {
       state.newPassword = action.payload;

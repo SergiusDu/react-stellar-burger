@@ -1,15 +1,19 @@
 import React, {MouseEventHandler, useEffect, useMemo, useState} from 'react';
 import styles from './feed-card.module.css';
 import {
-  CurrencyIcon, FormattedDate,
+  CurrencyIcon,
+  FormattedDate,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import {
-  BUN_TYPE, IngredientType, isValidIngredient, Order,
+  BUN_TYPE,
+  IngredientType,
+  isValidIngredient,
+  Order,
 } from '../../utils/types';
 import {useSelector} from 'react-redux';
 import {selectIngredients} from '../../services/slices/ingredient-slice';
 import {
-  RoundedIngredientImage, RoundedIngredientImageProps,
+  RoundedIngredientImage,
 } from '../rounded-ingredient-image/rounded-ingredient-image';
 import {translateOrderStatus} from '../../utils/api';
 
@@ -28,25 +32,27 @@ export const FeedCard: React.FC<FeedCardProps> = ({
   const [burgerIngredientsWithDetails, setBurgerIngredientsWithDetails] = useState<IngredientType[]>(
     []);
   useEffect(() => {
+    function parseOrderData() {
+      let price = 0;
+      let ingredientsWithDetails: IngredientType[] = [];
+      let ingredientDetails: IngredientType | undefined = undefined;
+      for (const orderIngredientId of order.ingredients) {
+        ingredientDetails =
+          ingredients.find(ingredient => ingredient._id === orderIngredientId);
+        if (!isValidIngredient(ingredientDetails)) {
+          continue;
+        }
+        price += ingredientDetails.price;
+        ingredientsWithDetails.push(ingredientDetails);
+      }
+      setBurgerPrice(price);
+      setBurgerIngredientsWithDetails(ingredientsWithDetails);
+    }
+
     parseOrderData();
   }, [order, ingredients]);
 
-  function parseOrderData() {
-    let price = 0;
-    let ingredientsWithDetails: IngredientType[] = [];
-    let ingredientDetails: IngredientType | undefined = undefined;
-    for (const orderIngredientId of order.ingredients) {
-      ingredientDetails =
-        ingredients.find(ingredient => ingredient._id === orderIngredientId);
-      if (!isValidIngredient(ingredientDetails)) {
-        continue;
-      }
-      price += ingredientDetails.price;
-      ingredientsWithDetails.push(ingredientDetails);
-    }
-    setBurgerPrice(price);
-    setBurgerIngredientsWithDetails(ingredientsWithDetails);
-  }
+
 
   const ingredientImages = useMemo(() => {
     let images = [];
@@ -100,8 +106,12 @@ export const FeedCard: React.FC<FeedCardProps> = ({
       <div className={`${styles.row} mt-6 mr-6`}>
         <h2 className="text">{order.name}</h2 >
       </div >
-      <div className={`${styles.row} ${order.status === 'done' ? 'text_color_success' : null} mt-2`}>
-        <p className="text text_type_main-small">{translateOrderStatus(order.status)}</p >
+      <div
+        className={`${styles.row} ${order.status === 'done' ?
+          'text_color_success' : null} mt-2`}
+      >
+        <p className="text text_type_main-small">{translateOrderStatus(
+          order.status)}</p >
       </div >
       <div className={`${styles.row} mt-6 mr-6`}>
         <div className={styles.images_row}>

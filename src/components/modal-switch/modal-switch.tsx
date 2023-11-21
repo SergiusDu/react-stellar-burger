@@ -46,11 +46,9 @@ import {
   selectAllOrders,
   selectProfileOrders,
 } from '../../services/slices/feed-slice';
-import {
-  createWebSocketProfileOrdersAction,
-  getAccessTokenFromCookies,
-} from '../../utils/api';
+import {getAccessTokenFromCookies} from '../../utils/api';
 import {useAppDispatch, useAppSelector} from '../../utils/hooks/reduxHooks';
+import NotFound from '../../pages/not-found/not-found';
 
 export const ModalSwitch: React.FC = () => {
   const location = useLocation<{
@@ -156,6 +154,7 @@ export const ModalSwitch: React.FC = () => {
           component={Home}
           path={MAIN_PAGE_PATH}
         />
+        <Route path="*" component={NotFound} />
       </Switch >
       {background && <Route
         path={INGREDIENT_BY_ID_PAGE_PATH}
@@ -183,8 +182,7 @@ export const ModalSwitch: React.FC = () => {
               <OrderInformation orders={profileOrders} {...routeProps} />
             </Modal >
           );
-        }
-        }
+        }}
         path={PROFILE_ORDER_ID_PATH}
         failedRedirectPath={LOGIN_PAGE_PATH}
         isAuth={profileAvailability}

@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
+    "@types/redux-mock-store": "^1.0.6",
     "@ya.praktikum/react-developer-burger-ui-components": "^1.14.0",
     "clsx": "^1.2.1",
     "immer": "^10.0.2",
@@ -29,6 +30,8 @@
     "@types/react": "17.0.0",
     "@types/react-dom": "17.0.0",
     "@types/react-router-dom": "^5.3.3",
+    "cypress": "^13.5.1",
+    "eslint-plugin-cypress": "^2.15.1",
     "fetch-mock": "^9.11.0",
     "jest": "^27.5.1",
     "redux-mock-store": "^1.5.4",
@@ -38,7 +41,8 @@
     "start": "react-scripts --openssl-legacy-provider start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "cypress:open": "./node_modules/.bin/cypress open"
   },
   "eslintConfig": {
     "extends": [

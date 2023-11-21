@@ -208,11 +208,11 @@ interface ProfileState {
   isWebSocketOpened: boolean;
 }
 
-const initialState: ProfileState = {
+export const profileSliceInitialState: ProfileState = {
   name: '', nameInputError: '', login: '', loginInputError: '', password: '', passwordInputError: '', isProfilePageAvailable: false, isSubmitButtonAvailable: true, isWebSocketOpened: false,
 };
 export const profileSlice = createSlice({
-  name: 'profileSlice', initialState, reducers: {
+  name: 'profileSlice', initialState: profileSliceInitialState, reducers: {
     setProfileName(
       state,
       action,

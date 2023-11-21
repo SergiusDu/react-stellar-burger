@@ -11,7 +11,6 @@ import {
 import {AppDispatch} from '../services/store/store';
 import {HttpMethod, IngredientType, TNullableToken} from './types';
 import {TWsActions} from '../services/middleware/websocketMiddleware';
-import ingredient from '../components/burger-ingredients/ingredient/ingredient';
 
 type BodyData = Record<string, any> | null;
 type Headers = Record<string, string> | Record<string, TNullableToken> | null;

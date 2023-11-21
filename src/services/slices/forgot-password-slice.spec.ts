@@ -19,43 +19,24 @@ import {resetPasswordFormSlice} from './reset-password-slice';
 import {profileSlice} from './profile-slice';
 import {feedSlice} from './feed-slice';
 import {AppDispatch, testState} from '../store/store';
+
 let store: Store<any, Action> & { dispatch: AppDispatch };
-jest.mock('../../utils/api', () => ({
-  fetchAPI: jest.fn().mockResolvedValueOnce({
-    success: true,
-    message: "Reset email sent",
-  }),
-}));
+jest.mock('../../utils/api', () => (
+  {
+    fetchAPI: jest.fn().mockResolvedValueOnce({
+      success: true, message: 'Reset email sent',
+    }),
+  }
+));
 describe('forgotPasswordFormSlice reducers and selectors', () => {
   const initialState = forgotPasswordFormSlice.getInitialState();
   beforeEach(() => {
     store = configureStore({
       reducer: {
-        ingredient: ingredientSlice.reducer,
-        burgerConstructor: burgerConstructorSlice.reducer,
-        orderDetails: orderDetailsSlice.reducer,
-        loginData: loginSlice.reducer,
-        registrationFormData: registrationSlice.reducer,
-        forgotPasswordForm: forgotPasswordFormSlice.reducer,
-        resetPasswordForm: resetPasswordFormSlice.reducer,
-        profilePage: profileSlice.reducer,
-        feedSlice: feedSlice.reducer,
-      }
+        ingredient: ingredientSlice.reducer, burgerConstructor: burgerConstructorSlice.reducer, orderDetails: orderDetailsSlice.reducer, loginData: loginSlice.reducer, registrationFormData: registrationSlice.reducer, forgotPasswordForm: forgotPasswordFormSlice.reducer, resetPasswordForm: resetPasswordFormSlice.reducer, profilePage: profileSlice.reducer, feedSlice: feedSlice.reducer,
+      },
     });
   });
-
-// Тесты для селекторов
-it('should select the correct email input value', () => {
-  const emailValue = 'test@example.com';
-  const customTestState = {
-    ...testState,
-    forgotPasswordForm: {
-      ...testState.forgotPasswordForm,
-      emailInputValue: emailValue,
-    },
-  };
-  expect(selectForgotPasswordEmailInput(customTestState)).toEqual(emailValue);
-});
 
   // Тесты для редьюсеров
   it('should handle setForgotPasswordEmailInput', () => {
@@ -71,16 +52,24 @@ it('should select the correct email input value', () => {
     const state = forgotPasswordFormSlice.reducer(initialState, action);
     expect(state.emailInputError).toEqual(testError);
   });
-it('should select the correct email input error', () => {
-  const emailError = 'Invalid email';
-  const customTestState = {
-    ...testState,
-    forgotPasswordForm: {
-      ...testState.forgotPasswordForm,
-      emailInputError: emailError,
-    },
-  };
-  expect(selectForgotPasswordEmailInputError(customTestState)).toEqual(
-    emailError);
+  // Тесты для селекторов
+  it('should select the correct email input value', () => {
+    const emailValue = 'test@example.com';
+    const customTestState = {
+      ...testState, forgotPasswordForm: {
+        ...testState.forgotPasswordForm, emailInputValue: emailValue,
+      },
+    };
+    expect(selectForgotPasswordEmailInput(customTestState)).toEqual(emailValue);
+  });
+  it('should select the correct email input error', () => {
+    const emailError = 'Invalid email';
+    const customTestState = {
+      ...testState, forgotPasswordForm: {
+        ...testState.forgotPasswordForm, emailInputError: emailError,
+      },
+    };
+    expect(selectForgotPasswordEmailInputError(customTestState)).toEqual(
+      emailError);
+  });
 });
-})

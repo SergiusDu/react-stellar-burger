@@ -1,5 +1,5 @@
 import {ProfileLayout} from '../../components/profile-layout/profile-layout';
-import React, {useMemo} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {
   FeedWebsocketActions,
   selectAllOrders,
@@ -23,12 +23,12 @@ export const Feed: React.FC = () => {
   const history = useHistory();
   const location = useLocation();
 
-  function navigateOrderClick(order: Order) {
+  const navigateOrderClick = useCallback((order: Order) => {
     history.push({
       pathname: FEED_PAGE_PATH + '/' + order._id,
-      state: {background: location},
+      state: { background: location },
     });
-  }
+  }, [history, location]);
 
   const readyOrdersNumbers = useMemo(() => {
     let readyOrders: JSX.Element[] = [];
@@ -42,7 +42,7 @@ export const Feed: React.FC = () => {
       }
     });
     return readyOrders;
-  }, [orders]);
+  }, [navigateOrderClick, orders]);
   const ordersInProgressNumbers = useMemo(() => {
     let readyOrders: JSX.Element[] = [];
     orders.forEach(order => {

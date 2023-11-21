@@ -2,9 +2,7 @@ import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {fetchAPI} from '../../utils/api';
 import {RESET_PASSWORD_ENDPOINT} from '../../utils/constants';
 import {
-  EmailString,
-  IRejectedResponse,
-  ISuccessResponse,
+  EmailString, IRejectedResponse, ISuccessResponse,
 } from '../../utils/types';
 import {RootState} from '../store/store';
 
@@ -13,18 +11,18 @@ import {RootState} from '../store/store';
  */
 export const sendResetPasswordEmail = createAsyncThunk<ISuccessResponse, EmailString, {
   rejectValue: IRejectedResponse; state: RootState;
-}>(
-  'resetPasswordForm/reset-password',
-  async (emailString: EmailString, {rejectWithValue}) => {
-    const emailData = {
-      email: emailString,
-    };
-    const response = await fetchAPI(RESET_PASSWORD_ENDPOINT, 'POST', emailData);
-    return (
-      await response
-    ) as ISuccessResponse;
-  },
-);
+}>('resetPasswordForm/reset-password', async (
+  emailString: EmailString,
+  {rejectWithValue},
+) => {
+  const emailData = {
+    email: emailString,
+  };
+  const response = await fetchAPI(RESET_PASSWORD_ENDPOINT, 'POST', emailData);
+  return (
+    await response
+  ) as ISuccessResponse;
+});
 
 interface ForgotPasswordSliceState {
   emailInputValue: string;
@@ -34,20 +32,30 @@ interface ForgotPasswordSliceState {
 /**
  * Срез (slice) для формы восстановления пароля.
  */
-const initialState: ForgotPasswordSliceState = {
+export const forgotPasswordFormSliceInitialState: ForgotPasswordSliceState = {
   emailInputValue: '', emailInputError: '',
 };
 export const forgotPasswordFormSlice = createSlice({
-  name: 'forgotPasswordForm', initialState, reducers: {
-    setForgotPasswordEmailInput(state, action) {
+  name: 'forgotPasswordForm', initialState: forgotPasswordFormSliceInitialState, reducers: {
+    setForgotPasswordEmailInput(
+      state,
+      action,
+    ) {
       state.emailInputValue = action.payload;
-    }, setForgotPasswordEmailInputError(state, action) {
+    }, setForgotPasswordEmailInputError(
+      state,
+      action,
+    ) {
       state.emailInputError = action.payload;
     },
   }, extraReducers: builder => {
-    builder.addCase(sendResetPasswordEmail.fulfilled, (state, action) => {
+    builder.addCase(
+      sendResetPasswordEmail.fulfilled, (
+        state,
+        action,
+      ) => {
 
-    });
+      });
   },
 });
 

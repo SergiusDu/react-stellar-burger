@@ -7,11 +7,11 @@ export interface BurgerConstructorState {
   bun: IngredientType | null;
 }
 
-const initialState: BurgerConstructorState = {
+export const BurgerConstructorSliceInitialState: BurgerConstructorState = {
   ingredients: [], bun: null,
 };
 export const burgerConstructorSlice = createSlice({
-  name: 'burgerConstructor', initialState, reducers: {
+  name: 'burgerConstructor', initialState: BurgerConstructorSliceInitialState, reducers: {
     addIngredient: (state, action) => {
       const uniqueId = Date.now();
       state.ingredients.push({...action.payload, uniqueId});

@@ -26,7 +26,7 @@ type TLoginState = {
   redirectAfterLogin: string;
 };
 
-const initialState: TLoginState = {
+export const loginSliceInitialState: TLoginState = {
   isLoading: false,
   email: '',
   emailErrorMessage: '',
@@ -35,7 +35,7 @@ const initialState: TLoginState = {
 };
 export const loginSlice = createSlice({
   name: 'loginData',
-  initialState,
+  initialState: loginSliceInitialState,
   reducers: {
     setLoginEmailInputValue(
       state,

@@ -1,27 +1,21 @@
-
-import {RootState, store, testState} from '../store/store';
-import { configureStore } from '@reduxjs/toolkit';
-import { TWsActions } from '../middleware/websocketMiddleware';
+import {store} from '../store/store';
+import {TWsActions} from '../middleware/websocketMiddleware';
 import {
-  changeUserData, getUserData,
+  changeUserData,
+  getUserData,
   logoutUser,
-  profileSlice, ProfileWebsocketActions,
+  profileSlice,
+  ProfileWebsocketActions,
   refreshAccessToken,
+  setLogin,
+  setLoginInputError,
+  setNameInputError,
+  setPassword, setPasswordInputError, setProfilePageAvailable,
 } from './profile-slice';
-import {ingredientSlice} from './ingredient-slice';
-import {burgerConstructorSlice} from './burger-constructor-slice';
-import {orderDetailsSlice} from './order-details-slice';
-import {loginSlice} from './login-form-slice';
-import {registrationSlice} from './registration-form-slice';
-import {forgotPasswordFormSlice} from './forgot-password-slice';
-import {resetPasswordFormSlice} from './reset-password-slice';
-import {feedSlice} from './feed-slice';
 import {TUserData} from '../../utils/types';
+import {connectWebSocket, disconnectWebSocket} from './feed-slice';
+import {checkAuthToken} from '../../utils/api';
 
-// Mock API functions if needed
-jest.mock('../../utils/api', () => ({
-  // Mock your API functions here
-}));
 
 describe('Profile Reducers', () => {
   it('should handle setProfileName', () => {
@@ -37,37 +31,59 @@ describe('Profile Reducers', () => {
   it('should refresh access token', async () => {
     const dispatch = store.dispatch as jest.Mock;
     await dispatch(refreshAccessToken());
-    const updatedState = store.getState().profilePage;
-    // Add assertions for the state after refreshing access token
   });
 
   it('should logout user', async () => {
     const dispatch = store.dispatch as jest.Mock;
     await dispatch(logoutUser());
-    const updatedState = store.getState().profilePage;
-    // Add assertions for the state after logging out
   });
 
   it('should change user data', async () => {
     const dispatch = store.dispatch as jest.Mock;
-    const userData: TUserData = { name: 'New Name', email: 'new.email@example.com', password: '' };
+    const userData: TUserData = {name: 'New Name',
+      email: 'new.email@example.com',
+      password: ''};
     await dispatch(changeUserData(userData));
-    const updatedState = store.getState().profilePage;
-    // Add assertions for the state after changing user data
   });
 
   it('should get user data', async () => {
     const dispatch = store.dispatch as jest.Mock;
     await dispatch(getUserData());
-    const updatedState = store.getState().profilePage;
-    // Add assertions for the state after getting user data
   });
 
   // WebSocket action test
   it('should handle WebSocket actions', () => {
     const dispatch = store.dispatch as jest.Mock;
     dispatch(ProfileWebsocketActions as TWsActions);
+  });
+  it('should handle setNameInputError', () => {
+    const error = 'Invalid name';
+    store.dispatch(setNameInputError(error));
     const updatedState = store.getState().profilePage;
-    // Add assertions for the state after handling WebSocket actions
+    expect(updatedState.nameInputError).toEqual(error);
+  });
+  it('should handle setLogin', () => {
+    const newLogin = 'new@example.com';
+    store.dispatch(setLogin(newLogin));
+    const updatedState = store.getState().profilePage;
+    expect(updatedState.login).toEqual(newLogin);
+  });
+  it('should handle setLoginInputError', () => {
+    const error = 'Invalid login';
+    store.dispatch(setLoginInputError(error));
+    const updatedState = store.getState().profilePage;
+    expect(updatedState.loginInputError).toEqual(error);
+  });
+  it('should handle setPassword', () => {
+    const newPassword = 'newpassword123';
+    store.dispatch(setPassword(newPassword));
+    const updatedState = store.getState().profilePage;
+    expect(updatedState.password).toEqual(newPassword);
+  });
+  it('should handle setPasswordInputError', () => {
+    const error = 'Invalid password';
+    store.dispatch(setPasswordInputError(error));
+    const updatedState = store.getState().profilePage;
+    expect(updatedState.passwordInputError).toEqual(error);
   });
 });

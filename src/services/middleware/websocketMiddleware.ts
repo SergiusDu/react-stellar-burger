@@ -19,36 +19,38 @@ export interface TWsActions extends AnyAction {
 }
 
 export function isTWsActions(action: AnyAction): action is TWsActions {
+  // Проверяем, является ли action объектом и не равен ли он null
   if (typeof action !== 'object' || action === null) {
     return false;
   }
 
-  // Проверяем наличие и тип свойств action
+  // Проверяем наличие и тип свойства type у action
   const hasType = 'type' in action && typeof action.type === 'string';
-  const hasPayload = 'payload' in action && typeof action.payload === 'object';
+
+  // Проверяем наличие свойства payload и что оно является объектом и не равно null
+  const hasPayload = 'payload' in action && action.payload !== null && typeof action.payload === 'object';
 
   if (!hasType || !hasPayload) {
     return false;
   }
 
-  // Дополнительная проверка свойств payload
+  // Теперь безопасно приводим payload к типу TWsActionsPayload
   const payload = action.payload as TWsActionsPayload;
+
+  // Проверяем наличие и тип свойств в payload
   const hasUrl = 'url' in payload && typeof payload.url === 'string';
-  const hasWsConnect = 'wsConnect' in payload && typeof payload.wsConnect
-    === 'string';
-  const hasWsDisconnect = 'wsDisconnect' in payload
-    && typeof payload.wsDisconnect === 'string';
+  const hasWsConnect = 'wsConnect' in payload && typeof payload.wsConnect === 'string';
+  const hasWsDisconnect = 'wsDisconnect' in payload && typeof payload.wsDisconnect === 'string';
 
   // Проверка опциональных полей
   const hasOnOpen = !payload.onOpen || typeof payload.onOpen === 'string';
   const hasOnClose = !payload.onClose || typeof payload.onClose === 'string';
   const hasOnError = !payload.onError || typeof payload.onError === 'string';
-  const hasOnMessage = !payload.onMessage || typeof payload.onMessage
-    === 'string';
+  const hasOnMessage = !payload.onMessage || typeof payload.onMessage === 'string';
 
-  return hasUrl && hasWsConnect && hasWsDisconnect && hasOnOpen && hasOnClose
-    && hasOnError && hasOnMessage;
+  return hasUrl && hasWsConnect && hasWsDisconnect && hasOnOpen && hasOnClose && hasOnError && hasOnMessage;
 }
+
 
 export const socketMiddleware = (): Middleware => {
   const socketMap = new Map<string, WebSocket>();

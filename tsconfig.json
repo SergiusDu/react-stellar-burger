@@ -1,8 +1,16 @@
+/// <reference types="cypress" />
 {
   "compilerOptions": {
+    "baseUrl": "./src",
     "target": "es5",
+    "types": [
+      "cypress",
+      "node"
+    ],
     "lib": [
       "dom",
+      "es5",
+      "es6",
       "dom.iterable",
       "esnext"
     ],
@@ -21,6 +29,7 @@
     "jsx": "preserve"
   },
   "include": [
-    "src"
+    "src",
+    "cypress"
   ]
 }

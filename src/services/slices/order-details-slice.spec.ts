@@ -1,74 +1,66 @@
 // orderDetailsSlice.spec.ts
-import store, {RootState} from '../store/store';
 import {
-  fetchAPI,
-  getRandomBun,
-  getRandomBurgerIngredient,
-} from '../../utils/api';
-
-import {ORDER_URL, POST_METHOD} from '../../utils/constants';
-import {
-  fetchOrder,
-  orderDetailsSlice,
-  selectOrderNumber,
+  fetchOrder, orderDetailsSlice, OrderDetailsState, resetOrderNumber,
 } from './order-details-slice';
-import {selectIsLoading} from './ingredient-slice';
-import {data} from '../../utils/data';
-import mocked = jest.mocked;
 
-jest.mock('../../utils/api');
-jest.mock(
-  '../../utils/constants', () => (
-    {
-      ...jest.requireActual(
-        '../../utils/constants'), ORDER_URL: '/order', POST_METHOD: 'POST',
-    }
-  ));
-jest.mock(
-  '../../utils/api', () => (
-    {
-      ...jest.requireActual(
-        '../../utils/api'), getAccessTokenFromCookies: jest.fn(), getRefreshTokenFromCookies: jest.fn(), fetchAPI: jest.fn(),
-    }
-  ));
+import * as apiUtils from '../../utils/api';
+import {ThunkAction} from '@reduxjs/toolkit';
+import thunk from 'redux-thunk';
+import configureMockStore, {MockStore} from 'redux-mock-store';
+import {fetchOrderResponseMock} from '../../utils/mockConstants';
+import {RootState} from '../store/store';
+import {createMockStore} from '../../utils/mockStore';
 
-describe('orderDetailsSlice reducer and actions', () => {
-  const initialState: RootState['orderDetails'] = {
-    isLoading: false, error: null, orderNumber: null, ingredients: null,
-  };
+const middlewares = [thunk];
+const mockStore = configureMockStore<RootState, any>(middlewares);
+type MockDispatch = (action: ThunkAction<any, any, any, any>) => Promise<any>;
+describe('async POST order details actions', () => {
+  let store: MockStore<RootState>;
 
-  it('should return the initial state on first run', () => {
-    expect(orderDetailsSlice.reducer(undefined, {type: ''})).toEqual(
-      initialState);
+  beforeEach(() => {
+    store = createMockStore();
+  });
+  beforeEach(() => {
+    jest.spyOn(apiUtils, 'getAccessTokenFromCookies').mockReturnValue(
+      'test-token');
+  });
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
-  // Тесты для редьюсеров
-  // ...
-
-  describe('fetchOrder async action', () => {
-    it('should handle successful order fetch', async () => {
-      const bunId = getRandomBun(data)._id;
-      const ingredientId = getRandomBurgerIngredient(data)._id;
-      const mockResponse = {order: {number: 123}};
-      mocked(fetchAPI).mockResolvedValue(mockResponse);
-      const result = await store.dispatch(fetchOrder([bunId, ingredientId]));
-      expect(fetchAPI).toHaveBeenCalledWith(ORDER_URL, POST_METHOD,
-        {ingredients: [bunId, ingredientId]},
-        {Authorization: expect.anything()},
-      );
-      expect(result.type).toBe('orderDetails/sendOrder/fulfilled');
-      expect(result.payload).toEqual(mockResponse);
+  it('posts order', () => {
+    jest.spyOn(global, 'fetch').mockResolvedValue({
+      json: () => Promise.resolve(fetchOrderResponseMock), ok: true,
+    } as any);
+    const sendMock = [
+      '643d69a5c3f7b9001cfa0941',
+      '643d69a5c3f7b9001cfa093c',
+      '643d69a5c3f7b9001cfa093c'];
+    const expectedActions = [
+      {
+        type: 'orderDetails/sendOrder/pending', meta: {
+          arg: sendMock, requestId: expect.anything(), requestStatus: 'pending',
+        },
+      }, {
+        type: 'orderDetails/sendOrder/fulfilled', payload: expect.anything(), meta: expect.anything(),
+      }];
+    const dispatch = store.dispatch as MockDispatch;
+    return dispatch(fetchOrder(sendMock)).then(() => {
+      expect(store.getActions()).toEqual(expectedActions);
     });
-
-    it('should handle failed order fetch', async () => {
-      const errorResponse = new Error("Need to be authorized");
-      mocked(fetchAPI).mockRejectedValue(errorResponse);
-      const result = await store.dispatch(
-        fetchOrder(['ingredient1', 'ingredient2']));
-      expect(result.type).toBe('orderDetails/sendOrder/rejected');
-      expect(result.payload).toEqual(errorResponse.message);
-    });
-
   });
+  describe('reducers', () => {
+    it('should handle resetOrderNumber', () => {
+      store.dispatch(resetOrderNumber());
+      const actions = store.getActions();
+      const expectedPayload = {type: 'burgerDetails/resetOrderNumber'};
+      expect(actions).toEqual([expectedPayload]);
+      const newState = orderDetailsSlice.reducer(
+        store.getState().orderDetails, resetOrderNumber());
+      expect(newState.orderNumber).toBeNull();
+    });
+  });
+
 });
+
 

@@ -14,7 +14,7 @@ export const CategorySection = forwardRef<HTMLElement, CategorySectionProps>(({
   const CATEGORIES_TO_NAME: Record<string, string> = {
     bun: 'Булки',
     sauce: 'Соусы',
-    main: 'Начинка',
+    main: 'Начинки',
   };
 
   const filteredIngredients: React.ReactElement[] = useMemo(() => {

@@ -2,13 +2,9 @@ import {createSlice} from '@reduxjs/toolkit';
 import {isValidOrderResponse, Order} from '../../utils/types';
 import {RootState} from '../store/store';
 import {TWsActions} from '../middleware/websocketMiddleware';
-import {
-  CONNECT_FEED_WEBSOCKET,
-  DISCONNECT_FEED_WEBSOCKET,
-  GET_ALL_ORDERS_WS_ENDPOINT,
-} from '../../utils/constants';
+import {GET_ALL_ORDERS_WS_ENDPOINT} from '../../utils/constants';
 
-interface feedSlice {
+interface IFeedSlice {
   allOrders: Order[];
   allDoneOrders: Order[];
   allOrdersInProcess: Order[];
@@ -23,7 +19,7 @@ interface feedSlice {
   isWebSocketOpened: boolean;
 }
 
-const initialState: feedSlice = {
+export const feedSliceInitialState: IFeedSlice = {
   allOrders: [],
   allDoneOrders: [],
   allOrdersInProcess: [],
@@ -35,11 +31,11 @@ const initialState: feedSlice = {
   allTotal: 0,
   allTotalToday: 0,
   connected: false,
-  isWebSocketOpened: false
+  isWebSocketOpened: false,
 };
 export const feedSlice = createSlice({
   name: 'feedSlice',
-  initialState,
+  initialState: feedSliceInitialState,
   reducers: {
     updateProfileOrdersInformation(
       state,
@@ -70,7 +66,7 @@ export const feedSlice = createSlice({
       }
     },
     connectWebSocket(state) {
-      state.isWebSocketOpened = true
+      state.isWebSocketOpened = true;
     },
     disconnectWebSocket(state) {
       state.isWebSocketOpened = false;
@@ -105,7 +101,7 @@ export const {
   setTotalOrders,
   setTotalTodayOrders,
   connectWebSocket,
-  disconnectWebSocket
+  disconnectWebSocket,
 } = feedSlice.actions;
 
 export const selectProfileOrders = (state: RootState) => state.feedSlice.profileOrders;

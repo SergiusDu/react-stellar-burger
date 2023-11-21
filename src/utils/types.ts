@@ -14,7 +14,7 @@ export type TTokenString = string;
 export type TNullableToken = TTokenString | null;
 
 export type TUserData = {
-  name: string; email: EmailString; password: PasswordString;
+  name?: string; email: EmailString; password: PasswordString;
 };
 
 export type IngredientType = {
@@ -132,6 +132,39 @@ export interface OrderResponse {
   orders: Order[];
   total: number;
   totalToday: number;
+}
+
+export interface Order {
+  _id: string;
+  ingredients: string[];
+  status: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  number: number;
+}
+
+export interface Owner {
+  name: string;
+  email: string;
+  createdAt: string;
+  updatedAt: string;
+}
+export interface FetchOrder {
+  ingredients: IngredientType[];
+  _id: string;
+  owner: Owner;
+  status: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  number: number;
+  price: number;
+}
+export interface FetchOrderResponse {
+  success: boolean;
+  name: string;
+  order: FetchOrder;
 }
 
 /**
